@@ -1,5 +1,4 @@
-Project Title: 
-### Trackr
+# Trackr
 
 ### Project Description
 
