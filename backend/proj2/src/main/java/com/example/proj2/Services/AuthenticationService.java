@@ -28,7 +28,8 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AppUser signup(RegisterUserDto input) {
+    public AppUser signup(AppUser input) {
+
         AppUser appUser = new AppUser();
         appUser.setEmail(input.getEmail());
         appUser.setFirst_name(input.getFirst_name());

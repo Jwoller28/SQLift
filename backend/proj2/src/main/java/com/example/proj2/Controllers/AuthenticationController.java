@@ -7,13 +7,14 @@ import com.example.proj2.Services.AuthenticationService;
 import com.example.proj2.Services.JwtService;
 import com.example.proj2.entity.AppUser;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/auth")
+
 @RestController
 public class AuthenticationController {
     private final JwtService jwtService;
@@ -23,10 +24,11 @@ public class AuthenticationController {
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
+
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<AppUser> register(@RequestBody RegisterUserDto registerUserDto) {
+    @PostMapping("auth/signup")
+    public ResponseEntity<AppUser> register(@RequestBody AppUser registerUserDto) {
         AppUser registeredAppUser = authenticationService.signup(registerUserDto);
 
         return ResponseEntity.ok(registeredAppUser);
@@ -42,5 +44,7 @@ public class AuthenticationController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
         return ResponseEntity.ok(loginResponse);
+
+
     }
 }
