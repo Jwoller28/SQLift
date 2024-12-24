@@ -15,4 +15,6 @@ public interface UserDetails {
    boolean isCredentialsNonExpired();
 
     boolean isEnabled();
+
+    String getUsername();
 }
