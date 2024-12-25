@@ -75,14 +75,16 @@ public class AuthenticationController {
 
     }
     @GetMapping("/me")
-    public ResponseEntity<AppUser> authenticatedUser() {
+    public ResponseEntity<String> getAuthenticatedUserFromContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        AppUser currentUser = (AppUser) authentication.getPrincipal();
-
-        return ResponseEntity.ok(currentUser);
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = (String) authentication.getPrincipal();
+            return ResponseEntity.ok(username);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 }
+
 
 
 
