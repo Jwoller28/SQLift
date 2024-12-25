@@ -8,12 +8,21 @@ public class LoginUserDto {
     public LoginUserDto() {
     }
 
+    public LoginUserDto(String username) {
+        this.username = username;
+    }
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public LoginUserDto(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public String getPassword() {

@@ -1,30 +1,29 @@
 package com.example.proj2.entity;
-import com.example.proj2.entity.type.UserDetails;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
+
 import java.util.Date;
-import java.util.List;
 
 @Entity
-public class AppUser implements UserDetails {
+public class AppUser  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Integer id;
-    @Column(unique = true, length = 100, nullable = false)
+
+    @Column(unique = true, length = 100,nullable = false)
     private String username;
     private String email;
     private String first_name;
     private String last_name;
     private String photo_url;
-    @Column(nullable = false)
+
+    @Column(nullable = false, length = 100)
     private String password;
     @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
+    @Column( name = "created_at")
     private Date createdAt;
 
     @UpdateTimestamp
@@ -40,7 +39,7 @@ public class AppUser implements UserDetails {
         this.password=password;
     }
 
-    @Override
+    /*@Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
@@ -62,7 +61,7 @@ public class AppUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
+    }*/
 
 
 
@@ -101,7 +100,8 @@ public class AppUser implements UserDetails {
         this.id = id;
     }
 
-    @Override
+
+
     public String getUsername() {
         return username;
     }
