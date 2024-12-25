@@ -1,50 +1,89 @@
 package com.example.proj2.Controllers;
 
+import com.example.proj2.Configs.JwtUtil;
 import com.example.proj2.Dto.LoginUserDto;
 import com.example.proj2.Dto.RegisterUserDto;
-import com.example.proj2.Response.LoginResponse;
 import com.example.proj2.Services.AuthenticationService;
-import com.example.proj2.Services.JwtService;
 import com.example.proj2.entity.AppUser;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @RestController
 public class AuthenticationController {
-    private final JwtService jwtService;
-
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
     private final AuthenticationService authenticationService;
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
-        this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
-
+    public AuthenticationController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,AuthenticationService authenticationService) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.authenticationService=authenticationService;
     }
 
-    @PostMapping("auth/signup")
-    public ResponseEntity<AppUser> register(@RequestBody AppUser registerUserDto) {
-        AppUser registeredAppUser = authenticationService.signup(registerUserDto);
+    @PostMapping("/register")
+    public ResponseEntity<AppUser> register(@RequestBody RegisterUserDto registerUserDto) {
 
-        return ResponseEntity.ok(registeredAppUser);
+
+        try {
+            AppUser registeredAppUser = authenticationService.signup(registerUserDto);
+            return ResponseEntity.ok(registeredAppUser);
+        } catch (Exception e) {
+            logger.error("Error during registration: ", e);
+            return ResponseEntity.status(404).build();
+        }
     }
-
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        AppUser authenticatedAppUser = authenticationService.authenticate(loginUserDto);
+    public ResponseEntity<String> login(@RequestBody LoginUserDto loginUserDto) {
 
-        String jwtToken = jwtService.generateToken((UserDetails) authenticatedAppUser);
+        try {
+            logger.info("Attempting to authenticate user: " + loginUserDto.getUsername());
 
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken(jwtToken);
-        loginResponse.setExpiresIn(jwtService.getExpirationTime());
-        return ResponseEntity.ok(loginResponse);
+            // Create authentication token using provided credentials
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(loginUserDto.getUsername(), loginUserDto.getPassword());
+            logger.info("authenticationToken from user: " + loginUserDto.getUsername());
+            // Attempt authentication with the provided token
+           Authentication authentication = authenticationManager.authenticate(authenticationToken);
+           logger.info("generateToken " + authentication.getName());
 
 
+
+            String token = jwtUtil.generateToken(authentication.getName());
+
+
+            logger.info("Authentication successful for user: " + loginUserDto.getUsername());
+
+            return ResponseEntity.ok(token);
+
+        } catch (Exception e) {
+            logger.error("Error during login: ", e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+    }
+    @GetMapping("/me")
+    public ResponseEntity<AppUser> authenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        AppUser currentUser = (AppUser) authentication.getPrincipal();
+
+        return ResponseEntity.ok(currentUser);
     }
 }
+
+
+
+
