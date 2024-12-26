@@ -16,6 +16,7 @@ import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
 import NutritionApi from './Components/NutritionApi/NutritionApi';
 import RouteGuard from './Components/RouteGuard/RouteGuard';
 import UserProfile from './Components/UserProfile/UserProfile';
+import PostFeedSmart from './COMPONENTS/POSTFEED/PostFeedSmart';
 
 function App() {
   return (
@@ -75,6 +76,7 @@ function App() {
           </Routes>
         </EventsProvider>
       </AuthProvider>
+      <PostFeedSmart></PostFeedSmart>
     </div>
   );
 }
