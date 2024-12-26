@@ -18,7 +18,7 @@ function App() {
         <EventsProvider>
           <Routes>
             {/* MAKE SURE TO CHANGE BACK TO LOGIN here */}
-            <Route path="/" element={<Navigate to="/calendar" replace />}/> 
+            <Route path="/" element={<Navigate to="/login" replace />}/> 
             <Route path="/login" element={<UserManagement/>}></Route>
             <Route path="/register" element={<UserRegistration/>}></Route>
 
