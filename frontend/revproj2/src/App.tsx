@@ -1,24 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import UserManagement from './Components/UserLogin/UserManagement';
+import { AuthProvider } from './Components/UserContext/UserContext';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import UserRegistration from './Components/UserRegistration/UserRegistration';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />}/>
+          <Route path="/login" element={<UserManagement/>}></Route>
+          <Route path="/register" element={<UserRegistration/>}></Route>
+        </Routes>
+        
+      </AuthProvider>
     </div>
   );
 }
