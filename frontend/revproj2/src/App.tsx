@@ -1,11 +1,9 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-} from 'react-router-dom';
 import './App.css';
+import UserManagement from './Components/UserLogin/UserManagement';
+import { AuthProvider } from './Components/UserContext/UserContext';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import UserRegistration from './Components/UserRegistration/UserRegistration';
 
 // Import the pages we'll create:
 import CalendarPage from './CalendarPage';
@@ -14,25 +12,16 @@ import WeekView from './WeekView';
 
 function App() {
   return (
-    <Router>
-      <div>
-        <nav style={{ padding: '10px', background: '#ccc' }}>
-          <Link to="/" style={{ marginRight: '20px' }}>Home (Calendar)</Link>
-          <Link to="/week">Weekly View</Link>
-        </nav>
-
+    <div className="App">
+      <AuthProvider>
         <Routes>
-          {/* The main CalendarPage at path="/" */}
-          <Route path="/" element={<CalendarPage />} />
-
-          {/* WeekView at /week */}
-          <Route path="/week" element={<WeekView />} />
-
-          {/* DayView at /day/:dayId (e.g. /day/5 for the 5th of the month) */}
-          <Route path="/day/:dayId" element={<DayView />} />
+          <Route path="/" element={<Navigate to="/login" replace />}/>
+          <Route path="/login" element={<UserManagement/>}></Route>
+          <Route path="/register" element={<UserRegistration/>}></Route>
         </Routes>
-      </div>
-    </Router>
+        
+      </AuthProvider>
+    </div>
   );
 }
 
