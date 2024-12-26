@@ -1,25 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+} from 'react-router-dom';
 import './App.css';
+
+// Import the pages we'll create:
+import CalendarPage from './CalendarPage';
+import DayView from './DayView';
+import WeekView from './WeekView';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        <nav style={{ padding: '10px', background: '#ccc' }}>
+          <Link to="/" style={{ marginRight: '20px' }}>Home (Calendar)</Link>
+          <Link to="/week">Weekly View</Link>
+        </nav>
+
+        <Routes>
+          {/* The main CalendarPage at path="/" */}
+          <Route path="/" element={<CalendarPage />} />
+
+          {/* WeekView at /week */}
+          <Route path="/week" element={<WeekView />} />
+
+          {/* DayView at /day/:dayId (e.g. /day/5 for the 5th of the month) */}
+          <Route path="/day/:dayId" element={<DayView />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
