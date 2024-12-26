@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 function UserManagement() {
     const[username, setUsername] = useState("");
     const[password, setPassword] = useState("");
+    const[data, setData] = useState<any | null>(null); // Created to use Jest with api call
 
     const context = useContext(AuthContext);
     if(!context){
@@ -18,8 +19,15 @@ function UserManagement() {
     // Function to handle submit event on login page
     function handleSubmit(event: FormEvent){
         event.preventDefault();
+        // Test api for Jest
+        const fetchData = async (): Promise<any> => {
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+            
+            const d = response.json().then((result) => setData(result));
+        }
+        fetchData();
         dispatch({type: 'LOGIN', payload: {username, password}})
-        console.log(username, password);
+        // console.log(username, password);
     }
 
     // Function to handle register button on login page, redirect to register page.

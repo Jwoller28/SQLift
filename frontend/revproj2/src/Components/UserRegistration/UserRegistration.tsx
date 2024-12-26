@@ -11,7 +11,7 @@ function UserRegistration() {
 
     function registerSubmit(event: FormEvent){
         event.preventDefault();
-        console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", firstName, "Last Name:", lastName, "Photo URL:", photoUrl)
+        console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", firstName, "Last Name:", lastName, "Photo URL:", photoUrl);
     }
   return (
     <>
