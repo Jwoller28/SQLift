@@ -4,53 +4,39 @@ import { useNavigate } from 'react-router-dom';
 function CalendarPage() {
   const navigate = useNavigate();
 
-  // 1) Store "currentDate" for the calendar view.
-  // By default, it starts at today's date.
+  // 1) Store "currentDate" for the calendar view
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // 2) Extract year, month from our currentDate
-  // Months are 0-based in JS, so January=0, February=1, etc.
   const year = currentDate.getFullYear();
-  const month = currentDate.getMonth(); 
+  const month = currentDate.getMonth(); // 0-based in JS
 
-  // 3) Compute the first day of this month
   const firstDayOfMonth = new Date(year, month, 1);
-  // And the weekday of that first day (0=Sunday, 1=Monday, etc.)
   const firstDayOfWeek = firstDayOfMonth.getDay();
 
-  // 4) Compute how many days are in this month
-  // We can pass 0 as the day to get "one day before next month".
-  // E.g. new Date(2023, 8, 0) is the last day of August if 8 is September.
   const lastDayOfMonth = new Date(year, month + 1, 0);
   const daysInMonth = lastDayOfMonth.getDate();
 
-  // 5) Create an array representing all days in the calendar grid,
-  // including blank cells for days before the first dayOfMonth.
   const calendarCells: Array<number | null> = [];
-
-  // Fill in null for days before the first day
-  // (if firstDayOfWeek=0 [Sunday], no leading blanks are needed)
   for (let i = 0; i < firstDayOfWeek; i++) {
     calendarCells.push(null);
   }
-
-  // Then push the real day numbers
   for (let day = 1; day <= daysInMonth; day++) {
     calendarCells.push(day);
   }
 
-  // 6) Handle navigation to day view
+  // UPDATED: Format the dayId to YYYY-MM-DD
   const handleDayClick = (dayNumber: number) => {
-    navigate(`/day/${dayNumber}`);
+    const formattedDay = String(dayNumber).padStart(2, '0');
+    const formattedMonth = String(month + 1).padStart(2, '0');
+    const dayId = `${year}-${formattedMonth}-${formattedDay}`; // e.g., "2024-12-07"
+    navigate(`/day/${dayId}`);
   };
 
-  // 7) Month Navigation (prev/next)
   const goToPrevMonth = () => {
-    // Set currentDate to previous month
     setCurrentDate(new Date(year, month - 1, 1));
   };
+
   const goToNextMonth = () => {
-    // Set currentDate to next month
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
@@ -58,17 +44,59 @@ function CalendarPage() {
     navigate('/week');
   };
 
-  // 8) Build the calendar UI
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>
+    <div
+      style={{
+        padding: '20px',
+        background: 'linear-gradient(to bottom, #3370ff, #ADD8E6)',
+        color: '#000000',
+        minHeight: '100vh',
+      }}
+    >
+      <h2 style={{ fontFamily: 'Arial, sans-serif', color: '#ffffff' }}>
         {currentDate.toLocaleString('default', { month: 'long' })} {year}
       </h2>
 
       <div style={{ marginBottom: '10px' }}>
-        <button onClick={goToPrevMonth}>Prev Month</button>
-        <button onClick={goToNextMonth}>Next Month</button>
-        <button onClick={handleWeekButton} style={{ marginLeft: '20px' }}>
+        <button
+          onClick={goToPrevMonth}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#555',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            marginLeft: '10px',
+          }}
+        >
+          Prev Month
+        </button>
+
+        <button
+          onClick={goToNextMonth}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#555',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            marginLeft: '10px',
+          }}
+        >
+          Next Month
+        </button>
+
+        <button
+          onClick={handleWeekButton}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#555',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            marginLeft: '10px',
+          }}
+        >
           Go to Weekly View
         </button>
       </div>
@@ -82,6 +110,7 @@ function CalendarPage() {
           textAlign: 'center',
           fontWeight: 'bold',
           marginBottom: '5px',
+          color: '#ffffff',
         }}
       >
         <div>Sun</div>
@@ -103,32 +132,46 @@ function CalendarPage() {
       >
         {calendarCells.map((cell, index) => {
           if (cell === null) {
-            // an empty cell
             return (
               <div
                 key={index}
                 style={{
                   height: '60px',
                   border: '1px solid #ccc',
-                  background: '#f0f0f0',
+                  background: '#b0c4de',
                 }}
               />
             );
           } else {
-            // a real day
             return (
               <div
                 key={index}
                 onClick={() => handleDayClick(cell)}
                 style={{
                   height: '60px',
-                  border: '1px solid #ccc',
+                  border: '1px solid #000',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  background: '#fff',
+                  background: '#0080ff',
+                  color: '#ffffff',
+                  borderRadius: '4px',
+                  fontWeight: 'bold',
+                  transition: 'background 0.3s, transform 0.2s',
                 }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = '#0056b3')
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = '#0080ff')
+                }
+                onMouseDown={(e) =>
+                  (e.currentTarget.style.transform = 'scale(0.95)')
+                }
+                onMouseUp={(e) =>
+                  (e.currentTarget.style.transform = 'scale(1)')
+                }
               >
                 {cell}
               </div>
