@@ -34,6 +34,10 @@ import com.example.proj2.Serializer.PostDeserializer;
             props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
             props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
             props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, PostDeserializer.class);
+            props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50); // Number of records per poll
+            props.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, 1048576); // Minimum size of data to fetch
+            props.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, 500);  // Wait time if min bytes not met
             return new DefaultKafkaConsumerFactory<>(props);
         }
 

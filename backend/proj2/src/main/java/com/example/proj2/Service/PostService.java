@@ -1,7 +1,9 @@
 package com.example.proj2.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -24,7 +26,9 @@ public class PostService {
     @Autowired
     private PostRepository postRepostiory;
 
-    private List<Post> postList = new ArrayList<>();
+    private final BlockingQueue<Post> messageQueue = new LinkedBlockingQueue<>(); // Allows for Thread Safety
+    
+    // private List<Post> postList = new ArrayList<>();
     
     public void sendPost(Post post)
     {   
@@ -41,17 +45,29 @@ public class PostService {
         });
     }
 
+    // @KafkaListener(topics="processedPosts", containerFactory = "kafkaListenerContainerFactory", groupId = "app-users")
+    // public void getPost(List<Post> posts)
+    // {   
+    //     postList.addAll(posts);
+    // }
+
+    // public List<Post> getPostList() 
+    // {
+    //     List<Post> ret = postList;
+    //     postList = new ArrayList<Post>();
+    //     return ret;
+    // }
+
+        
+
+    // Kafka listener
     @KafkaListener(topics="processedPosts", containerFactory = "kafkaListenerContainerFactory", groupId = "app-users")
-    public void getPost(ConsumerRecord<Integer, Post> record)
-    {   
-        System.out.println("Received Message in group users: " + record.toString());
-        postList.add(record.value());
+    public void listen(Post post) {
+        messageQueue.offer(post); // Add posts to the queue
     }
 
-    public List<Post> getPostList() 
-    {
-        List<Post> ret = postList;
-        postList = new ArrayList<Post>();
-        return ret;
+    public Post getNextPost(long timeoutMillis) throws InterruptedException {
+        // Wait for a message or timeout
+        return messageQueue.poll(timeoutMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
     }
 }
