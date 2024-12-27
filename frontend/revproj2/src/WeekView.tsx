@@ -134,15 +134,13 @@ function WeekView() {
             day: 'numeric',
           });
 
-          // If you want your DayView to use a specific date format (e.g. 'YYYY-MM-DD'):
-          const year = dateObj.getFullYear();
-          const month = dateObj.getMonth() + 1; // 1-based
-          const day = dateObj.getDate();
-          const dayId = `${year}-${month}-${day}`; // e.g. "2024-1-15"
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            const dayId = `${year}-${month}-${day}`; // Always YYYY-MM-DD
 
           // Retrieve any events for that day
           const events = getEventsForDay(dayId);
-          console.log(events);
           
           return (
             <div
