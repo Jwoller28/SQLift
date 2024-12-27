@@ -59,12 +59,24 @@ function CalendarPage() {
     const formattedDay = String(dayNumber).padStart(2, '0');
     const formattedMonth = String(month + 1).padStart(2, '0');
     const dayId = `${year}-${formattedMonth}-${formattedDay}`; // Always YYYY-MM-DD
-    if (formattedDay > String(today.getDate())) {
+  
+    // Get the clicked date object
+    const clickedDate = new Date(year, month, dayNumber);
+  
+    // Get today's date without time (for accurate comparison)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to midnight for comparison
+  
+    // Compare clickedDate with today
+    if (clickedDate > today) {
+      // Future date
       navigate(`/progress/${dayId}`);
     } else {
+      // Today or past date
       navigate(`/input/${dayId}`);
     }
   };
+  
 
   const goToPrevMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
@@ -73,6 +85,11 @@ function CalendarPage() {
   const goToNextMonth = () => {
     setCurrentDate(new Date(year, month + 1, 1));
   };
+
+  const goToFeed = () => {/* navigate(``); */};
+  const goToProfile = () => {/* navigate(``); */};
+  const goToInbox = () => {/* navigate(``); */};
+  const goToGoals = () => {/* navigate(``); */};
 
   return (
     <div
@@ -85,40 +102,103 @@ function CalendarPage() {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
+        marginTop: 0
       }}
     >
       <h1 style={{ fontFamily: 'Arial, sans-serif', color: '#ffffff', fontSize: '50px'}}>
         {currentDate.toLocaleString('default', { month: 'long' })} {year}
       </h1>
 
-      <div style={{ marginBottom: '20px' }}>
+      {/* put profile picture and goal and inbox and feed buttons here  */}
+      <div style={{ 
+        marginBottom: '20px',
+        backgroundColor: '#000' 
+        }}>
         <button
-          onClick={goToPrevMonth}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#555',
-            color: '#fff',
-            border: 'none',
-            cursor: 'pointer',
-            marginRight: '10px',
-          }}
-        >
-          Prev Month
-        </button>
+            onClick={goToFeed}
+            style={{
+                padding: '10px 10px',
+                backgroundColor: '#2282ff',
+                color: '#000',
+                border: 'none',
+                cursor: 'pointer',
+                margin: '5px',
+            }}
+            >
+            Feed
+            </button>
+
         <button
-          onClick={goToNextMonth}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#555',
-            color: '#fff',
-            border: 'none',
-            cursor: 'pointer',
-            marginRight: '10px',
-          }}
-        >
-          Next Month
-        </button>
-      </div>
+            onClick={goToPrevMonth}
+            style={{
+                padding: '10px 10px',
+                backgroundColor: '#2282ff',
+                color: '#000',
+                border: 'none',
+                cursor: 'pointer',
+                margin: '5px',
+            }}
+            >
+            Prev Month
+            </button>
+
+        <button
+            onClick={goToNextMonth}
+            style={{
+                padding: '10px 10px',
+                backgroundColor: '#2282ff',
+                color: '#000',
+                border: 'none',
+                cursor: 'pointer',
+                margin: '5px',
+            }}
+            >
+            Next Month
+            </button>
+
+        <button
+            onClick={goToGoals}
+            style={{
+                padding: '10px 10px',
+                backgroundColor: '#2282ff',
+                color: '#000',
+                border: 'none',
+                cursor: 'pointer',
+                margin: '5px',
+            }}
+            >
+            Goals
+            </button>
+
+        <button
+            onClick={goToInbox}
+            style={{
+                padding: '10px 10px',
+                backgroundColor: '#2282ff',
+                color: '#000',
+                border: 'none',
+                cursor: 'pointer',
+                margin: '5px',
+            }}
+            >
+            Inbox
+            </button>
+
+        <button
+            onClick={goToProfile}
+            style={{
+                padding: '10px 10px',
+                backgroundColor: '#2282ff',
+                color: '#000',
+                border: 'none',
+                cursor: 'pointer',
+                margin: '5px',
+            }}
+            >
+            Profile
+            </button>
+
+        </div>
 
       <div
         style={{
