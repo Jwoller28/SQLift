@@ -1,24 +1,33 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/posts";
 
-export interface Post {
-    post_id?: number;
-    goal_id: number;
-    user_id: number;
-    message_text: string;
-    photo: string;  // Photo will be a Base64 string or URL
-}
 
-export const sendPost = async (post: Post) => {
+export const sendPost = async (formData : FormData) => {
     try {
-        await axios.post("http://localhost:8080/posts", post, {
-            headers: {
-                "Content-Type": "application/json"  // Send as JSON
+        const url = "http://localhost:8080/posts";
+
+        await axios.post(url, formData, {
+            headers: { "Content-Type": "multipart/form-data"
             }
         });
         console.log("Message sent successfully!");
     } catch (error) {
         console.error("Error sending message:", error);
+    }
+};
+
+export const getPosts = async () => {
+    try {
+        const url = "http://localhost:8080/posts";
+
+        let result = await axios.get(url, {
+            headers: { "Content-Type": "application/json"
+            }
+        });
+        console.log("Post Retrieved!");
+        console.log(result.data);
+        return result.data;
+    } catch (error) {
+        console.error("Error retrieving message:", error);
     }
 };
