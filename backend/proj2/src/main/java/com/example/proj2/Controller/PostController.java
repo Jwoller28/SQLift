@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +33,7 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @PostMapping("posts")
+    @PostMapping(value = "/api/posts")
     @CrossOrigin(origins = "http://localhost:3000")
     // Turn the Request Param into Request Body with object that has these fields
     public void sendPost(@RequestParam("goal_id") long goalId,
@@ -59,10 +60,28 @@ public class PostController {
 
     }
 
-    @GetMapping("/posts")
-    public List<Post> getPosts()
-    {   
-       return postService.getPostList();
+    // @GetMapping("/api/posts")
+    // public List<Post> getPosts()
+    // {   
+    //    return postService.getPostList();
+    // }
+
+@GetMapping("/api/posts")
+public ResponseEntity<Post> poll() {
+    try {
+        // Wait up to 30 seconds for a new message
+        Post post = postService.getNextPost(15000); // This call waits for the next post
+        if (post != null) {
+            return ResponseEntity.ok(post); // Return the post with HTTP 200 status
+        } else {
+            return ResponseEntity.noContent().build(); // Return 204 No Content if no post is found
+        }
+    } catch (InterruptedException e) {
+        // Handle interruption gracefully, logging the error and setting the interrupt flag
+        Thread.currentThread().interrupt();
+        return ResponseEntity.status(500).body(null); // Return HTTP 500 Internal Server Error on interruption
     }
+}
+
 }
 

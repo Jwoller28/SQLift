@@ -1,10 +1,11 @@
 import axios from "axios";
+import { Post } from "../COMPONENTS/POSTFEED/PostList";
 
 
 
 export const sendPost = async (formData : FormData) => {
     try {
-        const url = "http://localhost:8080/posts";
+        const url = "http://localhost:8080/api/posts";
 
         await axios.post(url, formData, {
             headers: { "Content-Type": "multipart/form-data"
@@ -18,15 +19,19 @@ export const sendPost = async (formData : FormData) => {
 
 export const getPosts = async () => {
     try {
-        const url = "http://localhost:8080/posts";
+        const url = "http://localhost:8080/api/posts";
 
-        let result = await axios.get(url, {
-            headers: { "Content-Type": "application/json"
-            }
-        });
-        console.log("Post Retrieved!");
-        console.log(result.data);
-        return result.data;
+        let result = await axios.get(url);
+        if(result && result.status === 200)
+        {
+            console.log("Post Retrieved!");
+            console.log(result.data);
+            return result.data;
+        }
+        else{
+            throw new Error;
+        }
+        
     } catch (error) {
         console.error("Error retrieving message:", error);
     }
