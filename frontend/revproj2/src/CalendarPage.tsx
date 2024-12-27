@@ -26,8 +26,8 @@ function CalendarPage() {
 
   // UPDATED: Format the dayId to YYYY-MM-DD
   const handleDayClick = (dayNumber: number) => {
-    const formattedDay = String(dayNumber).padStart(2, '0');
-    const formattedMonth = String(month + 1).padStart(2, '0');
+    const formattedDay = String(dayNumber);
+    const formattedMonth = String(month + 1);
     const dayId = `${year}-${formattedMonth}-${formattedDay}`; // e.g., "2024-12-07"
     navigate(`/day/${dayId}`);
   };
