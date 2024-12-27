@@ -1,35 +1,36 @@
 import React, { useState } from 'react'
 import PostFeedDumb from './PostFeedDumb';
 import { useRef } from 'react';
-import {Post, sendPost } from '../../API/Axios';
+import {sendPost } from '../../API/Axios';
+import PostList from './PostList';
 
 
 function PostFeedSmart() {
     const [message, setMessage] = useState("");
     const [goalId, setGoalId] = useState(0);
     const [user, setUser] = useState(0);
-    const form = useRef<HTMLFormElement | undefined>(undefined); //more react friendly way of getting document objects
-    
+    const [file, setFile] = useState<File | undefined>(undefined);
+
 
     const handleSubmit = async (e : any) => {
         e.preventDefault();
-        const formData = new FormData(form.current);
-        let photo = formData.get("img_url") as File;
+        const formData = new FormData();
+        formData.append('goal_id', goalId.toString());
+        formData.append('user_id', user.toString());
+        formData.append('message_text', message);
+    
+        if (file) {
+            formData.append('photo', file);
+        }
 
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-            let blobPhoto = reader.result as string;
-
-             // Create a Post object to send as JSON
-        let post: Post = {
-                goal_id: parseInt(formData.get("goal_id") as string),
-                user_id: parseInt(formData.get("user_id") as string),
-                message_text: formData.get("message_text") as string,
-                photo: blobPhoto,  // Attach the Base64 photo string
-            };
-
+        // console.log("Before");
+        // console.log(formData.get("goal_id"));
+        // console.log(formData.get("user_id"));
+        // console.log(formData.get("message_text"));
+        // console.log(formData.get("photo"));
         try{
-            await sendPost(post);
+            await sendPost(formData);
+            console.log("During");
             
           }
           catch(error : any)
@@ -40,12 +41,15 @@ function PostFeedSmart() {
             }
           }
         }
-          reader.readAsDataURL(photo);
-    }
+    
 
     return (
         <div>
-            <PostFeedDumb formRef = {form} setMessage = {setMessage} setGoalId= {setGoalId} setUser = {setUser} onSubmit = {handleSubmit}></PostFeedDumb>
+            <PostFeedDumb setFile = {setFile} setMessage = {setMessage} setGoalId= {setGoalId} setUser = {setUser} onSubmit = {handleSubmit}></PostFeedDumb>
+
+            <div>
+                <PostList></PostList>
+            </div>
         </div>
     )
 }

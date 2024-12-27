@@ -1,7 +1,5 @@
 {
-<<<<<<< HEAD
-    "java.configuration.updateBuildConfiguration": "interactive"
-=======
-    "java.configuration.updateBuildConfiguration": "automatic"
->>>>>>> 1dec6ac80 (Implemented base UI, Almost Functional Producer)
+
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic"
 }

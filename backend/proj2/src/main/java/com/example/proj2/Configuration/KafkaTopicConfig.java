@@ -30,13 +30,13 @@ public class KafkaTopicConfig {
     // Topic 1: UnProcessed Posts
     @Bean
     public NewTopic unprocessedPosts() {
-        return new NewTopic("unprocessedPosts", 3, (short) 1); // String: Topic name, Int: Partitions to split Topic into, Short: Replication Factor for redundancy.
+        return new NewTopic("unprocessedPosts", 5, (short) 1); // String: Topic name, Int: Partitions to split Topic into, Short: Replication Factor for redundancy.
     }
 
         // Topic 1: Processed Posts
         @Bean
         public NewTopic processedPosts() {
-            return new NewTopic("processedPosts", 3, (short) 1);
+            return new NewTopic("processedPosts", 5, (short) 1);
         }
 
 

@@ -27,6 +27,11 @@ public class Post {
     @Column(name = "message_text")
     private String message_text;
 
+    @Column(name = "img_data", columnDefinition="BLOB")
+    @Lob // Specifies this object is either a large byte object (img/video) or char object (long text)
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] photo;
+
     public String getMessage_text() {
         return message_text;
     }
@@ -37,10 +42,7 @@ public class Post {
         this.message_text = message_text;
     }
 
-    @Column(name = "img_data", columnDefinition="BLOB")
-    @Lob // Specifies this object is either a large byte object (img/video) or char object (long text)
-    @Basic(fetch = FetchType.LAZY)
-    private byte[] photo;
+
 
     public Post() {}
 
