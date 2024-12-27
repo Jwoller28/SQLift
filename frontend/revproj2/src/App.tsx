@@ -5,8 +5,8 @@ import { AuthProvider } from './Components/UserContext/UserContext';
 import { EventsProvider } from './Components/EventsContext/EventsContext';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import UserRegistration from './Components/UserRegistration/UserRegistration';
-
-// Import the pages we'll create:
+import ProgressPage from './ProgressPage';
+import InputPage from './InputPage';
 import CalendarPage from './CalendarPage';
 import DayView from './DayView';
 import WeekView from './WeekView';
@@ -25,6 +25,12 @@ function App() {
             <Route path="/calendar" element={<CalendarPage/>} />
             <Route path="/week" element={<WeekView/>} />
             <Route path="/day/:dayId" element={<DayView/>} />
+
+            <Route path="/input/:dayId" element={<InputPage/>} />
+            <Route path="/progress/:dayId" element={<ProgressPage/>} />
+
+
+
           </Routes>
           </EventsProvider>
       </AuthProvider>
