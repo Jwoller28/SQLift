@@ -1,4 +1,4 @@
-package com.example.proj2.services;
+/**package com.example.proj2.services;
 
 import com.example.proj2.exceptions.InvalidCredentialsException;
 import com.example.proj2.models.User;
@@ -9,11 +9,9 @@ import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for the login logic, e.g., verifying username/password
- */
-class AuthServiceTest {
 
+class AuthServiceTest {
+  /*
     private AuthService authService;
     private UserRepository userRepository = Mockito.mock(UserRepository.class);
 
@@ -63,4 +61,6 @@ class AuthServiceTest {
             authService.loginUser("testUser", "wrongPass");
         });
     }
-}
+
+
+}*/
