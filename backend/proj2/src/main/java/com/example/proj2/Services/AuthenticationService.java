@@ -27,6 +27,10 @@ public class AuthenticationService {
     }
 
     public AppUser signup(RegisterUserDto input) {
+        if(input.getUsername().length()<4)
+            throw new RuntimeException("invalid username");
+        if(input.getPassword().length()<4)
+            throw new RuntimeException("invalid password");
         try {
             // Ensure all fields are set
             AppUser appUser = new AppUser();
