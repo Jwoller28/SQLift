@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
@@ -74,6 +75,7 @@ public class AuthenticationController {
         }
 
     }
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/me")
     public ResponseEntity<String> getAuthenticatedUserFromContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
