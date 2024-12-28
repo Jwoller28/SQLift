@@ -36,9 +36,10 @@ public class GoalController {
         }
     }
     @GetMapping("goalUser/{userId}")
-    public ResponseEntity<Goal> getUsersGoal(@PathVariable Integer goalId) {
+    public ResponseEntity<Goal> getUsersGoal(@PathVariable Integer userId) {
         try{
-            Goal newGoal = goalService.getUsersGoal(goalId);
+            logger.error("attempting to get newGoal with Id of "+userId);
+            Goal newGoal = goalService.getUsersGoal(userId);
 
             return ResponseEntity.ok(newGoal);
         }catch(Exception e){
@@ -49,7 +50,7 @@ public class GoalController {
         @GetMapping("goalId/{goalId}")
         public ResponseEntity<Goal> getGoalByGoalId(@PathVariable Integer goalId) {
             try{
-                Goal newGoal = goalService.getUsersGoal(goalId);
+                Goal newGoal = goalService.getByGoalId(goalId);
 
                 return ResponseEntity.ok(newGoal);
             }catch(Exception e){
@@ -62,15 +63,15 @@ public class GoalController {
     }
 
     @PatchMapping("goal/{userId}")
-    public ResponseEntity<Integer> UpdateGoal(@PathVariable Integer goalId,Goal goal) {
-        logger.info("Attempting to update tracker with Date: {}",goalId );  // Log ticket update attempt
+    public ResponseEntity<Integer> UpdateGoal(@PathVariable Integer userId,@RequestBody Goal goal) {
+        logger.info("Attempting to update goal with Date: {}",userId );  // Log ticket update attempt
 
-        int confirmation = goalService.UpdatedGoalAllById(goalId,goal);
+        int confirmation = goalService.UpdatedGoalAllById(userId,goal);
         if (confirmation == 1) {
-            logger.info("Ticket ID: {} updated successfully", goalId);  // Log successful ticket update
+            logger.info("Ticket ID: {} updated successfully", userId);  // Log successful ticket update
             return ResponseEntity.ok(confirmation);
         } else {
-            logger.error("Failed to update ticket with ID: {}", goalId);  // Log failed ticket update
+            logger.error("Failed to update ticket with ID: {}", userId);  // Log failed ticket update
             return ResponseEntity.status(400).body(null);
         }
     }

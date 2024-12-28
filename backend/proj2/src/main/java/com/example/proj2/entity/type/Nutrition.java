@@ -9,7 +9,7 @@ public class Nutrition {
     private double carb;
     private double weight;
     private double protein;
-    private LocalDate nutruitionDate;
+    private LocalDate NutritionDate;
 
 
     public Nutrition() {
@@ -28,12 +28,12 @@ public class Nutrition {
         return Kal;
     }
 
-    public LocalDate getNutruitionDate() {
-        return nutruitionDate;
+    public LocalDate getNutritionDate() {
+        return NutritionDate;
     }
 
-    public void setNutruitionDate(LocalDate nutruitionDate) {
-        this.nutruitionDate = nutruitionDate;
+    public void setNutritionDate(LocalDate nutritionDate) {
+        this.NutritionDate = nutritionDate;
     }
 
     @Override
