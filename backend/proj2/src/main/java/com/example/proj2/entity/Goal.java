@@ -5,6 +5,7 @@ import com.example.proj2.entity.type.Nutrition;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -24,6 +25,8 @@ public class Goal {
     private Date createdAt;
     private double sleep;
     private double water;
+    private LocalDate sleepDate;
+    private  LocalDate waterDate;
     @Embedded
     private Exercise exercise;
     @Embedded
@@ -40,6 +43,30 @@ public class Goal {
         this.water = water;
         this.exercise = exercise;
         this.nutrition = nutrition;
+    }
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
+    public LocalDate getSleepDate() {
+        return sleepDate;
+    }
+
+    public void setSleepDate(LocalDate sleepDate) {
+        this.sleepDate = sleepDate;
+    }
+
+    public LocalDate getWaterDate() {
+        return waterDate;
+    }
+
+    public void setWaterDate(LocalDate waterDate) {
+        this.waterDate = waterDate;
     }
 
     public Integer getId() {
