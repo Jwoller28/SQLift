@@ -64,6 +64,8 @@ public class TrackerService {
                     if (newNutrition.getFat() > 0.01) existingNutrition.setFat(newNutrition.getFat());
                     if (newNutrition.getWeight() > 0.01) existingNutrition.setWeight(newNutrition.getWeight());
                     if (newNutrition.getProtein() > 0.01) existingNutrition.setProtein(newNutrition.getProtein());
+                    if(newNutrition.getNutritionDate()!=null)
+                        existingNutrition.setNutritionDate(newNutrition.getNutritionDate());
                 } else {
                     logger.warn("Nutrition is null for tracker ID: " + trackerID);
                 }
@@ -85,6 +87,8 @@ public class TrackerService {
                         existingExercise.setDuration(newExercise.getDuration());
                     if (newExercise.getVolume() > 0.01)
                         existingExercise.setVolume(newExercise.getVolume());
+                    if(newExercise.getExerciseDate()!=null)
+                        existingExercise.setExerciseDate(newExercise.getExerciseDate());
                 } else {
                     logger.warn("Exercise is null for tracker ID: " + trackerID);
                 }
@@ -93,6 +97,12 @@ public class TrackerService {
             // Update other fields
             if (tracker.getSleep() > 0.01) existingTracker.setSleep(tracker.getSleep());
             if (tracker.getWater() > 0.01) existingTracker.setWater(tracker.getWater());
+            if (tracker.getSleepDate() != null) {
+                existingTracker.setSleepDate(tracker.getSleepDate());
+            }
+            if (tracker.getWaterDate() != null) {
+                existingTracker.setWaterDate(tracker.getWaterDate());
+            }
 
             // Save the updated tracker
             trackerRepository.save(existingTracker);

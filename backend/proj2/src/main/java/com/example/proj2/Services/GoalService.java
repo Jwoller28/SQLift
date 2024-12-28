@@ -29,10 +29,12 @@ public class GoalService {
     }
 
     public Goal getUsersGoal(Integer userId) throws Exception {
+        logger.error("Attempting to get the query the goal "+userId);
         Optional<Goal> goal = goalRepository.findByAppUserId(userId);
 
-        if (goal.isPresent())
-            return goal.get();
+        if (goal.isPresent()){
+            logger.error(" query successful "+goal.get());
+            return goal.get();}
         else
             throw new Exception();
     }
@@ -48,7 +50,7 @@ public class GoalService {
     public int UpdatedGoalAllById(Integer goalID,Goal goal) {
         logger.info("Finding existing Goal with data: " + goal);
 
-        Optional<Goal> existingGoalOptional = goalRepository.findById(goalID);
+        Optional<Goal> existingGoalOptional = goalRepository.findByAppUserId(goalID);
 
         if (existingGoalOptional.isPresent()) {
             Goal existingGoal = existingGoalOptional.get();
@@ -71,8 +73,8 @@ public class GoalService {
                     if (newNutrition.getFat() > 0.01) existingNutrition.setFat(newNutrition.getFat());
                     if (newNutrition.getWeight() > 0.01) existingNutrition.setWeight(newNutrition.getWeight());
                     if (newNutrition.getProtein() > 0.01) existingNutrition.setProtein(newNutrition.getProtein());
-                    if(newNutrition.getNutruitionDate()!=null)
-                       existingNutrition.setNutruitionDate(newNutrition.getNutruitionDate());
+                    if(newNutrition.getNutritionDate()!=null)
+                       existingNutrition.setNutritionDate(newNutrition.getNutritionDate());
                 } else {
                     logger.warn("Nutrition is null for Goal ID: " + goalID);
                 }
@@ -104,8 +106,14 @@ public class GoalService {
             // Update other fields
             if (goal.getSleep() > 0.01) existingGoal.setSleep(goal.getSleep());
             if (goal.getWater() > 0.01) existingGoal.setWater(goal.getWater());
-            if(goal.getSleepDate()!=null)
+
+            if (goal.getSleepDate() != null) {
                 existingGoal.setSleepDate(goal.getSleepDate());
+            }
+            if (goal.getWaterDate() != null) {
+                existingGoal.setWaterDate(goal.getWaterDate());
+            }
+
 
             // Save the updated Goal
             goalRepository.save(existingGoal);
