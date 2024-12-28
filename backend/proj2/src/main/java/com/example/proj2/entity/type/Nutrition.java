@@ -1,5 +1,7 @@
 package com.example.proj2.entity.type;
 
+import java.time.LocalDate;
+
 public class Nutrition {
 
     private double Kal;
@@ -7,9 +9,12 @@ public class Nutrition {
     private double carb;
     private double weight;
     private double protein;
+    private LocalDate NutritionDate;
+
 
     public Nutrition() {
     }
+
 
     public Nutrition(double kal, double fat, double carb, double weight,double protein) {
         Kal = kal;
@@ -21,6 +26,14 @@ public class Nutrition {
 
     public double getKal() {
         return Kal;
+    }
+
+    public LocalDate getNutritionDate() {
+        return NutritionDate;
+    }
+
+    public void setNutritionDate(LocalDate nutritionDate) {
+        this.NutritionDate = nutritionDate;
     }
 
     @Override
