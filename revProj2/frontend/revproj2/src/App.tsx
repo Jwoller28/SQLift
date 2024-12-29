@@ -11,7 +11,7 @@ import InputPage from './InputPage';
 import CalendarPage from './CalendarPage';
 import DayView from './DayView';
 import WeekView from './WeekView';
-import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
+import SetUserGoals from './Components/SetUserGoals';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
 
 function App() {
@@ -33,9 +33,7 @@ function App() {
 
             <Route path="/input/:dayId" element={<InputPage/>} />
             <Route path="/progress/:dayId" element={<ProgressPage/>} />
-
-
-
+            
           </Routes>
           </EventsProvider>
       </AuthProvider>
