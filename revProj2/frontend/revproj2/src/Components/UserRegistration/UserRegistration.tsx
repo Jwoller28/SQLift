@@ -1,17 +1,36 @@
 import React, { FormEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 function UserRegistration() {
 
     const[username, setUsername] = useState("");
     const[password, setPassword] = useState("");
     const[email, setEmail] = useState("");
-    const[firstName, setFirstName] = useState("");
-    const[lastName, setLastName] = useState("");
-    const[photoUrl, setPhotoUrl] = useState("");
+    const[first_name, setFirstName] = useState("");
+    const[last_name, setLastName] = useState("");
+    const[photo_url, setPhotoUrl] = useState("");
+    const navigate = useNavigate();
 
     function registerSubmit(event: FormEvent){
         event.preventDefault();
-        console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", firstName, "Last Name:", lastName, "Photo URL:", photoUrl);
+        const regUser = async () =>{
+            try{
+                const response = await fetch('http://localhost:8080/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password, email, first_name, last_name, photo_url})
+                });
+                
+                const thingRet = response.json().then(data => console.log('Here is the data: ',data));
+                console.log('Here is the thingRet variable: ', thingRet);
+                // console.log('Here is the registered user response: ' ,response.json());
+            }catch(error){
+                console.log('Here is the error' ,error);
+            }
+        }
+        regUser();
+        // console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", firstName, "Last Name:", lastName, "Photo URL:", photoUrl);
+        // navigate('/goals');
     }
   return (
     <>
@@ -29,15 +48,15 @@ function UserRegistration() {
         </label><br/>
 
         <label>First Name:
-            <input type='text' value={firstName} onChange={(e:any) => setFirstName(e.target.value)}/>
+            <input type='text' value={first_name} onChange={(e:any) => setFirstName(e.target.value)}/>
         </label><br/>
 
         <label>Last Name:
-            <input type='text' value={lastName} onChange={(e:any) => setLastName(e.target.value)}/>
+            <input type='text' value={last_name} onChange={(e:any) => setLastName(e.target.value)}/>
         </label><br/>
 
         <label>Photo URL:
-            <input type='text' value={photoUrl} onChange={(e:any) => setPhotoUrl(e.target.value)}/>
+            <input type='text' value={photo_url} onChange={(e:any) => setPhotoUrl(e.target.value)}/>
         </label><br/>
 
         <button type='submit'>Submit</button>
