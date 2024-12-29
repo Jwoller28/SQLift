@@ -6,6 +6,7 @@ import com.example.proj2.entity.type.Nutrition;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -18,6 +19,36 @@ public class Tracker {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private AppUser appUser;
+    @ManyToOne
+    @JoinColumn(name = "goal_id", referencedColumnName = "id", nullable = false)
+    private Goal goal;
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public Tracker(Integer id, AppUser appUser, Goal goal, Date createdAt, double sleep, double water, Exercise exercise, Nutrition nutrition) {
+        this.id = id;
+        this.appUser = appUser;
+        this.goal = goal;
+        this.createdAt = createdAt;
+        this.sleep = sleep;
+        this.water = water;
+        this.exercise = exercise;
+        this.nutrition = nutrition;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
+    public Goal getGoal() {
+        return goal;
+    }
+
+    public void setGoal(Goal goal) {
+        this.goal = goal;
+    }
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -28,6 +59,8 @@ public class Tracker {
     private Exercise exercise;
     @Embedded
     private Nutrition nutrition;
+    private LocalDate waterDate;
+    private LocalDate sleepDate;
 
     public Tracker() {
     }
@@ -52,6 +85,22 @@ public class Tracker {
 
     public AppUser getUser() {
         return appUser;
+    }
+
+    public LocalDate getWaterDate() {
+        return waterDate;
+    }
+
+    public void setWaterDate(LocalDate waterDate) {
+        this.waterDate = waterDate;
+    }
+
+    public LocalDate getSleepDate() {
+        return sleepDate;
+    }
+
+    public void setSleepDate(LocalDate sleepDate) {
+        this.sleepDate = sleepDate;
     }
 
     public void setUser(AppUser appUser) {
@@ -108,6 +157,7 @@ public class Tracker {
                 ", water=" + water +
                 ", exercise=" + exercise +
                 ", nutrition=" + nutrition +
+                ", nutrition=" + goal +
                 '}';
     }
 }
