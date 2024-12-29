@@ -2,7 +2,6 @@ import React, { MutableRefObject, useState } from 'react'
 import PostFeedDumb from './PostFeedDumb';
 import { useRef } from 'react';
 import {getPosts, sendPost } from '../../API/Axios';
-import PostList, { Post } from './PostList';
 import { restElement } from '@babel/types';
 
 
