@@ -1,4 +1,4 @@
-package com.example.proj2.Configuration;
+package com.example.proj2.Configs;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
