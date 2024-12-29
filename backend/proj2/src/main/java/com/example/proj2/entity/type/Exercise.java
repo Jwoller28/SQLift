@@ -1,13 +1,20 @@
 package com.example.proj2.entity.type;
 
+import java.time.LocalDate;
+
 public class Exercise {
     private double duration;
     private double volume;
     private double caloriesBurned;
+    private LocalDate ExerciseDate;
 
+    public LocalDate getExerciseDate() {
+        return ExerciseDate;
+    }
 
-
-
+    public void setExerciseDate(LocalDate exerciseDate) {
+        ExerciseDate = exerciseDate;
+    }
 
     public Exercise() {
     }
