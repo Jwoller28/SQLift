@@ -15,6 +15,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.example.proj2.Entity.Post;
 import com.example.proj2.Serializer.PostDeserializer;
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers.LongDeserializer;
 
     @EnableKafka // Enables detection of @Kafka Listener
     @Configuration
@@ -28,11 +29,11 @@ import com.example.proj2.Serializer.PostDeserializer;
 
         
         @Bean
-        public ConsumerFactory<Integer, Post> consumerFactory() {
+        public ConsumerFactory<Long, Post> consumerFactory() {
             Map<String, Object> props = new HashMap<>();
             props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
             props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-            props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
+            props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
             props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, PostDeserializer.class);
             props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
             props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 50); // Number of records per poll
@@ -42,8 +43,8 @@ import com.example.proj2.Serializer.PostDeserializer;
         }
 
         @Bean
-        public ConcurrentKafkaListenerContainerFactory<Integer, Post> kafkaListenerContainerFactory() {
-            ConcurrentKafkaListenerContainerFactory<Integer, Post> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        public ConcurrentKafkaListenerContainerFactory<Long, Post> kafkaListenerContainerFactory() {
+            ConcurrentKafkaListenerContainerFactory<Long, Post> factory = new ConcurrentKafkaListenerContainerFactory<>();
             factory.setConsumerFactory(consumerFactory());
             factory.setConcurrency(5); // 5 Listeners
             factory.getContainerProperties();

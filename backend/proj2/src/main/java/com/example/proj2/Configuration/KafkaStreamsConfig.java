@@ -29,6 +29,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import com.example.proj2.Controller.PostController;
 import com.example.proj2.Entity.Post;
+import com.example.proj2.Repository.PostRepository;
 import com.example.proj2.Serializer.PostDeserializer;
 import com.example.proj2.Serializer.PostSerde;
 import com.example.proj2.Serializer.PostSerializer;
@@ -55,17 +56,20 @@ public class KafkaStreamsConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, name);
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Integer().getClass().getName());
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, 
               PostSerde.class.getName());
         props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, WallclockTimestampExtractor.class.getName());
+        props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, true);
+        props.put(StreamsConfig.EXACTLY_ONCE_V2, true);
         return new KafkaStreamsConfiguration(props);
     }
 
     @Bean
-    public KStream<Integer, Post> kStream(StreamsBuilder kStreamBuilder) {
+    public KStream<Long, Post> kStream(StreamsBuilder kStreamBuilder) {
         logger.info("NOTE: STREAM BUILDING");
-        KStream<Integer, Post> stream = kStreamBuilder.stream("unprocessedPosts");
+        KStream<Long, Post> stream = kStreamBuilder.stream("unprocessedPosts");
+        System.out.println("Stream is Run");
         stream.to("processedPosts");
         stream.print(Printed.toSysOut());
         return stream;

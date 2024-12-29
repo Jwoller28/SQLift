@@ -21,7 +21,7 @@ import com.example.proj2.Repository.PostRepository;
 public class PostService {
     
     @Autowired
-    private KafkaTemplate<String, Post> kafkaPostTemplate;
+    private KafkaTemplate<Long, Post> kafkaPostTemplate;
 
     @Autowired
     private PostRepository postRepostiory;
@@ -32,8 +32,8 @@ public class PostService {
     
     public void sendPost(Post post)
     {   
-        CompletableFuture<SendResult<String,Post>> future = kafkaPostTemplate.send("unprocessedPosts", post);
-        postRepostiory.save(post);
+        
+        CompletableFuture<SendResult<Long,Post>> future = kafkaPostTemplate.send("unprocessedPosts", post.getPost_Id(), post);
         future.whenComplete((result, ex) -> {
             if(ex == null)
             {
@@ -42,6 +42,7 @@ public class PostService {
             else {
                 System.out.println("Fail: " + ex.getMessage());
             }
+        
         });
     }
 
@@ -64,6 +65,7 @@ public class PostService {
     @KafkaListener(topics="processedPosts", containerFactory = "kafkaListenerContainerFactory", groupId = "app-users")
     public void listen(Post post) {
         messageQueue.offer(post); // Add posts to the queue
+        postRepostiory.save(post); //persists Post
     }
 
     public Post getNextPost(long timeoutMillis) throws InterruptedException {
