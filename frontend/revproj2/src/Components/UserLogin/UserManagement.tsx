@@ -8,7 +8,9 @@ import { useNavigate } from 'react-router-dom';
 function UserManagement() {
     const[username, setUsername] = useState("");
     const[password, setPassword] = useState("");
-    const[data, setData] = useState<any | null>(null); // Created to use Jest with api call
+    //const[data, setData] = useState<any | null>(null); // Created to use Jest with api call
+    const [tokenRes, setTokenRes] = useState("");
+    const navigate = useNavigate();
 
     const context = useContext(AuthContext);
     if(!context){
@@ -19,19 +21,62 @@ function UserManagement() {
     // Function to handle submit event on login page
     function handleSubmit(event: FormEvent){
         event.preventDefault();
-        // Test api for Jest
-        const fetchData = async (): Promise<any> => {
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-            
-            const d = response.json().then((result) => setData(result));
+        // const fetchData = async () => {
+        //     const response = await fetch('http://localhost:8080/login', {
+        //         method: 'POST',
+        //         headers: {'Content-Type': 'application/json'},
+        //         body: JSON.stringify({username, password})
+        //     });
+
+        //     const data = await response.text(); // This line is used to get the token sent back from spring boot.
+        //     const jsonData = JSON.stringify({data})
+        //     console.log('Here is data: ', data);
+        //     console.log('Here is json stringify version of data: ', jsonData);
+        //     dispatch({type: 'LOGIN', payload: {username, password}})
+        //     navigate("/login/page");
+        // }
+
+        const fetchToken = async () =>{
+            // const responseT = await fetch('http://localhost:8080/me', {
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczNTMzMTUyMywiZXhwIjoxNzM1MzM1MTIzfQ.jgGCf7aekWFgo_0qKjmnvhLhs8iz8DaN0FmMfq-PBtc',
+            //         'Access-Control-Allow-Origin': "*"
+            //     },
+            //     credentials : 'include'
+            // }).then(response => {
+            //     if(!response.ok){
+            //         throw new Error(`HTTP error status: ${response.status}`);
+            //     }
+            //     console.log("Here is the promise: ", response.text().then(data =>
+            //     {
+            //         console.log('Here is data: ', data)
+            //     }
+            //     ));
+            // }).catch(error => {
+            //     console.error('The Fetch failed: ', error);
+            // });
+
+            const responseValidToken = await fetch("http://localhost:8080/me", {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczNTM0OTAzMywiZXhwIjoxNzM1MzUyNjMzfQ.pnO3E0MHA58s1GIt4m4N38VhTOAl68uV-uN37tkunsY',
+                    'Access-Control-Allow-Origin': "*"
+                    },
+                    credentials : 'include'
+            });
+
+            const userToken = await responseValidToken.text();
+            console.log(userToken);
+
         }
-        fetchData();
-        dispatch({type: 'LOGIN', payload: {username, password}})
+        //  fetchData();
+        fetchToken();
+        
         // console.log(username, password);
     }
 
     // Function to handle register button on login page, redirect to register page.
-    const navigate = useNavigate();
     function handleRegister(event: FormEvent){
         event.preventDefault();
         navigate('/register');

@@ -5,11 +5,14 @@ import { AuthProvider } from './Components/UserContext/UserContext';
 import { EventsProvider } from './Components/EventsContext/EventsContext';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import UserRegistration from './Components/UserRegistration/UserRegistration';
+
 import ProgressPage from './ProgressPage';
 import InputPage from './InputPage';
 import CalendarPage from './CalendarPage';
 import DayView from './DayView';
 import WeekView from './WeekView';
+import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
+import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
 
 function App() {
   return (
@@ -21,6 +24,8 @@ function App() {
             <Route path="/" element={<Navigate to="/login" replace />}/> 
             <Route path="/login" element={<UserManagement/>}></Route>
             <Route path="/register" element={<UserRegistration/>}></Route>
+            <Route path="/goals" element={<SetUserGoals/>}></Route>
+            <Route path="/login/page" element={<LoginLandingPage/>}></Route>
 
             <Route path="/calendar" element={<CalendarPage/>} />
             <Route path="/week" element={<WeekView/>} />
