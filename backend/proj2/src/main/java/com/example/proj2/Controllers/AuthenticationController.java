@@ -52,15 +52,13 @@ public class AuthenticationController {
         try {
             logger.info("Attempting to authenticate user: " + loginUserDto.getUsername());
 
-            // Create authentication token using provided credentials
+
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(loginUserDto.getUsername(), loginUserDto.getPassword());
             logger.info("authenticationToken from user: " + loginUserDto.getUsername());
-            // Attempt authentication with the provided token
+
            Authentication authentication = authenticationManager.authenticate(authenticationToken);
            logger.info("generateToken " + authentication.getName());
-
-
 
             String token = jwtUtil.generateToken(authentication.getName());
 
