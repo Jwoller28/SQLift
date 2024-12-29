@@ -32,6 +32,7 @@ public class Post {
     @Basic(fetch = FetchType.LAZY)
     private byte[] photo;
 
+
     public String getMessage_text() {
         return message_text;
     }
@@ -57,10 +58,6 @@ public class Post {
 
     public long getPost_Id() {
         return post_Id;
-    }
-
-    public void setPost_Id(long post_Id) {
-        this.post_Id = post_Id;
     }
 
     public long getGoal_id() {
