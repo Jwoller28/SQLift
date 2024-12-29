@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 
 
 // Creating the typing for the props that are being brought into UserLogin from UserManagement
@@ -24,6 +25,9 @@ function UserLogin({username, setUsername, password, setPassword, handleSubmit, 
 
         <button type='submit'>Submit</button>
         <button onClick={handleRegister}>Create Account</button>
+        <Link to="/nutriapi">
+          <button>Access Api</button>
+        </Link>
     </form>
   )
 }

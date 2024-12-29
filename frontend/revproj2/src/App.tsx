@@ -6,6 +6,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import UserRegistration from './Components/UserRegistration/UserRegistration';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
+import NutritionApi from './Components/NutritionApi/NutritionApi';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/register" element={<UserRegistration/>}></Route>
           <Route path="/goals" element={<SetUserGoals/>}></Route>
           <Route path="/login/page" element={<LoginLandingPage/>}></Route>
+          <Route path="/nutriapi" element={<NutritionApi/>}></Route>
         </Routes>
         
       </AuthProvider>
