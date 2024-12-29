@@ -17,18 +17,32 @@ function UserManagement() {
     const {dispatch} = context;
 
     // Function to handle submit event on login page
-    function handleSubmit(event: FormEvent){
+    function handleSubmit(event: FormEvent) {
         event.preventDefault();
-        // Test api for Jest
+      
         const fetchData = async (): Promise<any> => {
-            const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-            
-            const d = response.json().then((result) => setData(result));
+          const token = localStorage.getItem('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyNjY3IiwiaWF0IjoxNzM1MjQxMzI5LCJleHAiOjE3MzUyNDQ5Mjl9.g_LcKorlooGtG-P49B20zUdl1pkpVXB_-Yzch3XKpJg'); // Assuming token is stored in localStorage
+      
+          if (!token) {
+            console.error('No token found. Please login first.');
+            return; 
+          }
+      
+          const response = await fetch('http://localhost:8080/me', {
+            headers: {
+              'Authorization': `Bearer ${token}` 
+            }
+          });
+      
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+      
+          const data = await response.json(); 
+          console.log('Me API Response:', data); 
+          // Update state or dispatch action with the fetched data 
         }
-        fetchData();
-        dispatch({type: 'LOGIN', payload: {username, password}})
-        // console.log(username, password);
-    }
+        };
 
     // Function to handle register button on login page, redirect to register page.
     const navigate = useNavigate();
