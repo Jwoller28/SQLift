@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEvents } from './Components/EventsContext/EventsContext';
+import { useEvents } from '../Components/EventsContext/EventsContext';
 
 function DayView() {
   const navigate = useNavigate();
