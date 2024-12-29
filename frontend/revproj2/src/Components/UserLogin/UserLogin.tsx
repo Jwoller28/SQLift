@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom"
+import { useNavigate } from 'react-router-dom';
 
 
 // Creating the typing for the props that are being brought into UserLogin from UserManagement
@@ -13,6 +14,10 @@ type UserLoginProps ={
 
 // Form that gets displayed on the webpage
 function UserLogin({username, setUsername, password, setPassword, handleSubmit, handleRegister}: UserLoginProps) {
+  const navigate = useNavigate();
+
+  const goToCalendar = () => {navigate(`/calendar`);};
+
   return (
     <form onSubmit={handleSubmit}>
         <label>Username:
@@ -25,6 +30,7 @@ function UserLogin({username, setUsername, password, setPassword, handleSubmit, 
 
         <button type='submit'>Submit</button>
         <button onClick={handleRegister}>Create Account</button>
+        <button onClick={goToCalendar}>Calendar testing</button>
     </form>
   )
 }
