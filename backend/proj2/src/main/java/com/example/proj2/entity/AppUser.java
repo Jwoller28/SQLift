@@ -4,6 +4,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -19,6 +20,10 @@ public class AppUser  {
     private String first_name;
     private String last_name;
     private String photo_url;
+    private LocalDate waterStartDate;
+    private LocalDate sleepStartDate;
+    private LocalDate exerciseStartDate;
+    private LocalDate nutritionStartDate;
 
     @Column(nullable = false, length = 100)
     private String password;
@@ -100,7 +105,37 @@ public class AppUser  {
         this.id = id;
     }
 
+    public LocalDate getWaterStartDate() {
+        return waterStartDate;
+    }
 
+    public void setWaterStartDate(LocalDate waterStartDate) {
+        this.waterStartDate = waterStartDate;
+    }
+
+    public LocalDate getSleepStartDate() {
+        return sleepStartDate;
+    }
+
+    public void setSleepStartDate(LocalDate sleepStartDate) {
+        this.sleepStartDate = sleepStartDate;
+    }
+
+    public LocalDate getExerciseStartDate() {
+        return exerciseStartDate;
+    }
+
+    public void setExerciseStartDate(LocalDate exerciseStartDate) {
+        this.exerciseStartDate = exerciseStartDate;
+    }
+
+    public LocalDate getNutritionStartDate() {
+        return nutritionStartDate;
+    }
+
+    public void setNutritionStartDate(LocalDate nutritionStartDate) {
+        this.nutritionStartDate = nutritionStartDate;
+    }
 
     public String getUsername() {
         return username;
