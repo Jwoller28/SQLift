@@ -4,6 +4,7 @@ import java.util.Map;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
+import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,7 @@ public class KafkaProducerConfig {
     private String bootstrapAddress;
 
     @Bean
-    public ProducerFactory<String, Post> producerFactory() {
+    public ProducerFactory<Long, Post> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
@@ -34,14 +35,14 @@ public class KafkaProducerConfig {
 
         // Images need to be serialized into bytes, so we'll have to implement a byte serializer rather than string when we start the image database.
         configProps.put(
-            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class); // Keys have an int value
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class); // Keys have an int value
         configProps.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, PostSerializer.class); // will convert posts objects into byte arrays then sent to Broker
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, Post> kafkaProducerTemplate() {
+    public KafkaTemplate<Long, Post> kafkaProducerTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }
