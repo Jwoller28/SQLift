@@ -47,7 +47,7 @@ public class PostController {
     post.setGoal_id(goalId);    
     post.setUser_id(userId);   
     post.setMessage_text(messageText);
-
+        
         try {
         byte[] photoBytes = photo.getBytes();
         System.out.println(photoBytes);
@@ -70,7 +70,7 @@ public class PostController {
 public ResponseEntity<Post> poll() {
     try {
         // Wait up to 30 seconds for a new message
-        Post post = postService.getNextPost(15000); // This call waits for the next post
+        Post post = postService.getNextPost(30000); // This call waits for the next post
         if (post != null) {
             return ResponseEntity.ok(post); // Return the post with HTTP 200 status
         } else {
