@@ -32,7 +32,7 @@ public class PostService {
         future.whenComplete((result, ex) -> {
             if(ex == null)
             {
-                System.out.println("Sent Post: " + post.toString() + " with offset " + result.getRecordMetadata().offset());
+                System.out.println("Sent Post with offset " + result.getRecordMetadata().offset());
             }
             else {
                 System.out.println("Fail: " + ex.getMessage());

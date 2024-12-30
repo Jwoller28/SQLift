@@ -1,17 +1,41 @@
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../UserContext/UserContext';
 
 function UserRegistration() {
 
     const[username, setUsername] = useState("");
     const[password, setPassword] = useState("");
     const[email, setEmail] = useState("");
-    const[firstName, setFirstName] = useState("");
-    const[lastName, setLastName] = useState("");
-    const[photoUrl, setPhotoUrl] = useState("");
+    const[first_name, setFirstName] = useState("");
+    const[last_name, setLastName] = useState("");
+    const[photo_url, setPhotoUrl] = useState("");
+    const navigate = useNavigate();
+    const {state, dispatch} = useContext(AuthContext);
+    console.log(dispatch)
 
     function registerSubmit(event: FormEvent){
+
         event.preventDefault();
-        console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", firstName, "Last Name:", lastName, "Photo URL:", photoUrl);
+        const regUser = async () =>{
+            try{
+                const response = await fetch('http://localhost:8080/register', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password, email, first_name, last_name, photo_url})
+                });
+                
+                const thingRet = response.json().then(data => console.log('Here is the data: ',data));
+                console.log('Here is the thingRet variable: ', thingRet);
+                // console.log('Here is the registered user response: ' ,response.json());
+
+            }catch(error){
+                console.log('Here is the error' ,error);
+            }
+        }
+        regUser();
+        console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", first_name, "Last Name:", last_name, "Photo URL:", photo_url);
+        navigate('/goals');
     }
   return (
     <>
