@@ -1,4 +1,4 @@
-import React, { FormEvent, useContext, useState } from 'react'
+import React, { FormEvent, useContext, useEffect, useState } from 'react'
 import UserLogin from './UserLogin';
 import { AuthContext } from '../UserContext/UserContext';
 import { useNavigate } from 'react-router-dom';
@@ -8,8 +8,7 @@ import { useNavigate } from 'react-router-dom';
 function UserManagement() {
     const[username, setUsername] = useState("");
     const[password, setPassword] = useState("");
-    //const[data, setData] = useState<any | null>(null); // Created to use Jest with api call
-    const [tokenRes, setTokenRes] = useState("");
+    const [token, setToken] = useState("");
     const navigate = useNavigate();
 
     const context = useContext(AuthContext);
@@ -18,25 +17,35 @@ function UserManagement() {
     }
     const {dispatch} = context;
 
+    useEffect(() => {
+        console.log("Here is token after state change: ", token)
+        localStorage.setItem('token', JSON.stringify(token))
+    }, [token])
+
     // Function to handle submit event on login page
     function handleSubmit(event: FormEvent){
         event.preventDefault();
-        // const fetchData = async () => {
-        //     const response = await fetch('http://localhost:8080/login', {
-        //         method: 'POST',
-        //         headers: {'Content-Type': 'application/json'},
-        //         body: JSON.stringify({username, password})
-        //     });
+        const fetchData = async () => {
+            const response = await fetch('http://localhost:8080/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+            
+            if(!response.ok){
+                throw new Error(`Here is the HTTP error status: ${response.status}`);
+            }
 
-        //     const data = await response.text(); // This line is used to get the token sent back from spring boot.
-        //     const jsonData = JSON.stringify({data})
-        //     console.log('Here is data: ', data);
-        //     console.log('Here is json stringify version of data: ', jsonData);
-        //     dispatch({type: 'LOGIN', payload: {username, password}})
-        //     navigate("/login/page");
-        // }
+            const data = await response.text(); // This line is used to get the token sent back from spring boot and update our token state.
+            // const jsonData = JSON.stringify(token) // This line is turning the token into a JSON string
+            setToken(data);
+            // console.log('Here is the token: ', token);
+            // console.log('Here is json stringify version of token: ', JSON.stringify(token));
+            dispatch({type: 'LOGIN', payload: {username, password}})
+            navigate("/login/page");
+        }
 
-        const fetchToken = async () =>{
+        // const fetchToken = async () =>{
             // const responseT = await fetch('http://localhost:8080/me', {
             //     headers: {
             //         'Content-Type': 'application/json',
@@ -57,21 +66,21 @@ function UserManagement() {
             //     console.error('The Fetch failed: ', error);
             // });
 
-            const responseValidToken = await fetch("http://localhost:8080/me", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczNTM0OTAzMywiZXhwIjoxNzM1MzUyNjMzfQ.pnO3E0MHA58s1GIt4m4N38VhTOAl68uV-uN37tkunsY',
-                    'Access-Control-Allow-Origin': "*"
-                    },
-                    credentials : 'include'
-            });
+        //     const responseValidToken = await fetch("http://localhost:8080/me", {
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczNTM0OTAzMywiZXhwIjoxNzM1MzUyNjMzfQ.pnO3E0MHA58s1GIt4m4N38VhTOAl68uV-uN37tkunsY',
+        //             'Access-Control-Allow-Origin': "*"
+        //             },
+        //             credentials : 'include'
+        //     });
 
-            const userToken = await responseValidToken.text();
-            console.log(userToken);
+        //     const userToken = await responseValidToken.text();
+        //     console.log(userToken);
 
-        }
-        //  fetchData();
-        fetchToken();
+        // }
+        fetchData();
+        // fetchToken();
         
         // console.log(username, password);
     }
