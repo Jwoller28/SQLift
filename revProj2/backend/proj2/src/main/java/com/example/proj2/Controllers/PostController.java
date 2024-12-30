@@ -29,7 +29,7 @@ public class PostController {
     @CrossOrigin(origins = "http://localhost:3000")
     // Turn the Request Param into Request Body with object that has these fields
     public void sendPost(@RequestParam("goal_id") long goalId,
-    @RequestParam("user_id") long userId,
+    @RequestParam("user_id") int userId,
     @RequestParam("message_text") String messageText,
     @RequestPart("photo") MultipartFile photo)
     {

@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class AuthServiceTest {
+// class AuthServiceTest {
   /*
     private AuthService authService;
     private UserRepository userRepository = Mockito.mock(UserRepository.class);
