@@ -3,6 +3,7 @@ package com.example.proj2.Controllers;
 
 import com.example.proj2.Services.UserService;
 import com.example.proj2.entity.AppUser;
+import com.example.proj2.entity.Tracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,19 @@ public class UserController {
         }
 
 
+    }
+    @PatchMapping("user/{userId}")
+    public ResponseEntity<Integer> UpdateTickets(@PathVariable Integer userId, @RequestBody AppUser appUser) {
+        logger.info("Attempting to update tracker with Date: {}",userId );  // Log ticket update attempt
+
+        int confirmation = userService.updateUser(userId, appUser);
+        if (confirmation == 1) {
+            logger.info("Ticket ID: {} updated successfully", userId);  // Log successful ticket update
+            return ResponseEntity.ok(confirmation);
+        } else {
+            logger.error("Failed to update ticket with ID: {}", userId);  // Log failed ticket update
+            return ResponseEntity.status(400).body(null);
+        }
     }
 
 }

@@ -33,7 +33,8 @@ public class TrackerController {
         }
     }
     @GetMapping("Tracker/{userId}/{goalId}")
-    public ResponseEntity<List<Tracker>> AllUsersTackers(@PathVariable Integer userId,@PathVariable Integer goalId) {
+    public ResponseEntity<List<Tracker>> AllUsersTackers(@PathVariable Integer userId,
+                                                         @PathVariable Integer goalId) {
         try{
         List<Tracker> trackerList = trackerService.displayAllbyUserIdAndGoalId(userId,goalId);
 
