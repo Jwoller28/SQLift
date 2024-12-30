@@ -13,11 +13,13 @@ import DayView from './Calendar/DayView';
 import WeekView from './Calendar/WeekView';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
+import NutritionApi from './Components/NutritionApi/NutritionApi';
 
 function App() {
   return (
     <div className="App">
       <AuthProvider>
+
         <EventsProvider>
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />}/> 
@@ -31,6 +33,9 @@ function App() {
             <Route path="/day/:dayId" element={<DayView/>} />
             <Route path="/input/:dayId" element={<InputPage/>} />
             <Route path="/progress/:dayId" element={<ProgressPage/>} />
+
+            <Route path="/nutriapi" element={<NutritionApi/>}></Route>
+
 
           </Routes>
           </EventsProvider>

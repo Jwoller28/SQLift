@@ -13,7 +13,7 @@
 //  * Unit tests for the login logic, e.g., verifying username/password
 //  */
 
-class AuthServiceTest {
+// class AuthServiceTest {
   /*
     private AuthService authService;
     private UserRepository userRepository = Mockito.mock(UserRepository.class);
