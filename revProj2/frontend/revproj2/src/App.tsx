@@ -24,6 +24,7 @@ function App() {
             <Route path="/" element={<Navigate to="/login" replace />}/> 
             <Route path="/login" element={<UserManagement/>}></Route>
             <Route path="/register" element={<UserRegistration/>}></Route>
+            
             <Route path="/goals" element={<SetUserGoals/>}></Route>
             <Route path="/login/page" element={<LoginLandingPage/>}></Route>
 
@@ -33,7 +34,7 @@ function App() {
 
             <Route path="/input/:dayId" element={<InputPage/>} />
             <Route path="/progress/:dayId" element={<ProgressPage/>} />
-            
+
           </Routes>
           </EventsProvider>
       </AuthProvider>

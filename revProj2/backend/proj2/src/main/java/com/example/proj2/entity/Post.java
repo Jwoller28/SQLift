@@ -1,6 +1,5 @@
 package com.example.proj2.entity;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +21,7 @@ public class Post {
     private long goal_id;
     
     @Column(name = "sent_by")
-    private long user_id;
+    private int user_id;
 
     @Column(name = "message_text")
     private String message_text;
@@ -49,7 +48,7 @@ public class Post {
 
 
 
-    public Post(long goal_id, long user_id, String message_text, byte[] photo) {
+    public Post(long goal_id, int user_id, String message_text, byte[] photo) {
         this.goal_id = goal_id;
         this.message_text = message_text;
         this.user_id = user_id;
@@ -68,11 +67,11 @@ public class Post {
         this.goal_id = goal_id;
     }
 
-    public long getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(long user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 
