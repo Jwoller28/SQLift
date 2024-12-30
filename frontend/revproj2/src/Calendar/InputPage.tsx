@@ -7,8 +7,9 @@ function InputPage() {
 
   // Form states for exercise
   const [caloriesBurned, setCaloriesBurned] = useState('');
-  const [volume, setVolume] = useState('');
+  const [workouts, setWorkouts] = useState<{ weight: string; reps: string; sets: string }[]>([]);
   const [time, setTime] = useState('');
+  const [totalVolume, setTotalVolume] = useState(0); // Calculate total volume dynamically
 
   // Form states for sleep
   const [hoursSlept, setHoursSlept] = useState('');
@@ -16,25 +17,51 @@ function InputPage() {
   // Form states for water intake
   const [waterIntake, setWaterIntake] = useState('');
 
-  // Form states for nutrition
-  const [nutritionCalories, setNutritionCalories] = useState('');
-  const [fat, setFat] = useState('');
-  const [carbs, setCarbs] = useState('');
-  const [protein, setProtein] = useState('');
+  // Form states for nutrition (food inputs)
+  const [weight, setWeight] = useState('');
+  const [foods, setFoods] = useState<{ name: string }[]>([]);
 
   const handleSave = () => {
-    // Logic to save progress (e.g., send data to backend or update state)
     console.log(`Saving progress for ${dayId}:`, {
-      exercise: { caloriesBurned, volume, time },
+      exercise: { caloriesBurned, totalVolume, time, workouts },
       sleep: { hoursSlept },
       water: { waterIntake },
-      nutrition: { nutritionCalories, fat, carbs, protein },
+      nutrition: { foods },
     });
     navigate('/calendar'); // Redirect back to the calendar
   };
 
   const handleProgess = () => {
     navigate(`/progress/${dayId}`);
+  };
+
+  const addWorkout = () => {
+    setWorkouts([...workouts, { weight: '', reps: '', sets: '' }]);
+  };
+
+  const updateWorkout = (index: number, field: 'weight' | 'reps' | 'sets', value: string) => {
+    const updatedWorkouts = [...workouts];
+    updatedWorkouts[index][field] = value;
+    setWorkouts(updatedWorkouts);
+
+    // Calculate total volume dynamically
+    const total = updatedWorkouts.reduce((acc, workout) => {
+      const weightNum = parseFloat(workout.weight) || 0;
+      const repsNum = parseFloat(workout.reps) || 0;
+      const setsNum = parseFloat(workout.sets) || 0;
+      return acc + weightNum * repsNum * setsNum;
+    }, 0);
+    setTotalVolume(total);
+  };
+
+  const addFood = () => {
+    setFoods([...foods, { name: '' }]);
+  };
+
+  const updateFood = (index: number, value: string) => {
+    const updatedFoods = [...foods];
+    updatedFoods[index].name = value;
+    setFoods(updatedFoods);
   };
 
   return (
@@ -52,17 +79,53 @@ function InputPage() {
           />
         </label>
         <br />
-        <label>
-          Volume (weight × reps × sets):
-          <input
-            type="number"
-            value={volume}
-            onChange={(e) => setVolume(e.target.value)}
-          />
-        </label>
+        <label>Total Volume: {totalVolume} (weight × reps × sets)</label>
+        <br /><br />
+        {workouts.map((workout, index) => (
+          <div key={index} style={{ marginBottom: '10px' }}>
+            <label>
+              Weight:
+              <input
+                type="number"
+                value={workout.weight}
+                onChange={(e) => updateWorkout(index, 'weight', e.target.value)}
+              />
+            </label>
+            <label>
+              Reps:
+              <input
+                type="number"
+                value={workout.reps}
+                onChange={(e) => updateWorkout(index, 'reps', e.target.value)}
+              />
+            </label>
+            <label>
+              Sets:
+              <input
+                type="number"
+                value={workout.sets}
+                onChange={(e) => updateWorkout(index, 'sets', e.target.value)}
+              />
+            </label>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addWorkout}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#007BFF',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            marginBottom: '10px',
+          }}
+        >
+          Add Workout
+        </button>
         <br />
         <label>
-          Time (minutes):
+          Total Time (minutes):
           <input
             type="number"
             value={time}
@@ -97,41 +160,43 @@ function InputPage() {
 
         {/* Nutrition Section */}
         <h3>Nutrition</h3>
+
         <label>
-          Calories (kcal):
+          Weight (lbs):
           <input
             type="number"
-            value={nutritionCalories}
-            onChange={(e) => setNutritionCalories(e.target.value)}
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
           />
         </label>
-        <br />
-        <label>
-          Fat (g):
-          <input
-            type="number"
-            value={fat}
-            onChange={(e) => setFat(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Carbs (g):
-          <input
-            type="number"
-            value={carbs}
-            onChange={(e) => setCarbs(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Protein (g):
-          <input
-            type="number"
-            value={protein}
-            onChange={(e) => setProtein(e.target.value)}
-          />
-        </label>
+        <br /><br />
+        
+        {foods.map((food, index) => (
+          <div key={index} style={{ marginBottom: '10px' }}>
+            <label>
+              Food Name:
+              <input
+                type="text"
+                value={food.name}
+                onChange={(e) => updateFood(index, e.target.value)}
+              />
+            </label>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addFood}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#007BFF',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            marginBottom: '10px',
+          }}
+        >
+          Add Food
+        </button>
         <br />
 
         <button
