@@ -64,7 +64,7 @@ class TrackerTest {
 
         when(trackerService.displayAllbyUserIdAndGoalId(userId, goalId)).thenReturn(mockTrackers);
 
-        ResponseEntity<List<Tracker>> response = trackerController.AllUsersTackers(userId, goalId);
+        ResponseEntity<List<Tracker>> response = trackerController.AllUsersTrackers(userId, goalId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockTrackers, response.getBody());
@@ -77,7 +77,7 @@ class TrackerTest {
 
         when(trackerService.displayAllbyUserIdAndGoalId(userId, goalId)).thenThrow(new RuntimeException("Error"));
 
-        ResponseEntity<List<Tracker>> response = trackerController.AllUsersTackers(userId, goalId);
+        ResponseEntity<List<Tracker>> response = trackerController.AllUsersTrackers(userId, goalId);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNull(response.getBody());

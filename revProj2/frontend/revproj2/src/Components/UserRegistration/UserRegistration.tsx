@@ -1,5 +1,6 @@
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../UserContext/UserContext';
 
 function UserRegistration() {
 
@@ -10,8 +11,11 @@ function UserRegistration() {
     const[last_name, setLastName] = useState("");
     const[photo_url, setPhotoUrl] = useState("");
     const navigate = useNavigate();
+    const {state, dispatch} = useContext(AuthContext);
+    console.log(dispatch)
 
     function registerSubmit(event: FormEvent){
+
         event.preventDefault();
         const regUser = async () =>{
             try{
@@ -24,13 +28,14 @@ function UserRegistration() {
                 const thingRet = response.json().then(data => console.log('Here is the data: ',data));
                 console.log('Here is the thingRet variable: ', thingRet);
                 // console.log('Here is the registered user response: ' ,response.json());
+
             }catch(error){
                 console.log('Here is the error' ,error);
             }
         }
         regUser();
-        // console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", firstName, "Last Name:", lastName, "Photo URL:", photoUrl);
-        // navigate('/goals');
+        console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", first_name, "Last Name:", last_name, "Photo URL:", photo_url);
+        navigate('/goals');
     }
   return (
     <>

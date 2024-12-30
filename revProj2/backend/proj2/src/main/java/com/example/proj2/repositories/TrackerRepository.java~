@@ -1,0 +1,18 @@
+package com.example.proj2.repositories;
+
+
+import com.example.proj2.entity.Tracker;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import java.util.*;
+import java.util.Optional;
+
+@Repository
+public interface TrackerRepository extends CrudRepository<Tracker, Integer> {
+    //public Optional<Tracker> findByAppUserId(Integer userId);
+    public Optional<List<Tracker>>findAllByAppUserIdAndGoalId(Integer userId,Integer goalId);
+	
+    @Query("Select t from Tracker t where t.goal.created_at = ?2 and (t.goal.sleepDate ?= 3 or t.goal.waterDate ?= 3 or t.goal.exercise.ExerciseDate ?= 3 or t.goal.nutrition.NutritionDate ?= 3)")    
+    public Optional<List<Tracker>> findBetweenDatesforUser(int userId,  Date creation, Date today);
+}
