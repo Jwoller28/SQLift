@@ -6,11 +6,11 @@ import { EventsProvider } from './Components/EventsContext/EventsContext';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import UserRegistration from './Components/UserRegistration/UserRegistration';
 
-import ProgressPage from './ProgressPage';
-import InputPage from './InputPage';
-import CalendarPage from './CalendarPage';
-import DayView from './DayView';
-import WeekView from './WeekView';
+import ProgressPage from './Calendar/ProgressPage';
+import InputPage from './Calendar/InputPage';
+import CalendarPage from './Calendar/CalendarPage';
+import DayView from './Calendar/DayView';
+import WeekView from './Calendar/WeekView';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostFeedSmart from './Components/PostFeed/PostFeedSmart';
 import Inbox from './Components/Inbox/Inbox';
@@ -26,7 +26,7 @@ function App() {
         <EventsProvider>
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<UserManagement />}></Route>
+            <Route path="/login" element={<UserManagement/>}></Route>
             <Route path="/register" element={<UserRegistration />}></Route>
             
             <Route path="/goals" element={
@@ -68,10 +68,8 @@ function App() {
                 <NutritionApi />
               </RouteGuard>
               }></Route>
-
 	      <Route path="/feed" element={<PostFeedSmart />} />
 	      <Route path="/inbox" element={<Inbox />}/>
-
           </Routes>
         </EventsProvider>
       </AuthProvider>
