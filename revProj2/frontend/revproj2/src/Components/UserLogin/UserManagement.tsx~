@@ -1,7 +1,7 @@
 import React, { FormEvent, useContext, useEffect, useState } from 'react'
 import UserLogin from './UserLogin';
-import { AuthContext } from '../UserContext/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext, useAuth, UserContext } from '../UserContext/UserContext';
 
 
 // Contains the logic for the UserLogin page and what to do with the input/submit button interaction
@@ -11,20 +11,25 @@ function UserManagement() {
     const [token, setToken] = useState("");
     const navigate = useNavigate();
 
-    const context = useContext(AuthContext);
-    if(!context){
-        throw new Error("Login must be used within an AuthProvider")
-    }
-    const {dispatch} = context;
+    const {login} = useAuth();
+    //const context = useContext(UserContext);
+    // if(!context){
+    //     throw new Error("Login must be used within an AuthProvider")
+    // }
+    //const {dispatch} = context;
 
     useEffect(() => {
-        console.log("Here is token after state change: ", token)
-        localStorage.setItem('token', JSON.stringify(token))
+        localStorage.setItem('token', JSON.stringify(token))    // This useEffect is used to store the users JWT token in the browsers local storage after they login, keeping their credentials accessible when needed on other pages.
     }, [token])
 
     // Function to handle submit event on login page
     function handleSubmit(event: FormEvent){
         event.preventDefault();
+        // if(context){
+        //     context.login(username, password);
+        //     login();
+        //     console.log(username, password);
+        // }
         const fetchData = async () => {
             const response = await fetch('http://localhost:8080/login', {
                 method: 'POST',
@@ -32,17 +37,18 @@ function UserManagement() {
                 body: JSON.stringify({username, password})
             });
             
+            // If response is not ok, give user an alert.
             if(!response.ok){
-                throw new Error(`Here is the HTTP error status: ${response.status}`);
+                alert(`Invalid Credentials! Error Code: ${response.status}`);
             }
-
-            const data = await response.text(); // This line is used to get the token sent back from spring boot and update our token state.
-            // const jsonData = JSON.stringify(token) // This line is turning the token into a JSON string
-            setToken(data);
-            // console.log('Here is the token: ', token);
-            // console.log('Here is json stringify version of token: ', JSON.stringify(token));
-            dispatch({type: 'LOGIN', payload: {username, password}})
-            navigate("/login/page");
+            else{ 
+                // If response ok, update token state and go to calendar page
+                const data = await response.text(); // Gets returned JWT token
+                setToken(data);
+                login();
+                // dispatch({type: 'LOGIN', payload: {username, password}})
+                navigate("/calendar");
+            }
         }
 
         // const fetchToken = async () =>{
@@ -81,8 +87,6 @@ function UserManagement() {
         // }
         fetchData();
         // fetchToken();
-        
-        // console.log(username, password);
     }
 
     // Function to handle register button on login page, redirect to register page.

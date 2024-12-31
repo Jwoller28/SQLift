@@ -16,7 +16,8 @@ export const sendPost = async (formData : FormData) => {
 		"Content-Type": "multipart/form-data",
 		Authorization: `Bearer ${Token}`,
 		'Access-Control-Allow-Origin': "*"
-            }
+            },
+	    withCredentials: true
         });
         console.log("Message sent successfully!");
     } 
@@ -36,7 +37,8 @@ export const getPosts = async () => {
 		"Content-Type": "application/json",
 		Authorization:`Bearer ${Token}`,
 		'Access-Control-Allow-Origin': "*"
-		}
+		},
+		withCredentials: true
 	});
         if(result && result.status === 200)
         {
@@ -64,7 +66,8 @@ export const usernameifAuthorized = async () => {
 		"Content-Type":"application/json",
 		Authorization: `Bearer ${Token}`,
 		'Access-Control-Allow-Origin':"*"
-		}
+		},
+		withCredentials: true
 	});
 
 	if(result && result.status === 200)
@@ -94,7 +97,8 @@ export const getTrackers = async (userId: number, goalId: number) => {
 		"Content-Type": "application/json",
 		Authorization: `Bearer ${Token}`,
 		'Access-Control-Allow-Origin':"*"
-		 }
+		 },
+		 withCredentials: true
 
 	 });
 	 if(result && result.status == 200)
@@ -124,7 +128,8 @@ export const getUserByUsername = async (username : string) => {
 		"Content-Type": "application/json",
 		Authorization:`Bearer ${Token}`,
 		'Access-Control-Allow-Origin':"*"
-		}
+		},
+		withCredentials: true
 	});
 	if(result1 && result1.status === 200)
 	{
@@ -152,7 +157,8 @@ export const getGoalbyUserId = async(userId : number) => {
 		"Content-Type": "application/json",
 		Authorization: `Bearer ${Token}`,
 		'Access-Control-Allow-Origin': "*"
-		}
+		},
+		withCredentials: true
 	});
 	if(result2 && result2.status === 200)
 	{
