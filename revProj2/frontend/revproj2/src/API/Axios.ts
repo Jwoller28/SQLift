@@ -2,19 +2,20 @@ import axios from "axios";
 import { useState } from 'react';
 
 
-const Token = localStorage.getItem('token');
+const Token : string | null = localStorage.getItem('token');
 console.log(Token);
 
 export const sendPost = async (formData : FormData) => {
     try {
 
 	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
         const url = "http://localhost:8080/posts";
 
         await axios.post(url, formData, {
             headers: { 
 		"Content-Type": "multipart/form-data",
-		Authorization: `Bearer ${Token}`,
+		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin': "*"
             }
         });
@@ -29,14 +30,16 @@ export const getPosts = async () => {
     try {
 	
 	const Token = localStorage.getItem('token');
-        const url = "http://localhost:8080/posts/";
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/posts";
 
         let result = await axios.get(url, {
 		headers: {
 		"Content-Type": "application/json",
 		Authorization:`Bearer ${Token}`,
 		'Access-Control-Allow-Origin': "*"
-		}
+		},
+		withCredentials: true
 	});
         if(result && result.status === 200)
         {
@@ -57,14 +60,22 @@ export const usernameifAuthorized = async () => {
 	try {
 
 	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+	console.log(Token);
 	const url = "http://localhost:8080/me";
 
 	let result = await axios.get(url, {
 		headers: {
 		"Content-Type":"application/json",
+<<<<<<< HEAD
 		Authorization: `Bearer ${Token}`,
 		'Access-Control-Allow-Origin':"*"
 		}
+=======
+		'Authorization': "Bearer " + cleanToken,
+		},
+		'withCredentials': true
+>>>>>>> 7560f915e (Fixed quotation issue, thanks Bret)
 	});
 
 	if(result && result.status === 200)
@@ -87,12 +98,13 @@ export const getTrackers = async (userId: number, goalId: number) => {
 	try {
 	
 	 const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
 	 const url =`http://localhost:8080/Tracker/${userId}/${goalId}`;
 
 	 let result = await axios.get(url, {
 		 headers: {
 		"Content-Type": "application/json",
-		Authorization: `Bearer ${Token}`,
+		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin':"*"
 		 }
 
@@ -117,12 +129,13 @@ export const getUserByUsername = async (username : string) => {
 
 	try {
 	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
 	const url1= `http://localhost:8080/username/${username}`;
 	
 	let result1 = await axios.get(url1, {
 		headers: {
 		"Content-Type": "application/json",
-		Authorization:`Bearer ${Token}`,
+		Authorization:"Bearer " + cleanToken,
 		'Access-Control-Allow-Origin':"*"
 		}
 	});
@@ -145,12 +158,13 @@ export const getGoalbyUserId = async(userId : number) => {
 	try {
 	
 	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
 	const url2 = `http://localhost:8080/goalUser/${userId}`;
 
 	let result2 =  await axios.get(url2, {
 		headers: {
 		"Content-Type": "application/json",
-		Authorization: `Bearer ${Token}`,
+		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin': "*"
 		}
 	});
