@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -21,6 +23,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
+	
+    public static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -29,19 +33,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // Skip the filter for login and register endpoints
-        if ("/login".equals(path) || "/register".equals(path) || "/api/posts".equals(path) || "/Tracker/*".equals(path)) {
+        if ("/login".equals(path) || "/register".equals(path)) {
             filterChain.doFilter(request, response);
             return;
         }
 
 
         String authHeader = request.getHeader("Authorization");
+	// logger.info(authHeader);
         String token = null;
         String username = null;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
+	    logger.info(token);
             username = jwtUtil.extractUsername(token);
+	    logger.info(username);
         }
 
         // Proceed with the filter only if we have a valid token and username

@@ -10,10 +10,8 @@ function UserRegistration() {
     const[first_name, setFirstName] = useState("");
     const[last_name, setLastName] = useState("");
     const[photo_url, setPhotoUrl] = useState("");
-    const navigate = useNavigate();
-    const {state, dispatch} = useContext(AuthContext);
-    console.log(dispatch)
-
+    const navigate = useNavigate(); 
+	
     function registerSubmit(event: FormEvent){
 
         event.preventDefault();
@@ -35,7 +33,8 @@ function UserRegistration() {
         }
         regUser();
         console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", first_name, "Last Name:", last_name, "Photo URL:", photo_url);
-        navigate('/goals');
+        
+	navigate('/goals');
     }
   return (
     <>

@@ -26,17 +26,17 @@ public class JwtUtil {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+    
 
     public String extractUsername(String token) {
         try {
             return Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
+		    .setSigningKey(getSigningKey())
                     .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
+                    .parseClaimsJws(token) // Validate the token signature and expiration
+		    .getBody()
+		    .getSubject();
         } catch (JwtException | IllegalArgumentException e) {
-
 
             return null;
         }

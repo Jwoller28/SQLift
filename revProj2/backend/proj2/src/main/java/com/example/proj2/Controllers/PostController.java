@@ -25,7 +25,7 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @PostMapping(value = "/api/posts")
+    @PostMapping(value = "/posts")
     @CrossOrigin(origins = "http://localhost:3000")
     // Turn the Request Param into Request Body with object that has these fields
     public void sendPost(@RequestParam("goal_id") long goalId,
@@ -58,8 +58,9 @@ public class PostController {
     //    return postService.getPostList();
     // }
 
-@GetMapping("/api/posts")
+@GetMapping("/posts")
 public ResponseEntity<Post> poll() {
+    logger.info("Arrives at Controller (GET)");
     try {
         // Wait up to 30 seconds for a new message
         Post post = postService.getNextPost(30000); // This call waits for the next post

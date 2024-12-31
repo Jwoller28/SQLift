@@ -1,7 +1,8 @@
 import React from 'react'
 import {useEffect, useState, useContext  } from 'react'
 import {AuthContext} from '../UserContext/UserContext'
-import {getUserByUsername, getGoalbyUserId} from '../../API/Axios'
+import {getUserByUsername, getGoalbyUserId, usernameifAuthorized } from '../../API/Axios'
+
 
 interface Notification {
 	id : number;
@@ -51,14 +52,10 @@ function Inbox() {
   const today = useState(new Date());
   const notis = useState<Notification[] | undefined>(undefined);
 
-  // Pull Current User from Context
-  const contextType = useContext(AuthContext);
-  console.log(contextType); 
-  let currentUsername : string | undefined = contextType?.state.user?.username;
-  console.log(currentUsername);
-  const currentGoal = async () => {
 
-	  let user = await getUserByUsername(currentUsername ? currentUsername : "");
+  const currentGoal = async (username : string) => {
+
+	  let user = await getUserByUsername(username);
 	  
 	  // let goal = await getGoalbyUserId(user.userId);
 	  console.log(user);
@@ -66,7 +63,9 @@ function Inbox() {
   
 
   useEffect(() => {
-	  currentGoal();
+	  const username = usernameifAuthorized();
+
+	  console.log(username);
   },[]);
 
 
