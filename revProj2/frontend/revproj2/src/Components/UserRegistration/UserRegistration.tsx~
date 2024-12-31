@@ -42,7 +42,7 @@ function UserRegistration() {
                 loginUserAfterRegister();
             }
         }
-        regUser();
+       regUser();
 
     }
 

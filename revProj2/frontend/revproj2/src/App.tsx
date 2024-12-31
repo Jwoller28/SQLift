@@ -11,7 +11,7 @@ import InputPage from './InputPage';
 import CalendarPage from './CalendarPage';
 import DayView from './DayView';
 import WeekView from './WeekView';
-import SetUserGoals from './Components/SetUserGoals';
+import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostFeedSmart from './Components/PostFeed/PostFeedSmart';
 import Inbox from './Components/Inbox/Inbox';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
