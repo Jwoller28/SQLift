@@ -16,7 +16,6 @@ import com.example.proj2.entity.Post;
 import com.example.proj2.Services.PostService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 public class PostController {
     
     @Autowired
@@ -26,7 +25,6 @@ public class PostController {
     private PostService postService;
 
     @PostMapping(value = "/posts")
-    @CrossOrigin(origins = "http://localhost:3000")
     // Turn the Request Param into Request Body with object that has these fields
     public void sendPost(@RequestParam("goal_id") long goalId,
     @RequestParam("user_id") int userId,

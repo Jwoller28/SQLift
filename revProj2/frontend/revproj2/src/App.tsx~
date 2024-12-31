@@ -11,16 +11,12 @@ import InputPage from './InputPage';
 import CalendarPage from './CalendarPage';
 import DayView from './DayView';
 import WeekView from './WeekView';
-import SetUserGoals from './Components/SetUserGoals';
+import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostFeedSmart from './Components/PostFeed/PostFeedSmart';
 import Inbox from './Components/Inbox/Inbox';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
-<<<<<<< HEAD:revProj2/frontend/revproj2/src/App.tsx
-import NutritionApi from './Components/NutritionApi';
-=======
 import NutritionApi from './Components/NutritionApi/NutritionApi';
 import RouteGuard from './Components/RouteGuard/RouteGuard';
->>>>>>> origin/main:frontend/revproj2/src/App.tsx
 
 function App() {
   return (
@@ -29,15 +25,6 @@ function App() {
 
         <EventsProvider>
           <Routes>
-            {/* MAKE SURE TO CHANGE BACK TO LOGIN here */}
-<<<<<<< HEAD:revProj2/frontend/revproj2/src/App.tsx
-            <Route path="/" element={<Navigate to="/login" replace />}/> 
-            <Route path="/login" element={<UserManagement/>}></Route>
-            <Route path="/register" element={<UserRegistration/>}></Route>
-            
-            <Route path="/goals" element={<SetUserGoals/>}></Route>
-            <Route path="/login/page" element={<LoginLandingPage/>}></Route>
-=======
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<UserManagement />}></Route>
             <Route path="/register" element={<UserRegistration />}></Route>
@@ -45,22 +32,12 @@ function App() {
             <Route path="/goals" element={
                 <SetUserGoals />
               }></Route>
->>>>>>> origin/main:frontend/revproj2/src/App.tsx
-
             <Route path="/login/page" element={
               <RouteGuard>
                 <LoginLandingPage />
               </RouteGuard>
               }></Route>
 
-<<<<<<< HEAD:revProj2/frontend/revproj2/src/App.tsx
-            <Route path="/input/:dayId" element={<InputPage/>} />
-            <Route path="/progress/:dayId" element={<ProgressPage/>} />
-	    <Route path="/feed" element={<PostFeedSmart/>} />
-	    <Route path ="/inbox" element={<Inbox/>} />
-            <Route path="/nutriapi" element={<NutritionApi/>}></Route>
-
-=======
             <Route path="/calendar" element={
               <RouteGuard>
                 <CalendarPage />
@@ -92,8 +69,9 @@ function App() {
               </RouteGuard>
               }></Route>
 
+	      <Route path="/feed" element={<PostFeedSmart />} />
+	      <Route path="/inbox" element={<Inbox />}/>
 
->>>>>>> origin/main:frontend/revproj2/src/App.tsx
           </Routes>
         </EventsProvider>
       </AuthProvider>
