@@ -42,7 +42,7 @@ function UserManagement() {
             // console.log('Here is the token: ', token);
             // console.log('Here is json stringify version of token: ', JSON.stringify(token));
             dispatch({type: 'LOGIN', payload: {username, password}})
-            navigate("/login/page");
+            navigate("/calendar");
         }
 
         // const fetchToken = async () =>{

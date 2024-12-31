@@ -37,6 +37,7 @@ function CalendarPage() {
     '2024-12-25': 'completed',
     '2024-12-26': 'completed',
     '2024-12-30': 'end_date',
+    '2025-01-29': 'end_date',
   };
 
   // Get the background color for a specific day
