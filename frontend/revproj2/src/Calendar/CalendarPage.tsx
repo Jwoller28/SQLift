@@ -25,17 +25,6 @@ function CalendarPage() {
   }
 
   let taskStatuses: { [key: string]: string } = {
-    '2024-12-16': 'completed',
-    '2024-12-17': 'completed',
-    '2024-12-18': 'completed',
-    '2024-12-19': 'completed',
-    '2024-12-20': 'missed',
-    '2024-12-21': 'completed',
-    '2024-12-22': 'completed',
-    '2024-12-23': 'missed',
-    '2024-12-24': 'completed',
-    '2024-12-25': 'completed',
-    '2024-12-26': 'completed',
     '2024-12-30': 'end_date',
     '2025-01-29': 'end_date',
   };

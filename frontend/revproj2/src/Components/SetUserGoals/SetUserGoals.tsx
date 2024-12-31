@@ -1,6 +1,8 @@
 import React, { FormEvent, useEffect, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function SetUserGoals() {
+    const navigate = useNavigate();
     const[kal, setCalories] = useState(0);
     const[carb, setCarbs] = useState(0);
     const[fat, setFat] = useState(0);
@@ -124,6 +126,7 @@ function SetUserGoals() {
             else{
                 const data = await goalResponse.json();
                 console.log("Here is the successful goal return: ", data);
+                navigate('/calendar');
             }
         }
         postGoals();
