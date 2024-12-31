@@ -1,28 +1,41 @@
 import axios from "axios";
+import { useState } from 'react';
 
 
+const Token = localStorage.getItem('token');
+console.log(Token);
 
 export const sendPost = async (formData : FormData) => {
     try {
-        const url = "http://localhost:8080/api/posts";
+
+	const Token = localStorage.getItem('token');
+        const url = "http://localhost:8080/posts";
 
         await axios.post(url, formData, {
-            headers: { "Content-Type": "multipart/form-data"
+            headers: { 
+		"Content-Type": "multipart/form-data",
+		Authorization: `Bearer ${Token}`,
+		'Access-Control-Allow-Origin': "*"
             }
         });
         console.log("Message sent successfully!");
-    } catch (error) {
+    } 
+    catch (error : any) {
         console.error("Error sending message:", error);
     }
 };
 
 export const getPosts = async () => {
     try {
-        const url = "http://localhost:8080/api/posts";
-
+	
+	const Token = localStorage.getItem('token');
+        const url = "http://localhost:8080/posts/";
 
         let result = await axios.get(url, {
-		headers: {"Content-Type": "application/json"
+		headers: {
+		"Content-Type": "application/json",
+		Authorization:`Bearer ${Token}`,
+		'Access-Control-Allow-Origin': "*"
 		}
 	});
         if(result && result.status === 200)
@@ -38,15 +51,51 @@ export const getPosts = async () => {
     } catch (error : any) {
         console.error("Error retrieving message:", error);
     }
-};
+}
+
+export const usernameifAuthorized = async () => {
+	try {
+
+	const Token = localStorage.getItem('token');
+	const url = "http://localhost:8080/me";
+
+	let result = await axios.get(url, {
+		headers: {
+		"Content-Type":"application/json",
+		Authorization: `Bearer ${Token}`,
+		'Access-Control-Allow-Origin':"*"
+		}
+	});
+
+	if(result && result.status === 200)
+	{
+		console.log("Authorized User");
+		return result.data;
+	}
+	else
+	{
+		throw new Error;
+	}
+	}
+	catch (error: any) {
+		console.error("Error retrieving username: ", error);
+	}
+	
+}
 
 export const getTrackers = async (userId: number, goalId: number) => {
 	try {
-	 const url = 'http://localhost:8080/Tracker/${userId}/${goalId}';
+	
+	 const Token = localStorage.getItem('token');
+	 const url =`http://localhost:8080/Tracker/${userId}/${goalId}`;
 
 	 let result = await axios.get(url, {
-		 headers: {"Content-Type": "application/json"
+		 headers: {
+		"Content-Type": "application/json",
+		Authorization: `Bearer ${Token}`,
+		'Access-Control-Allow-Origin':"*"
 		 }
+
 	 });
 	 if(result && result.status == 200)
 	{
@@ -67,10 +116,14 @@ export const getTrackers = async (userId: number, goalId: number) => {
 export const getUserByUsername = async (username : string) => {
 
 	try {
-	const url1= 'http://localhost:8080/username/${username}';
+	const Token = localStorage.getItem('token');
+	const url1= `http://localhost:8080/username/${username}`;
 	
 	let result1 = await axios.get(url1, {
-		headers: {"Content-Type": "application/json"
+		headers: {
+		"Content-Type": "application/json",
+		Authorization:`Bearer ${Token}`,
+		'Access-Control-Allow-Origin':"*"
 		}
 	});
 	if(result1 && result1.status === 200)
@@ -90,10 +143,15 @@ export const getUserByUsername = async (username : string) => {
 
 export const getGoalbyUserId = async(userId : number) => {
 	try {
-	const url2 = 'http://localhost:8080/goalUser/${userId}';
+	
+	const Token = localStorage.getItem('token');
+	const url2 = `http://localhost:8080/goalUser/${userId}`;
 
 	let result2 =  await axios.get(url2, {
-		headers: {"Content-Type": "application/json"
+		headers: {
+		"Content-Type": "application/json",
+		Authorization: `Bearer ${Token}`,
+		'Access-Control-Allow-Origin': "*"
 		}
 	});
 	if(result2 && result2.status === 200)

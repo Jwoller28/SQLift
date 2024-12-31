@@ -1,14 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../UserContext/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 function LoginLandingPage() {
   const [token, setToken] = useState(""); // Creating useState variable for token
+  const navigate = useNavigate();
 
   useEffect(() => { // This useEffect will be called on render to grab token from local storage
     const sessionTok = localStorage.getItem('token');
     if(sessionTok){
       setToken(JSON.parse(sessionTok));
       }
+     navigate("/calendar");
+     
     
   }, []);
 
