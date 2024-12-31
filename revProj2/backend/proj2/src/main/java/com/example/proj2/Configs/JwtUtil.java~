@@ -32,9 +32,8 @@ public class JwtUtil {
         try {
             return Jwts.parserBuilder()
 		    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token) // Validate the token signature and expiration
-		    .getBody()
+		    .parseClaimsJws(token)
+                    .getBody()
 		    .getSubject();
         } catch (JwtException | IllegalArgumentException e) {
 

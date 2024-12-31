@@ -11,9 +11,10 @@ function UserRegistration() {
     const[last_name, setLastName] = useState("");
     const[photo_url, setPhotoUrl] = useState("");
     const navigate = useNavigate();
-    const context = useContext(AuthContext);
-    console.log(context)
 
+    const context = useContext(AuthContext);
+    
+	
     function registerSubmit(event: FormEvent){
 
         event.preventDefault();
@@ -35,7 +36,9 @@ function UserRegistration() {
         }
         regUser();
         console.log("Username:", username, "Password:", password, "Email:", email, "First Name:", first_name, "Last Name:", last_name, "Photo URL:", photo_url);
-        navigate('/goals');
+        
+	dispatch({type: 'LOGIN', payload: {username, password}});
+	navigate('/goals');
     }
   return (
     <>
