@@ -6,11 +6,11 @@ import { EventsProvider } from './Components/EventsContext/EventsContext';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import UserRegistration from './Components/UserRegistration/UserRegistration';
 
-import ProgressPage from './ProgressPage';
-import InputPage from './InputPage';
-import CalendarPage from './CalendarPage';
-import DayView from './DayView';
-import WeekView from './WeekView';
+import ProgressPage from './Calendar/ProgressPage';
+import InputPage from './Calendar/InputPage';
+import CalendarPage from './Calendar/CalendarPage';
+import DayView from './Calendar/DayView';
+import WeekView from './Calendar/WeekView';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
 import NutritionApi from './Components/NutritionApi/NutritionApi';
@@ -25,7 +25,7 @@ function App() {
           <Routes>
             {/* MAKE SURE TO CHANGE BACK TO LOGIN here */}
             <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<UserManagement />}></Route>
+            <Route path="/login" element={<UserManagement/>}></Route>
             <Route path="/register" element={<UserRegistration />}></Route>
             
             <Route path="/goals" element={
@@ -68,7 +68,6 @@ function App() {
                 <NutritionApi />
               </RouteGuard>
               }></Route>
-
 
           </Routes>
         </EventsProvider>
