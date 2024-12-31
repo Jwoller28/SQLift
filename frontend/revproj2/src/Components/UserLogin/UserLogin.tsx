@@ -16,11 +16,11 @@ function UserLogin({username, setUsername, password, setPassword, handleSubmit, 
   return (
     <form onSubmit={handleSubmit}>
         <label>Username:
-            <input type='text' placeholder="Enter Username" value={username} onChange={(e:any) => setUsername(e.target.value)}/>
+            <input type='text' placeholder="Enter Username" value={username} onChange={(e:any) => setUsername(e.target.value)} required/>
         </label><br/>
 
         <label>Password:
-            <input type='password' placeholder="Enter Password" value={password} onChange={(e:any) => setPassword(e.target.value)}/>
+            <input type='password' placeholder="Enter Password" value={password} onChange={(e:any) => setPassword(e.target.value)} required/>
         </label><br/>
 
         <button type='submit'>Submit</button>

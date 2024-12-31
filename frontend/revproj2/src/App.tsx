@@ -14,6 +14,7 @@ import WeekView from './WeekView';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
 import NutritionApi from './Components/NutritionApi/NutritionApi';
+import RouteGuard from './Components/RouteGuard/RouteGuard';
 
 function App() {
   return (
@@ -23,25 +24,54 @@ function App() {
         <EventsProvider>
           <Routes>
             {/* MAKE SURE TO CHANGE BACK TO LOGIN here */}
-            <Route path="/" element={<Navigate to="/login" replace />}/> 
-            <Route path="/login" element={<UserManagement/>}></Route>
-            <Route path="/register" element={<UserRegistration/>}></Route>
-            <Route path="/goals" element={<SetUserGoals/>}></Route>
-            <Route path="/login/page" element={<LoginLandingPage/>}></Route>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<UserManagement />}></Route>
+            <Route path="/register" element={<UserRegistration />}></Route>
+            
+            <Route path="/goals" element={
+                <SetUserGoals />
+              }></Route>
 
-            <Route path="/calendar" element={<CalendarPage/>} />
-            <Route path="/week" element={<WeekView/>} />
-            <Route path="/day/:dayId" element={<DayView/>} />
+            <Route path="/login/page" element={
+              <RouteGuard>
+                <LoginLandingPage />
+              </RouteGuard>
+              }></Route>
 
-            <Route path="/input/:dayId" element={<InputPage/>} />
-            <Route path="/progress/:dayId" element={<ProgressPage/>} />
+            <Route path="/calendar" element={
+              <RouteGuard>
+                <CalendarPage />
+              </RouteGuard>} />
 
-            <Route path="/nutriapi" element={<NutritionApi/>}></Route>
+            <Route path="/week" element={
+              <RouteGuard>
+                <WeekView />
+              </RouteGuard>} />
 
+            <Route path="/day/:dayId" element={
+              <RouteGuard>
+                <DayView />
+              </RouteGuard>} />
+
+            <Route path="/input/:dayId" element={
+              <RouteGuard>
+                <InputPage />
+              </RouteGuard>} />
+
+            <Route path="/progress/:dayId" element={
+              <RouteGuard>
+                <ProgressPage />
+              </RouteGuard>} />
+
+            <Route path="/nutriapi" element={
+              <RouteGuard>
+                <NutritionApi />
+              </RouteGuard>
+              }></Route>
 
 
           </Routes>
-          </EventsProvider>
+        </EventsProvider>
       </AuthProvider>
     </div>
   );
