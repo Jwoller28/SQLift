@@ -17,7 +17,7 @@ public class Nutrition {
 
 
     public Nutrition(double kal, double fat, double carb, double weight,double protein) {
-        Kal = kal;
+        this.Kal = kal;
         this.fat = fat;
         this.carb = carb;
         this.weight = weight;
@@ -48,7 +48,7 @@ public class Nutrition {
     }
 
     public void setKal(double kal) {
-        Kal = kal;
+        this.Kal = kal;
     }
 
     public double getFat() {
