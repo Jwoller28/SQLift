@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEvents } from './Components/EventsContext/EventsContext';
+import { useEvents } from '../Components/EventsContext/EventsContext';
 
 function WeekView() {
   const navigate = useNavigate();
