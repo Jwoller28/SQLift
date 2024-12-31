@@ -243,7 +243,8 @@ function InputPage() {
       const response = await fetch('http://localhost:8080/Tracker', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userToken}`,
         },
         body: JSON.stringify(requestBody),
       });
