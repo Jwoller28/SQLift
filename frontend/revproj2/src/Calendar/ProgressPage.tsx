@@ -27,47 +27,40 @@ interface ITracker {
 // Minimal interface for your Goal. Adjust as needed.
 interface IGoal {
   id: number;
-  sleep: number;       // e.g. total hours to achieve
-  water: number;       // e.g. total ounces to achieve
+  sleep: number; // e.g. total hours to achieve
+  water: number; // e.g. total ounces to achieve
   // If you have nutrition or exercise goals, add them here
 }
 
 function ProgressPage() {
-  const { dayId } = useParams();  // e.g., "2024-12-31"
+  const { dayId } = useParams(); // e.g., "2024-12-31"
   const navigate = useNavigate();
 
-  // 1) Basic user/goal tokens and IDs
+  // Basic user/goal tokens and IDs
   const [token, setToken] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
-  const [goal, setGoal] = useState<IGoal | null>(null); // We'll store entire goal object
+  const [goal, setGoal] = useState<IGoal | null>(null);
 
-  // 2) Trackers
+  // Trackers
   const [allTrackers, setAllTrackers] = useState<ITracker[]>([]);
   const [dayTracker, setDayTracker] = useState<ITracker | null>(null);
 
-  // 3) Summations for total progress
+  // Summations for total progress
   const [totalSleep, setTotalSleep] = useState(0);
   const [totalWater, setTotalWater] = useState(0);
-  // If you want total cals, you can add a state for it, etc.
 
-  // ---------------------------------------------------
-  // A) On mount, fetch token from localStorage
-  // ---------------------------------------------------
+  // A) On mount, fetch token
   useEffect(() => {
     const stored = localStorage.getItem('token');
     if (stored) {
-      // if raw string: setToken(stored);
-      // if JSON: setToken(JSON.parse(stored));
       setToken(JSON.parse(stored));
     } else {
       console.error('No token found. Please log in.');
     }
   }, []);
 
-  // ---------------------------------------------------
   // B) Once we have token, get username from /me
-  // ---------------------------------------------------
   useEffect(() => {
     if (!token) return;
     const fetchMe = async () => {
@@ -87,9 +80,7 @@ function ProgressPage() {
     fetchMe();
   }, [token]);
 
-  // ---------------------------------------------------
   // C) Once we have username, get user object => userId
-  // ---------------------------------------------------
   useEffect(() => {
     if (!username || !token) return;
     const fetchUser = async () => {
@@ -109,9 +100,7 @@ function ProgressPage() {
     fetchUser();
   }, [username, token]);
 
-  // ---------------------------------------------------
   // D) Once we have userId, get the user's goal
-  // ---------------------------------------------------
   useEffect(() => {
     if (!userId || !token) return;
     const fetchGoal = async () => {
@@ -131,14 +120,12 @@ function ProgressPage() {
     fetchGoal();
   }, [userId, token]);
 
-  // ---------------------------------------------------
   // E) Then, also get all trackers => allTrackers
-  // ---------------------------------------------------
   useEffect(() => {
     const fetchTrackers = async () => {
       if (!userId || !goal || !token) return;
       try {
-        // goal.id is optional if you need it, but we only need userId to fetch all if your backend requires both
+        // Some backends require both userId & goalId to fetch trackers
         const res = await fetch(`http://localhost:8080/Tracker/${userId}/${goal.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -154,88 +141,132 @@ function ProgressPage() {
     fetchTrackers();
   }, [userId, goal, token]);
 
-  // ---------------------------------------------------
   // F) Once we have allTrackers, find the specific day, sum totals
-  // ---------------------------------------------------
   useEffect(() => {
     // 1) Find day tracker
-    const foundTracker = allTrackers.find((t) => {
-      const exDate = t.exercise?.exerciseDate;
-      const slDate = t.sleepDate;
-      const wtDate = t.waterDate;
-      const nuDate = t.nutrition?.nutritionDate;
-      return exDate === dayId || slDate === dayId || wtDate === dayId || nuDate === dayId;
-    }) || null;
+    const foundTracker =
+      allTrackers.find((t) => {
+        const exDate = t.exercise?.exerciseDate;
+        const slDate = t.sleepDate;
+        const wtDate = t.waterDate;
+        const nuDate = t.nutrition?.nutritionDate;
+        return exDate === dayId || slDate === dayId || wtDate === dayId || nuDate === dayId;
+      }) || null;
     setDayTracker(foundTracker);
 
     // 2) Sum total sleep, water, etc.
     let sumSleep = 0;
     let sumWater = 0;
-    // let sumCals = 0; // if you want total cals
-    allTrackers.forEach(t => {
+    allTrackers.forEach((t) => {
       sumSleep += t.sleep || 0;
       sumWater += t.water || 0;
-      // if (t.nutrition?.kal) sumCals += t.nutrition.kal;
     });
     setTotalSleep(sumSleep);
     setTotalWater(sumWater);
-    // setTotalCals(sumCals);
   }, [allTrackers, dayId]);
 
-  // ---------------------------------------------------
-  // G) Render read-only UI
-  // ---------------------------------------------------
   const goBack = () => {
     navigate('/calendar');
   };
 
-  // dayTracker might be null if no data for that day
-  // goal might be null if no goal found
-
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Progress for {dayId}</h2>
+    // Outer gradient container — similar to CalendarPage
+    <div
+      style={{
+        padding: '0px',
+        background: 'linear-gradient(to bottom, #3370ff, #ADD8E6)',
+        color: '#fff',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        marginTop: 0,
+      }}
+    >
+      {/* Black “card” container */}
+      <div
+        style={{
+          backgroundColor: 'black',
+          padding: '20px',
+          borderRadius: '10px',
+          width: '80%',
+          maxWidth: '800px',
+        }}
+      >
+        <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>
+          Progress for {dayId}
+        </h2>
 
-      {/* Display the day’s data if found */}
-      {dayTracker ? (
-        <div style={{ marginBottom: '20px' }}>
-          <p><strong>Sleep (hrs):</strong> {dayTracker.sleep ?? 0}</p>
-          <p><strong>Water (oz):</strong> {dayTracker.water ?? 0}</p>
-          <p><strong>Calories Burned:</strong> {dayTracker.exercise?.caloriesBurned ?? 0}</p>
-          <p><strong>Volume:</strong> {dayTracker.exercise?.volume ?? 0}</p>
-          <p><strong>Duration:</strong> {dayTracker.exercise?.duration ?? 0} min</p>
-          <p><strong>Weight (lbs):</strong> {dayTracker.nutrition?.weight ?? 0}</p>
-          <p><strong>Carbs (g):</strong> {dayTracker.nutrition?.carb ?? 0}</p>
-          <p><strong>Fat (g):</strong> {dayTracker.nutrition?.fat ?? 0}</p>
-          <p><strong>Protein (g):</strong> {dayTracker.nutrition?.protein ?? 0}</p>
-        </div>
-      ) : (
-        <div style={{ marginBottom: '20px' }}>
-          <p>No data for this day.</p>
-        </div>
-      )}
+        {/* Display the day’s data if found */}
+        {dayTracker ? (
+          <div style={{ marginBottom: '20px' }}>
+            <p>
+              <strong>Sleep (hrs):</strong> {dayTracker.sleep ?? 0}
+            </p>
+            <p>
+              <strong>Water (oz):</strong> {dayTracker.water ?? 0}
+            </p>
+            <p>
+              <strong>Calories Burned:</strong> {dayTracker.exercise?.caloriesBurned ?? 0}
+            </p>
+            <p>
+              <strong>Volume:</strong> {dayTracker.exercise?.volume ?? 0}
+            </p>
+            <p>
+              <strong>Duration:</strong> {dayTracker.exercise?.duration ?? 0} min
+            </p>
+            <p>
+              <strong>Weight (lbs):</strong> {dayTracker.nutrition?.weight ?? 0}
+            </p>
+            <p>
+              <strong>Carbs (g):</strong> {dayTracker.nutrition?.carb ?? 0}
+            </p>
+            <p>
+              <strong>Fat (g):</strong> {dayTracker.nutrition?.fat ?? 0}
+            </p>
+            <p>
+              <strong>Protein (g):</strong> {dayTracker.nutrition?.protein ?? 0}
+            </p>
+          </div>
+        ) : (
+          <div style={{ marginBottom: '20px' }}>
+            <p>No data for this day.</p>
+          </div>
+        )}
 
-      <hr />
+        <hr style={{ margin: '20px 0' }} />
 
-      <h3>Total Progress So Far</h3>
-      {goal ? (
-        <>
-          {/* e.g. "hours slept: 20/400 hour goal" */}
-          <p>
-            <strong>Hours Slept:</strong> {totalSleep}/{goal.sleep} hour goal
-          </p>
-          <p>
-            <strong>Water Drank:</strong> {totalWater}/{goal.water} oz goal
-          </p>
-          {/* If your goal has other fields for exercise or nutrition, add them here */}
-        </>
-      ) : (
-        <p>No goal found.</p>
-      )}
+        <h3 style={{ color: '#fff', marginTop: '10px' }}>Total Progress So Far</h3>
+        {goal ? (
+          <>
+            <p>
+              <strong>Hours Slept:</strong> {totalSleep}/{goal.sleep} hour goal
+            </p>
+            <p>
+              <strong>Water Drank:</strong> {totalWater}/{goal.water} oz goal
+            </p>
+            {/* Add additional comparisons if your goal has more fields */}
+          </>
+        ) : (
+          <p>No goal found.</p>
+        )}
 
-      <button onClick={goBack} style={{ marginTop: '20px' }}>
-        Back to Calendar
-      </button>
+        <button
+          onClick={goBack}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#2282ff',
+            color: '#000',
+            border: 'none',
+            cursor: 'pointer',
+            borderRadius: '4px',
+            marginTop: '20px',
+          }}
+        >
+          Back to Calendar
+        </button>
+      </div>
     </div>
   );
 }
