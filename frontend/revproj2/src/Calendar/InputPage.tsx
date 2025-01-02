@@ -33,7 +33,6 @@ function InputPage() {
   const [userToken, setToken] = useState('');
   const [userName, setName] = useState('');
 
-
   // Summed macros from the API calls
   const [nutritionTotals, setNutritionTotals] = useState({
     calories: 0,
@@ -44,29 +43,25 @@ function InputPage() {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-
     if (token) {
       setToken(JSON.parse(token));
-    }
-    else{
+    } else {
       console.error('No token found. Please log in first.');
       return;
     }
-
   }, []);
-
 
   useEffect(() => {
     const fetchMe = async () => {
       try {
         // 1) GET /me to get username
-        const meRes = await fetch("http://localhost:8080/me", {
+        const meRes = await fetch('http://localhost:8080/me', {
           headers: {
-              'Content-Type': 'application/json',
-              'Authorization' : `Bearer ${userToken}`,
-              'Access-Control-Allow-Origin': "*"
-              },
-              credentials : 'include'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userToken}`,
+            'Access-Control-Allow-Origin': '*',
+          },
+          credentials: 'include',
         });
         if (!meRes.ok) {
           throw new Error(`GET /me failed: ${meRes.status}`);
@@ -75,49 +70,51 @@ function InputPage() {
         setName(username);
       } catch (err) {
         console.error('Error fetching user/goal:', err);
-      }};
+      }
+    };
+    if (userToken) {
       fetchMe();
+    }
   }, [userToken]);
 
-
   useEffect(() => {
-    if(userName)
+    if (userName) {
       fetchUsername();
+    }
   }, [userName]);
 
   useEffect(() => {
-    if(userId)
+    if (userId) {
       fetchGoal();
+    }
   }, [userId]);
 
-
   const fetchUsername = async () => {
-      // 2) GET /username/{username} to get user object (including id)
-      const userRes = await fetch(`http://localhost:8080/username/${userName}`, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      });
-      if (!userRes.ok) {
-        throw new Error(`GET /username/${userName} failed: ${userRes.status}`);
-      }
-      const userObj = await userRes.json(); 
-      setUserId(userObj.id);
-    };
+    // 2) GET /username/{username} to get user object (including id)
+    const userRes = await fetch(`http://localhost:8080/username/${userName}`, {
+      headers: { Authorization: `Bearer ${userToken}` },
+    });
+    if (!userRes.ok) {
+      throw new Error(`GET /username/${userName} failed: ${userRes.status}`);
+    }
+    const userObj = await userRes.json();
+    setUserId(userObj.id);
+  };
 
-    const fetchGoal = async () => {
-      // 3) GET /goalUser/{userId} to get the user’s goal object (including goalId)
-      const goalRes = await fetch(`http://localhost:8080/goalUser/${userId}`, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      });
-      if (!goalRes.ok) {
-        throw new Error(`GET /goalUser/${userId} failed: ${goalRes.status}`);
-      }
-      const goalObj = await goalRes.json(); 
-      setGoalId(goalObj.id);
-      console.log(goalId);
-    };
+  const fetchGoal = async () => {
+    // 3) GET /goalUser/{userId} to get the user’s goal object (including goalId)
+    const goalRes = await fetch(`http://localhost:8080/goalUser/${userId}`, {
+      headers: { Authorization: `Bearer ${userToken}` },
+    });
+    if (!goalRes.ok) {
+      throw new Error(`GET /goalUser/${userId} failed: ${goalRes.status}`);
+    }
+    const goalObj = await goalRes.json();
+    setGoalId(goalObj.id);
+    console.log(goalId);
+  };
 
-
-  // 2) Recalc totalVolume whenever workouts changes
+  // Recalc totalVolume whenever workouts changes
   useEffect(() => {
     let total = 0;
     workouts.forEach((w) => {
@@ -129,7 +126,7 @@ function InputPage() {
     setTotalVolume(total);
   }, [workouts]);
 
-  // 3) Handling foods + calling the Nutrition API
+  // Handle foods + calling the Nutrition API
   const addFood = () => {
     setFoods([...foods, { name: '' }]);
   };
@@ -169,7 +166,7 @@ function InputPage() {
         if (!response.ok) {
           throw new Error(`Nutrition API failed: ${response.status}`);
         }
-        const data = await response.json(); // { items: [{ calories, carbs, fat, protein, ... }] }
+        const data = await response.json();
         if (data.items && data.items[0]) {
           const item = data.items[0];
           totalCals += item.calories || 0;
@@ -197,17 +194,13 @@ function InputPage() {
     });
   };
 
-  // ====================================================================
-  // 4) handleSave: POST new Tracker to your backend
-  // ====================================================================
+  // POST new Tracker to your backend
   const handleSave = async () => {
     if (!userId || !goalId) {
       console.error('User or goal ID not yet loaded. Wait or log in again.');
       return;
     }
 
-    // Combine the data from your states + the nutritionTotals
-    // Because your "Tracker" has "nutrition" with macros, we’ll put them there.
     const requestBody = {
       appUser: { id: userId },
       goal: { id: goalId },
@@ -217,13 +210,13 @@ function InputPage() {
         caloriesBurned: parseFloat(caloriesBurned) || 0,
         duration: parseFloat(time) || 0,
         volume: totalVolume,
-        exerciseDate: dayId, // you can store dayId as a string date
+        exerciseDate: dayId,
       },
 
       // nutrition
       nutrition: {
-        weight: parseFloat(weight) || 0, // user’s body weight
-        kal: parseFloat(nutritionTotals.calories.toFixed(2)), // from the API sums
+        weight: parseFloat(weight) || 0,
+        kal: parseFloat(nutritionTotals.calories.toFixed(2)),
         carb: parseFloat(nutritionTotals.carbs.toFixed(2)),
         fat: parseFloat(nutritionTotals.fat.toFixed(2)),
         protein: parseFloat(nutritionTotals.protein.toFixed(2)),
@@ -265,150 +258,261 @@ function InputPage() {
     navigate(`/progress/${dayId}`);
   };
 
-  // ====================================================================
-  // RENDER
-  // ====================================================================
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Input Progress for {dayId}</h2>
+    // Outer gradient container — similar to CalendarPage
+    <div
+      style={{
+        padding: '0px',
+        background: 'linear-gradient(to bottom, #3370ff, #ADD8E6)',
+        color: '#fff',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        marginTop: 0,
+      }}
+    >
+      {/* Black “card” container in the middle */}
+      <div
+        style={{
+          backgroundColor: 'black',
+          padding: '20px',
+          borderRadius: '10px',
+          width: '80%',
+          maxWidth: '800px',
+        }}
+      >
+        <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>
+          Input Progress for {dayId}
+        </h2>
 
-      <h3>Exercise</h3>
-      <label>
-        Calories Burned (kcal):
-        <input
-          type="number"
-          value={caloriesBurned}
-          onChange={(e) => setCaloriesBurned(e.target.value)}
-        />
-      </label>
-      <br />
-      <label>Total Volume: {totalVolume} (weight × reps × sets)</label>
-      <br /><br />
-
-      {workouts.map((workout, idx) => (
-        <div key={idx} style={{ marginBottom: '10px' }}>
-          <label>
-            Weight:
+        <h3 style={{ color: '#fff', marginTop: '10px' }}>Exercise</h3>
+        <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>
+            Calories Burned (kcal):
             <input
               type="number"
-              value={workout.weight}
-              onChange={(e) => {
-                const val = e.target.value;
-                setWorkouts((prev) => {
-                  const copy = [...prev];
-                  copy[idx].weight = val;
-                  return copy;
-                });
-              }}
-            />
-          </label>
-          <label>
-            Reps:
-            <input
-              type="number"
-              value={workout.reps}
-              onChange={(e) => {
-                const val = e.target.value;
-                setWorkouts((prev) => {
-                  const copy = [...prev];
-                  copy[idx].reps = val;
-                  return copy;
-                });
-              }}
-            />
-          </label>
-          <label>
-            Sets:
-            <input
-              type="number"
-              value={workout.sets}
-              onChange={(e) => {
-                const val = e.target.value;
-                setWorkouts((prev) => {
-                  const copy = [...prev];
-                  copy[idx].sets = val;
-                  return copy;
-                });
-              }}
+              value={caloriesBurned}
+              onChange={(e) => setCaloriesBurned(e.target.value)}
+              style={{ marginLeft: '10px' }}
             />
           </label>
         </div>
-      ))}
-      <button type="button" onClick={() => setWorkouts([...workouts, { weight: '', reps: '', sets: '' }])}>
-        Add Workout
-      </button>
-      <br />
-      <label>
-        Total Time (minutes):
-        <input type="number" value={time} onChange={(e) => setTime(e.target.value)} />
-      </label>
-      <br />
-
-      <h3>Sleep</h3>
-      <label>
-        Hours Slept:
-        <input
-          type="number"
-          value={hoursSlept}
-          onChange={(e) => setHoursSlept(e.target.value)}
-        />
-      </label>
-      <br />
-
-      <h3>Water Intake</h3>
-      <label>
-        Water Intake (fl oz.):
-        <input
-          type="number"
-          value={waterIntake}
-          onChange={(e) => setWaterIntake(e.target.value)}
-        />
-      </label>
-      <br />
-
-      <h3>Nutrition</h3>
-      <label>
-        Weight (lbs):
-        <input
-          type="number"
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-        />
-      </label>
-      <br /><br />
-
-      {/* Foods + API */}
-      <button type="button" onClick={addFood}>Add Food</button>
-      <button type="button" onClick={handleFetchNutrition} style={{ marginLeft: '10px' }}>
-        Fetch Nutrition from API
-      </button>
-      {foods.map((food, index) => (
-        <div key={index} style={{ margin: '5px 0' }}>
-          <input
-            type="text"
-            value={food.name}
-            onChange={(e) => updateFood(index, e.target.value)}
-            placeholder="e.g. mac and cheese"
-          />
+        <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>Total Volume: {totalVolume}</label>
+          <span style={{ fontSize: '0.9em' }}>(weight × reps × sets)</span>
         </div>
-      ))}
-      <br />
 
-      {/* Show the totals from the API calls */}
-      <p>
-        <strong>Food totals (from API):</strong><br />
-        Calories: {nutritionTotals.calories} kcal<br />
-        Carbs: {nutritionTotals.carbs} g<br />
-        Fat: {nutritionTotals.fat} g<br />
-        Protein: {nutritionTotals.protein} g
-      </p>
+        {workouts.map((workout, idx) => (
+          <div key={idx} style={{ marginBottom: '10px' }}>
+            <label style={{ marginRight: '10px' }}>
+              Weight:
+              <input
+                type="number"
+                value={workout.weight}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setWorkouts((prev) => {
+                    const copy = [...prev];
+                    copy[idx].weight = val;
+                    return copy;
+                  });
+                }}
+                style={{ marginLeft: '5px', marginRight: '10px' }}
+              />
+            </label>
+            <label style={{ marginRight: '10px' }}>
+              Reps:
+              <input
+                type="number"
+                value={workout.reps}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setWorkouts((prev) => {
+                    const copy = [...prev];
+                    copy[idx].reps = val;
+                    return copy;
+                  });
+                }}
+                style={{ marginLeft: '5px', marginRight: '10px' }}
+              />
+            </label>
+            <label style={{ marginRight: '10px' }}>
+              Sets:
+              <input
+                type="number"
+                value={workout.sets}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setWorkouts((prev) => {
+                    const copy = [...prev];
+                    copy[idx].sets = val;
+                    return copy;
+                  });
+                }}
+                style={{ marginLeft: '5px' }}
+              />
+            </label>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={() => setWorkouts([...workouts, { weight: '', reps: '', sets: '' }])}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#2282ff',
+            color: '#000',
+            border: 'none',
+            cursor: 'pointer',
+            margin: '5px 0',
+            borderRadius: '4px',
+          }}
+        >
+          Add Workout
+        </button>
 
-      <button type="button" onClick={handleSave} style={{ marginRight: '10px' }}>
-        Save Progress
-      </button>
-      <button type="button" onClick={handleProgress}>
-        See Progress
-      </button>
+        <div style={{ marginTop: '10px', marginBottom: '20px' }}>
+          <label style={{ marginRight: '10px' }}>
+            Total Time (minutes):
+            <input
+              type="number"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ color: '#fff', marginTop: '10px' }}>Sleep</h3>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ marginRight: '10px' }}>
+            Hours Slept:
+            <input
+              type="number"
+              value={hoursSlept}
+              onChange={(e) => setHoursSlept(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ color: '#fff', marginTop: '10px' }}>Water Intake</h3>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ marginRight: '10px' }}>
+            Water Intake (fl oz.):
+            <input
+              type="number"
+              value={waterIntake}
+              onChange={(e) => setWaterIntake(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+
+        <h3 style={{ color: '#fff', marginTop: '10px' }}>Nutrition</h3>
+        <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>
+            Weight (lbs):
+            <input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+
+        {/* Foods + API */}
+        <div style={{ marginBottom: '10px' }}>
+          <button
+            type="button"
+            onClick={addFood}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2282ff',
+              color: '#000',
+              border: 'none',
+              cursor: 'pointer',
+              marginRight: '10px',
+              borderRadius: '4px',
+            }}
+          >
+            Add Food
+          </button>
+          <button
+            type="button"
+            onClick={handleFetchNutrition}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2282ff',
+              color: '#000',
+              border: 'none',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
+          >
+            Fetch Nutrition from API
+          </button>
+        </div>
+
+        {foods.map((food, index) => (
+          <div key={index} style={{ marginBottom: '5px' }}>
+            <input
+              type="text"
+              value={food.name}
+              onChange={(e) => updateFood(index, e.target.value)}
+              placeholder="e.g. mac and cheese"
+              style={{ width: '250px' }}
+            />
+          </div>
+        ))}
+
+        {/* Show the totals from the API calls */}
+        <p style={{ marginTop: '10px' }}>
+          <strong>Food totals (from API):</strong>
+          <br />
+          Calories: {nutritionTotals.calories} kcal
+          <br />
+          Carbs: {nutritionTotals.carbs} g
+          <br />
+          Fat: {nutritionTotals.fat} g
+          <br />
+          Protein: {nutritionTotals.protein} g
+        </p>
+
+        <div style={{ marginTop: '20px' }}>
+          <button
+            type="button"
+            onClick={handleSave}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2282ff',
+              color: '#000',
+              border: 'none',
+              cursor: 'pointer',
+              marginRight: '10px',
+              borderRadius: '4px',
+            }}
+          >
+            Save Progress
+          </button>
+          <button
+            type="button"
+            onClick={handleProgress}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2282ff',
+              color: '#000',
+              border: 'none',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
+          >
+            See Progress
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
