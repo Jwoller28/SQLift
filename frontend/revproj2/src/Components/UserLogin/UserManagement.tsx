@@ -1,13 +1,21 @@
+<<<<<<< HEAD
 import React, { FormEvent, useContext, useEffect, useState } from 'react'
 import UserLogin from './UserLogin';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext, useAuth, UserContext } from '../UserContext/UserContext';
+=======
+import React, { FormEvent, useContext, useState } from 'react'
+import UserLogin from './UserLogin';
+import { AuthContext } from '../UserContext/UserContext';
+import { useNavigate } from 'react-router-dom';
+>>>>>>> ebbd7023a (Reorganized files)
 
 
 // Contains the logic for the UserLogin page and what to do with the input/submit button interaction
 function UserManagement() {
     const[username, setUsername] = useState("");
     const[password, setPassword] = useState("");
+<<<<<<< HEAD
     const [token, setToken] = useState("");
     const navigate = useNavigate();
 
@@ -21,10 +29,20 @@ function UserManagement() {
     useEffect(() => {
         localStorage.setItem('token', JSON.stringify(token))    // This useEffect is used to store the users JWT token in the browsers local storage after they login, keeping their credentials accessible when needed on other pages.
     }, [token])
+=======
+    const[data, setData] = useState<any | null>(null); // Created to use Jest with api call
+
+    const context = useContext(AuthContext);
+    if(!context){
+        throw new Error("Login must be used within an AuthProvider")
+    }
+    const {dispatch} = context;
+>>>>>>> ebbd7023a (Reorganized files)
 
     // Function to handle submit event on login page
     function handleSubmit(event: FormEvent){
         event.preventDefault();
+<<<<<<< HEAD
         // if(context){
         //     context.login(username, password);
         //     login();
@@ -90,6 +108,21 @@ function UserManagement() {
     }
 
     // Function to handle register button on login page, redirect to register page.
+=======
+        // Test api for Jest
+        const fetchData = async (): Promise<any> => {
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+            
+            const d = response.json().then((result) => setData(result));
+        }
+        fetchData();
+        dispatch({type: 'LOGIN', payload: {username, password}})
+        // console.log(username, password);
+    }
+
+    // Function to handle register button on login page, redirect to register page.
+    const navigate = useNavigate();
+>>>>>>> ebbd7023a (Reorganized files)
     function handleRegister(event: FormEvent){
         event.preventDefault();
         navigate('/register');
@@ -103,4 +136,8 @@ function UserManagement() {
   )
 }
 
+<<<<<<< HEAD
 export default UserManagement
+=======
+export default UserManagement
+>>>>>>> ebbd7023a (Reorganized files)
