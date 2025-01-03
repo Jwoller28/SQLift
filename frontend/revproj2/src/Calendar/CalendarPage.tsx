@@ -183,7 +183,7 @@ function CalendarPage() {
 
   // Example placeholders
   const goToFeed = () => {/* navigate('/feed'); */};
-  const goToProfile = () => {/* navigate('/profile'); */};
+  const goToProfile = () => {navigate("/profile")};
   const goToInbox = () => {/* navigate('/inbox'); */};
   const goToGoals = () => {/* navigate('/goals'); */};
 
