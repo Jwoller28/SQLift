@@ -1,0 +1,41 @@
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../UserContext/UserContext';
+
+function LoginLandingPage() {
+  const [token, setToken] = useState(""); // Creating useState variable for token
+
+  useEffect(() => { // This useEffect will be called on render to grab token from local storage
+    const sessionTok = localStorage.getItem('token');
+    if(sessionTok){
+      setToken(JSON.parse(sessionTok));
+      }
+    
+  }, []);
+
+  useEffect(() => { // This useEffect checks our me endpoint in springboot to see if current user token is valid.
+    const userValidToken = async () =>{
+      const responseValidToken = await fetch("http://localhost:8080/me", {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${token}`,
+            'Access-Control-Allow-Origin': "*"
+            },
+            credentials : 'include'
+    });
+
+      const userToken = await responseValidToken.text();
+      console.log(userToken);
+
+    }
+    userValidToken();
+  }, [token]);
+  
+  console.log("Here is token: ",token);
+
+  return (
+    <div>LoginLandingPage
+    </div>
+  )
+}
+
+export default LoginLandingPage
