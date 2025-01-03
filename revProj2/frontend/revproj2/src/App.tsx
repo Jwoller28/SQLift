@@ -18,6 +18,7 @@ import Inbox from './Components/Inbox/Inbox';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
 import NutritionApi from './Components/NutritionApi/NutritionApi';
 import RouteGuard from './Components/RouteGuard/RouteGuard';
+import UserProfile from './Components/UserProfile/UserProfile';
 
 function App() {
   return (
@@ -69,8 +70,10 @@ function App() {
                 <NutritionApi />
               </RouteGuard>
               }></Route>
+
 	      <Route path="/feed" element={<PostList />} />
 	      <Route path="/inbox" element={<Inbox />}/>
+              <Route path="/profile" element={<UserProfile/>}></Route>
           </Routes>
         </EventsProvider>
       </AuthProvider>
