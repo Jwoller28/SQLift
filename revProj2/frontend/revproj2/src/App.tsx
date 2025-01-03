@@ -13,6 +13,7 @@ import DayView from './Calendar/DayView';
 import WeekView from './Calendar/WeekView';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostFeedSmart from './Components/PostFeed/PostFeedSmart';
+import PostList from './Components/PostFeed/PostList';
 import Inbox from './Components/Inbox/Inbox';
 import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
 import NutritionApi from './Components/NutritionApi/NutritionApi';
@@ -68,7 +69,7 @@ function App() {
                 <NutritionApi />
               </RouteGuard>
               }></Route>
-	      <Route path="/feed" element={<PostFeedSmart />} />
+	      <Route path="/feed" element={<PostList />} />
 	      <Route path="/inbox" element={<Inbox />}/>
           </Routes>
         </EventsProvider>

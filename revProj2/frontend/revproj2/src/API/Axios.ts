@@ -180,3 +180,35 @@ export const getGoalbyUserId = async(userId : number) => {
 		console.error("Error retrieving goal: ", error);
 	}
 }
+
+
+export const getGoalsbyUserId = async(userId : number) => {
+	try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+	const url2 = `http://localhost:8080/goalsUser/${userId}`;
+
+	let result2 =  await axios.get(url2, {
+		headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+		},
+		withCredentials: true
+	});
+	if(result2 && result2.status === 200)
+	{
+		console.log("Goal acquired");
+		console.log(result2.data);
+		return result2.data;
+	}
+	else
+	{
+		throw new Error;
+	}
+	}
+	catch(error: any) {
+		console.error("Error retrieving goals: ", error);
+	}
+}
