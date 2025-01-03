@@ -19,8 +19,6 @@ type UserLoginProps ={
 function UserLogin({username, setUsername, password, setPassword, handleSubmit, handleRegister}: UserLoginProps) {
   const navigate = useNavigate();
 
-  const goToCalendar = () => {navigate(`/calendar`);};
-
   return (
     <div>
        
@@ -35,10 +33,6 @@ function UserLogin({username, setUsername, password, setPassword, handleSubmit, 
 
         <button type='submit'>Submit</button>
         <button onClick={handleRegister}>Create Account</button>
-        <button onClick={goToCalendar}>Calendar testing</button>
-        <Link to="/nutriapi">
-          <button>Access Api</button>
-        </Link>
     </form>
     </div>
   )

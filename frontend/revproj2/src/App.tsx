@@ -15,8 +15,6 @@ import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostFeedSmart from './Components/PostFeed/PostFeedSmart';
 import PostList from './Components/PostFeed/PostList';
 import Inbox from './Components/Inbox/Inbox';
-import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
-import NutritionApi from './Components/NutritionApi/NutritionApi';
 import RouteGuard from './Components/RouteGuard/RouteGuard';
 import UserProfile from './Components/UserProfile/UserProfile';
 
@@ -34,11 +32,7 @@ function App() {
             <Route path="/goals" element={
                 <SetUserGoals />
               }></Route>
-            <Route path="/login/page" element={
-              <RouteGuard>
-                <LoginLandingPage />
-              </RouteGuard>
-              }></Route>
+            <Route path="/login/page"></Route>
 
             <Route path="/calendar" element={
               <RouteGuard>
@@ -64,12 +58,6 @@ function App() {
               <RouteGuard>
                 <ProgressPage />
               </RouteGuard>} />
-
-            <Route path="/nutriapi" element={
-              <RouteGuard>
-                <NutritionApi />
-              </RouteGuard>
-              }></Route>
 
 	      <Route path="/feed" element={<PostList />} />
 	      <Route path="/inbox" element={<Inbox />}/>
