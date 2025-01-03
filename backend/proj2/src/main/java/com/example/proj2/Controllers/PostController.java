@@ -60,9 +60,7 @@ public class PostController {
 public ResponseEntity<Post> poll() {
     logger.info("Arrives at Controller (GET)");
     try {
-        // Wait up to 30 seconds for a new message
-        Post post = postService.getNextPost(30000); // This call waits for the next post
-	logger.info(post.toString());
+        Post post = postService.getNextPost(); // This call waits for the next post
         if (post != null) {
             return ResponseEntity.ok(post); // Return the post with HTTP 200 status
         } else {
