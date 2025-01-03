@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,6 +44,18 @@ public class GoalService {
             return goal.get();
         else
             throw new Exception();
+    }
+
+    public List<Goal> getAllGoalsbyUser(int userId)
+    {
+	    Optional<List<Goal>> goals = goalRepository.findAllByAppUserId(userId);
+
+	    if(goals.isPresent()){
+
+		    return goals.get();
+	    }
+	    else
+		    return null;
     }
 
     public int UpdatedGoalAllById(Integer goalID,Goal goal) {

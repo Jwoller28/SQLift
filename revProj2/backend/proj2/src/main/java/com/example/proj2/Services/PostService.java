@@ -60,6 +60,7 @@ public class PostService {
     @KafkaListener(topics="processedPosts", containerFactory = "kafkaListenerContainerFactory", groupId = "app-users")
     public void listen(Post post) {
         messageQueue.offer(post); // Add posts to the queue
+	System.out.println(post);
         postRepostiory.save(post); //persists Post
     }
 

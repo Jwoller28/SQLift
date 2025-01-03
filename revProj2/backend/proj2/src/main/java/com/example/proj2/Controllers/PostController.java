@@ -62,6 +62,7 @@ public ResponseEntity<Post> poll() {
     try {
         // Wait up to 30 seconds for a new message
         Post post = postService.getNextPost(30000); // This call waits for the next post
+	logger.info(post.toString());
         if (post != null) {
             return ResponseEntity.ok(post); // Return the post with HTTP 200 status
         } else {

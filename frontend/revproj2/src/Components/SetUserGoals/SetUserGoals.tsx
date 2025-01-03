@@ -145,9 +145,9 @@ function SetUserGoals() {
           console.log('Here is the successful goal return: ', data);
           navigate('/calendar');
         }
-      } catch (err) {
-        console.error('Error creating goal:', err);
-      }
+    } catch (err) {
+	console.error("Error creating goal: ", err);
+    }
     };
     postGoals();
   }
@@ -275,6 +275,7 @@ function SetUserGoals() {
       </form>
     </>
   );
+
 }
 
 export default SetUserGoals;
