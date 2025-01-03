@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom"
 
 
+
+
 // Creating the typing for the props that are being brought into UserLogin from UserManagement
 type UserLoginProps ={
     username: string,
@@ -20,6 +22,8 @@ function UserLogin({username, setUsername, password, setPassword, handleSubmit, 
   const goToCalendar = () => {navigate(`/calendar`);};
 
   return (
+    <div>
+       
     <form onSubmit={handleSubmit}>
         <label>Username:
             <input type='text' placeholder="Enter Username" value={username} onChange={(e:any) => setUsername(e.target.value)} required/>
@@ -36,6 +40,7 @@ function UserLogin({username, setUsername, password, setPassword, handleSubmit, 
           <button>Access Api</button>
         </Link>
     </form>
+    </div>
   )
 }
 
