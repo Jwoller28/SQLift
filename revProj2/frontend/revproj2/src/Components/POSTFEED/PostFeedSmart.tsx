@@ -1,23 +1,26 @@
 import React, { MutableRefObject, useState } from 'react'
 import PostFeedDumb from './PostFeedDumb';
-import PostList from './PostList';
+
 import { useRef } from 'react';
 import {getPosts, sendPost } from '../../API/Axios';
 import { restElement } from '@babel/types';
 
+interface PostFeedProp {
+	goalId : number;
+	userId: number;
+}
 
-function PostFeedSmart() {
+function PostFeedSmart(prop : PostFeedProp) {
     const [message, setMessage] = useState("");
-    const [goalId, setGoalId] = useState(0);
-    const [user, setUser] = useState(0);
     const [file, setFile] = useState<File | undefined>(undefined);
     const formRef : MutableRefObject<HTMLFormElement | null> = useRef(null);
 
     const handleSubmit = async (e : any) => {
         e.preventDefault();
         let formData = new FormData();
-        formData.append('goal_id', goalId.toString());
-        formData.append('user_id', user.toString());
+	console.log(prop.goalId);
+        formData.append('goal_id', prop.goalId.toString());
+        formData.append('user_id', prop.userId.toString());
         formData.append('message_text', message);
     
         if (file) {
@@ -58,10 +61,9 @@ function PostFeedSmart() {
        
         <>
              <div>
-            <PostFeedDumb formRef = {formRef} setFile = {setFile} setMessage = {setMessage} setGoalId= {setGoalId} setUser = {setUser} onSubmit = {handleSubmit}></PostFeedDumb>
-            </div>
-	    <PostList></PostList>
-        </>
+            <PostFeedDumb formRef = {formRef} setFile = {setFile} setMessage = {setMessage} onSubmit = {handleSubmit}></PostFeedDumb> </div>
+
+ 	</>
     )
 }
 export default PostFeedSmart;

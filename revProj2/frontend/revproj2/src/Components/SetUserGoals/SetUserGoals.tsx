@@ -147,30 +147,9 @@ function SetUserGoals() {
           console.log('Here is the successful goal return: ', data);
           navigate('/calendar');
         }
-    }, [password]);
-
-    function handleGoalSubmit(event: FormEvent){
-        event.preventDefault();
-        const postGoals = async () => {
-            const goalResponse = await fetch('http://localhost:8080/goal', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization' : `Bearer ${token}`
-                },
-                body: JSON.stringify({createdAt, user, sleep, water, nutrition, exercise})
-            });
-    
-            if(!goalResponse.ok){
-                alert(`Did not go through Error code is: ${goalResponse.status}`);
-            }
-            else{
-                const data = await goalResponse.json();
-                console.log("Here is the successful goal return: ", data);
-            }
-         catch (err) {
-        console.error('Error creating goal:', err);
-      }
+    } catch (err) {
+	console.error("Error creating goal: ", err);
+    }
     };
     postGoals();
   }
@@ -294,30 +273,12 @@ function SetUserGoals() {
         </label>
         <br />
 
-            {/* <button type='submit'>Submit Exercise Goals</button> */}
-
-            <h1>Water Intake</h1>
-
-            <label>Daily Water Intake in oz.
-                <input type='number' value={water} onChange={(e:any) => setWater(e.target.value)}/>
-            </label><br/>
-
-            {/* <button type='submit'>Submit Water Intake Goal</button> */}
-
-            <h1>Sleep</h1>
-            <label>Number of Hours of Sleep
-                <input type='number' value={sleep} onChange={(e:any) => setSleep(e.target.value)}/>
-            </label><br/>
-
-            <button type='submit'>Submit Goals</button>
-        </form>
-	<button onClick = {() => navigate('/Calendar')} > Navigate to Calendar </button>
-
         <button type="submit">Submit Goals</button>
       </form>
 
     </>
   );
+
 }
 
 export default SetUserGoals;

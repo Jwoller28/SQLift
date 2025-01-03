@@ -1,5 +1,6 @@
 package com.example.proj2.Controllers;
 
+import java.util.List;
 import com.example.proj2.Services.GoalService;
 import com.example.proj2.entity.Goal;
 import org.slf4j.Logger;
@@ -42,6 +43,20 @@ public class GoalController {
 
             return ResponseEntity.status(400).body(null);
         }}
+
+    @GetMapping("goalsUser/{userId}")
+    public ResponseEntity<List<Goal>> getUsersGoals(@PathVariable Integer userId) {
+    	try{
+            logger.error("attempting to get all goals with Id of "+userId);
+            List<Goal> allGoals = goalService.getAllGoalsbyUser(userId);
+
+            return ResponseEntity.ok(allGoals);
+        }
+	catch(Exception e){
+
+            return ResponseEntity.status(400).body(null);
+        }
+    }
 
         @GetMapping("goalId/{goalId}")
         public ResponseEntity<Goal> getGoalByGoalId(@PathVariable Integer goalId) {

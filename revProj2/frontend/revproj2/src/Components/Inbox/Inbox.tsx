@@ -1,25 +1,20 @@
 import React from 'react'
-import {useEffect, useState, useContext  } from 'react'
+import {useEffect, useState, useContext, useCallback  } from 'react'
 import {AuthContext} from '../UserContext/UserContext'
+import NotificationList from './NotificationList'
+import NotiViewerNew from './NotiViewerNew'
+import PostFeedSmart from '../PostFeed/PostFeedSmart'
 import {getUserByUsername, getGoalbyUserId, usernameifAuthorized } from '../../API/Axios'
 
 
-interface Notification {
-	id : number;
-	user_id : number;
-	goal_id : number;
-	data : Tracker[];
-
-}
-
-interface Exercise {
+export interface Exercise {
 	duration : number;
 	volume : number;
 	calories : number;
 	ExerciseDate : Date;
 };
 
-interface Nutrition {
+export interface Nutrition {
 	Kal : number;
 	fat : number;
 	carb : number;
@@ -28,7 +23,7 @@ interface Nutrition {
 	NutritionDate : Date;
 };
 
-interface Goal {
+export interface Goal {
 	id : number;
 	user_id : number;
 	createdAt : Date;
@@ -40,43 +35,46 @@ interface Goal {
 	nutrition : Nutrition;
 }
 
-interface Tracker {
+export interface Tracker {
 	id : number;
 	user_id : number;
 	goal_id : number;
 	goal : Goal;
 }
 function Inbox() {
+ 	const [div, setDiv] = useState<number>(0);
+	const [clicked, setClicked] = useState(false);
+	const [userId, setUserId] = useState(0);
+	
+	useEffect( () => {	
+		usernameifAuthorized().then((username) => {
+			getUserByUsername(username).then((data)=>{
+				let user = data;
+				setUserId(user.id);
+				})
+		})
+	}, [])
+	
+	const handleClick2 = useCallback((event : any) => {
+	let clickedGoal = event.target.getAttribute('a-key');
+	setDiv((prev) => (prev != clickedGoal ? clickedGoal : prev));
+	setClicked((prev) => !prev);
+	}, []);
 
-  // Get Current Date
-  const today = useState(new Date());
-  const notis = useState<Notification[] | undefined>(undefined);
-
-
-  const currentGoal = async (username : string) => {
-
-	  let user = await getUserByUsername(username);
-	  
-	  // let goal = await getGoalbyUserId(user.userId);
-	  console.log(user);
-  }
-  
-
-  useEffect(() => {
-	  const username = usernameifAuthorized();
-
-	  console.log(username);
-  },[]);
-
-
+	const handleClick = (event : any) => {
+		let clickedGoal = event.target.getAttribute('a-key');
+		setDiv(clickedGoal);
+		setClicked((prev) => !prev);
+		}
+		
+	
   return (
     <>
     	<div>
-		<header>Button Div</header>
-		<button>Click me</button>
+		<NotificationList handleClick = {handleClick2} />
 	</div>
 	<div>
-		<header> Display Div </header>
+		<NotiViewerNew userId = {userId} goalId = {div} clicked = {clicked} />
 	</div>
     </>
   )
