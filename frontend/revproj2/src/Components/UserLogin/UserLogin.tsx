@@ -1,7 +1,8 @@
 import { Navigate } from "react-router-dom"
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom"
-//import logo from '/Logo/logo-transparent-png.png'; 
+
+
 
 
 // Creating the typing for the props that are being brought into UserLogin from UserManagement
@@ -22,7 +23,7 @@ function UserLogin({username, setUsername, password, setPassword, handleSubmit, 
 
   return (
     <div>
-       <img src={"C:/Users/wadea/revProj2/frontend/revproj2/src/Components/Logo/logo-transparent-png.png"} alt="logo" />
+       
     <form onSubmit={handleSubmit}>
         <label>Username:
             <input type='text' placeholder="Enter Username" value={username} onChange={(e:any) => setUsername(e.target.value)} required/>
