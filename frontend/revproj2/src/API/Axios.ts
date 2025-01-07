@@ -26,7 +26,64 @@ export const sendPost = async (formData : FormData) => {
     }
 };
 
-export const getPosts = async () => {
+
+export const getPostPhoto = async (fileName : string) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = `http://localhost:8080/s3bucket/trackr-photo-store/download/${fileName}`;
+
+        let result = await axios.get(url, {
+            headers: { 
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+
+	if(result && result.status === 200)
+		{
+		console.log("Photo retrieved!");
+		console.log(result.data);
+		return result.data;
+		}
+	else 
+	{
+		throw new Error;
+	}
+
+    } 
+    catch (error : any) {
+        console.error("Error sending message:", error);
+    }
+};
+
+export const sendPostPhoto = async (photo : FormData) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/s3bucket/trackr-photo-store/upload";
+
+        await axios.post(url, photo, {
+            headers: { 
+		"Content-Type": "multipart/form-data",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+        console.log("Photo Sent Successfully!");
+    } 
+    catch (error : any) {
+        console.error("Error sending Photo:", error);
+    }
+
+}
+
+/*export const getPosts = async () => {
     try {
 	
 	const Token = localStorage.getItem('token');
@@ -54,7 +111,7 @@ export const getPosts = async () => {
     } catch (error : any) {
         console.error("Error retrieving message:", error);
     }
-}
+}*/
 
 export const usernameifAuthorized = async () => {
 	try {

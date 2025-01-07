@@ -3,7 +3,8 @@ package com.example.proj2.Services;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -18,6 +19,8 @@ public class PostService {
     @Autowired
     private KafkaTemplate<Long, Post> kafkaPostTemplate;
 
+    public static final Logger log = LoggerFactory.getLogger(PostService.class);
+
     @Autowired
     private PostRepository postRepostiory;
 
@@ -28,7 +31,7 @@ public class PostService {
     public void sendPost(Post post)
     {   
         
-        CompletableFuture<SendResult<Long,Post>> future = kafkaPostTemplate.send("unprocessedPosts", post.getPost_Id(), post);
+        CompletableFuture<SendResult<Long,Post>> future = kafkaPostTemplate.send("unprocessedPosts", post);
         future.whenComplete((result, ex) -> {
             if(ex == null)
             {
@@ -61,23 +64,17 @@ public class PostService {
     public void listen(Post post) {
 	if(post != null)
 	{
+	log.info(post.toString());
         messageQueue.offer(post); // Add posts to the queue
-	System.out.println(post);
 	System.out.println(messageQueue.size());
-        postRepostiory.save(post); //persists Post
+        postRepostiory.saveAndFlush(post); //persists Post
 	}
     }
 
     public Post getNextPost() throws InterruptedException {
         // If Queue is 90% to 100
 	// Start taking until it is 50%
-	if(messageQueue.remainingCapacity() < 10)
-	{
-		return messageQueue.take();
-	}
-	else
-	{
-		return messageQueue.peek();
-	}
+	
+	return messageQueue.poll();
     }
 }

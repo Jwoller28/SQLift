@@ -67,7 +67,7 @@ function Inbox() {
 	
   return (
     <>
-    	<div>
+        <div>
 		<NotificationList handleClick = {handleClick2} />
 	</div>
 	<div>

@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { getPosts } from '../../API/Axios';
+import { getPostPhoto } from '../../API/Axios';
+import { fetchEventSource } from '@microsoft/fetch-event-source';
 
-export interface Post {
-    // post_id:number;
-    goal_id:number;
-    user_id:number;
-    message_text:string;
-    photo: string;
-
-}
 
 function PostList() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const goalIds : number[] = [];
+  const Token = localStorage.getItem('token');
+  const cleanToken = Token?.replace(/"/g, "");
+  const [posts, setPosts] = useState<any[]>([]);
+  const postIds : number[] = [];
 
   // Start polling function with delay
-  const startPolling = async () => {
+  /*const startPolling = async () => {
       while (true) {
           try {
               const newPost = await getPosts();
@@ -29,6 +24,8 @@ function PostList() {
 			 {
               		console.log("New Post: " + newPost)
 			goalIds.push(newPost.goal_id);
+			let photo_ =  await getPostPhoto(newPost.photo);
+			newPost.photo_obj = photo_;
               		setPosts((prevPosts) => [newPost, ...prevPosts]); // Appends at the start of the list
 	      		}
 		}
@@ -40,41 +37,60 @@ function PostList() {
           // Delay between polling requests (e.g., 5 seconds)
           await new Promise((resolve) => setTimeout(resolve, 10000)); // Adjust polling interval as needed
       }
-  };
+  };*/
 
   useEffect(() => {
-      startPolling(); // Start polling when component mounts
+      fetchEventSource('http://localhost:8080/sse/posts', {
+	      headers: {
+		      'Content-Type': 'text/event-stream',
+		      'Authorization': "Bearer " + cleanToken,
+		      'credentials':'include'
+	      		},
+	      
+	      onmessage(ev : any) {
+		      console.log("Post Received: " + ev.data);
+		      try
+		      {
+			      const newPost = JSON.parse(ev.data);
+			      console.log(Object.keys(newPost));
+			      console.log(newPost.goal);
+
+			      if(!newPost)
+				{
+					throw Error;
+				}
+				else
+				{
+					if(postIds.includes(newPost.postId) === false)
+						{
+							console.log("New post: " + newPost);
+							postIds.push(newPost.postId);
+						        /*const getPhoto = async () => {
+							console.log("Photo request sent")
+							newPost.photo = await getPostPhoto(photo_name);
+							}
+							getPhoto():
+							*/
+							//console.log(newPost.photo);
+							setPosts((prev) => [newPost,...prev]);
+						}
+
+				}
+
+
+		      }
+		      catch(error: any)
+		      {
+			      console.error("Error during polling: ", error);
+		      }
+	}
+      } );
   }, []); // Empty dependency array ensures it runs only once
 
 
-  function cleanBase64(base64: string | undefined): string {
-    if (!base64) {
-        console.error("Received an invalid base64 string:", base64);
-        return '';  // Return an empty string if base64 is undefined or null
-    }
-    return base64.replace(/[\r\n]/g, "").replace(/\s/g, "");
-  }
-
-
-  function binaryStringToImage(binaryData: string | undefined): string {
-    if (!binaryData) {
-        console.error("No binary data provided:", binaryData);
-        return '';  // Return a default or placeholder image if data is missing
-    }
-    
-    const cleanData = cleanBase64(binaryData); // Clean base64 string
-    const binaryString = atob(cleanData); // Decoding the base64 binary string
-    const byteArray = new Uint8Array(binaryString.length);
-
-    // Convert the binary string to a byte array
-    for (let i = 0; i < binaryString.length; i++) {
-        byteArray[i] = binaryString.charCodeAt(i);
-    }
-
-    // Create a Blob from the byte array and use Object URL
-    const blob = new Blob([byteArray], { type: 'image/png' }); // Update MIME type if needed
-    const url = URL.createObjectURL(blob);
-
+  function photoURl(photo_name : string): string {
+    let url = `https://trackr-photo-store.s3.us-east-2.amazonaws.com/${photo_name}`;
+    console.log(url);
     return url;
 }
 
@@ -84,10 +100,10 @@ function PostList() {
             <div>
             {posts.map((post,index) => (
                       <div key = {index}>
-                        <h5>Goal ID: {post.goal_id}</h5>
-                        <p>User ID: {post.user_id}</p>
+                        <h5>Goal ID: {post.goal.id}</h5>
+                        <p>User ID: {post.user.id}</p>
                         <p>Messge Text: {post.message_text}</p>
-                        <img loading="lazy" src = {binaryStringToImage(post.photo)} width="200" height="auto"></img>
+                        <img loading="lazy" src = {photoURl(post.photo)} width="200" height="auto"></img>
                         </div>
                   ))}
             </div>
