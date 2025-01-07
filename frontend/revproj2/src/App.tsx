@@ -32,11 +32,8 @@ function App() {
             <Route path="/register" element={<UserRegistration />}></Route>
             
             <Route path="/goals" element={
-                <SetUserGoals />
-              }></Route>
-            <Route path="/login/page" element={
               <RouteGuard>
-                <LoginLandingPage />
+                <SetUserGoals />
               </RouteGuard>
               }></Route>
 
@@ -65,15 +62,9 @@ function App() {
                 <ProgressPage />
               </RouteGuard>} />
 
-            <Route path="/nutriapi" element={
-              <RouteGuard>
-                <NutritionApi />
-              </RouteGuard>
-              }></Route>
-
 	      <Route path="/feed" element={<PostList />} />
 	      <Route path="/inbox" element={<Inbox />}/>
-              <Route path="/profile" element={<UserProfile/>}></Route>
+              <Route path="/profile" element={<RouteGuard><UserProfile/></RouteGuard>}></Route>
           </Routes>
         </EventsProvider>
       </AuthProvider>
