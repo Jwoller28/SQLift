@@ -56,4 +56,5 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-application.properties
+backend/proj2/src/main/resources/application.properties
+backend/proj2/target/classes/application.properties
