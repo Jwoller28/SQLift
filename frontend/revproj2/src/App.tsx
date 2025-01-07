@@ -9,16 +9,12 @@ import UserRegistration from './Components/UserRegistration/UserRegistration';
 import ProgressPage from './Calendar/ProgressPage';
 import InputPage from './Calendar/InputPage';
 import CalendarPage from './Calendar/CalendarPage';
-import DayView from './Calendar/DayView';
-import WeekView from './Calendar/WeekView';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
-import PostFeedSmart from './Components/PostFeed/PostFeedSmart';
 import PostList from './Components/PostFeed/PostList';
 import Inbox from './Components/Inbox/Inbox';
-import LoginLandingPage from './Components/UserLogin/LoginLandingPage';
-import NutritionApi from './Components/NutritionApi/NutritionApi';
 import RouteGuard from './Components/RouteGuard/RouteGuard';
 import UserProfile from './Components/UserProfile/UserProfile';
+import ResetGoals from './Components/SetUserGoals/ResetGoals';
 
 function App() {
   return (
@@ -30,6 +26,7 @@ function App() {
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<UserManagement/>}></Route>
             <Route path="/register" element={<UserRegistration />}></Route>
+            <Route path="/resetGoals" element={<ResetGoals />} />
             
             <Route path="/goals" element={
               <RouteGuard>
@@ -40,16 +37,6 @@ function App() {
             <Route path="/calendar" element={
               <RouteGuard>
                 <CalendarPage />
-              </RouteGuard>} />
-
-            <Route path="/week" element={
-              <RouteGuard>
-                <WeekView />
-              </RouteGuard>} />
-
-            <Route path="/day/:dayId" element={
-              <RouteGuard>
-                <DayView />
               </RouteGuard>} />
 
             <Route path="/input/:dayId" element={

@@ -1,6 +1,5 @@
-import { useNavigate} from 'react-router-dom'
-import React, { FormEvent, useEffect, useState } from 'react'
-
+import { useNavigate } from 'react-router-dom';
+import React, { FormEvent, useEffect, useState } from 'react';
 
 function SetUserGoals() {
   const navigate = useNavigate();
@@ -24,18 +23,22 @@ function SetUserGoals() {
   const [password, setPassword] = useState('');
   const [id, setUserId] = useState<number | null>(null);
 
-
   // --------------- NEW STATE for the “end date” ---------------
-  const [endDate, setEndDate] = useState(''); 
-  // We'll store a string like "2024-12-30" from the <input type="date" />
+  const [endDate, setEndDate] = useState(''); // We'll store a string like "2024-12-30"
+
+  // NEW: We'll store any error text here for on-screen display
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     // Grab token & user ID from localStorage, etc.
     const sessionTok = localStorage.getItem('token');
     if (sessionTok) {
-      setToken(JSON.parse(sessionTok));
+      try {
+        setToken(JSON.parse(sessionTok));
+      } catch {
+        setToken(sessionTok);
+      }
     }
-    // If you also store userId in localStorage, parse that too, etc.
   }, []);
 
   useEffect(() => {
@@ -49,10 +52,13 @@ function SetUserGoals() {
             Authorization: `Bearer ${token}`,
           },
         });
+        if (!responseValidToken.ok) {
+          throw new Error(`GET /me failed: ${responseValidToken.status}`);
+        }
         const userTokenName = await responseValidToken.text();
         setUsername(userTokenName);
-      } catch (err) {
-        console.error('Error verifying token:', err);
+      } catch (err: any) {
+        setErrorMessage(`Error verifying token: ${err.message}`);
       }
     };
     userValidToken();
@@ -64,25 +70,19 @@ function SetUserGoals() {
 
     const getUserId = async () => {
       try {
-        const userIdResponse = await fetch(
-          `http://localhost:8080/username/${username}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const userIdResponse = await fetch(`http://localhost:8080/username/${username}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!userIdResponse.ok) {
-          alert(
-            `Something went wrong getting user id ERROR CODE: ${userIdResponse.status}`
-          );
-        } else {
-          const userIdData = await userIdResponse.json();
-          setUserId(userIdData.id);
-          setPassword(userIdData.password);
+          throw new Error(`GET /username/${username} failed: ${userIdResponse.status}`);
         }
-      } catch (err) {
-        console.error('Error getting userId:', err);
+        const userIdData = await userIdResponse.json();
+        setUserId(userIdData.id);
+        setPassword(userIdData.password);
+      } catch (err: any) {
+        setErrorMessage(`Error getting user ID: ${err.message}`);
       }
     };
     getUserId();
@@ -95,68 +95,82 @@ function SetUserGoals() {
     carb,
     weight: userWeight,
     protein,
-    // NEW: add the date if you want
-    nutritionDate: endDate, 
+    nutritionDate: endDate,
   };
 
   const exercise = {
     duration,
     volume,
     caloriesBurned,
-    exerciseDate: endDate, // store endDate if you want
+    exerciseDate: endDate,
   };
 
   const createdAt = Date.now(); // or new Date() if needed
 
   // The user object
-  const user = {
-    id: id,
-    username: username,
-    password: password,
+  const appUser = {
+    id,
+    username,
+    password,
   };
 
-  function handleGoalSubmit(event: FormEvent) {
+  async function handleGoalSubmit(event: FormEvent) {
     event.preventDefault();
 
     // Build the goal body
     const body = {
       createdAt,
-      user,
+      appUser,
       sleep,
-      sleepDate: endDate,  // store the end date for sleep
+      sleepDate: endDate,
       water,
-      waterDate: endDate,  // store the end date for water
+      waterDate: endDate,
       nutrition,
       exercise,
     };
 
-    const postGoals = async () => {
-      try {
-        const goalResponse = await fetch('http://localhost:8080/goal', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(body),
-        });
-        if (!goalResponse.ok) {
-          alert(`Failed to create goal. Status: ${goalResponse.status}`);
-        } else {
-          const data = await goalResponse.json();
-          console.log('Here is the successful goal return: ', data);
-          navigate('/calendar');
-        }
-    } catch (err) {
-	console.error("Error creating goal: ", err);
+    try {
+      const goalResponse = await fetch('http://localhost:8080/goal', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!goalResponse.ok) {
+        throw new Error(`Failed to create goal. Status: ${goalResponse.status}`);
+      }
+
+      const data = await goalResponse.json();
+      console.log('Here is the successful goal return:', data);
+      navigate('/calendar');
+    } catch (err: any) {
+      setErrorMessage(`Error creating goal: ${err.message}`);
     }
-    };
-    postGoals();
   }
 
   return (
     <>
-      <form onSubmit={handleGoalSubmit}>
+      {/* NEW: If there's an error, display it at the top */}
+      {errorMessage && (
+        <div
+          style={{
+            backgroundColor: '#ff4444',
+            color: '#fff',
+            padding: '10px 20px',
+            borderRadius: '4px',
+            marginBottom: '10px',
+            maxWidth: '600px',
+            textAlign: 'center',
+          }}
+        >
+          {errorMessage}
+        </div>
+      )}
+
+      <form onSubmit={handleGoalSubmit} style={{ padding: '20px' }}>
         <h1>Nutrition</h1>
         <label>
           Calories
@@ -261,7 +275,6 @@ function SetUserGoals() {
         </label>
         <br />
 
-        {/* NEW: End date input */}
         <h2>Goal End Date</h2>
         <label>
           Pick a date:
@@ -273,12 +286,12 @@ function SetUserGoals() {
         </label>
         <br />
 
-        <button type="submit">Submit Goals</button>
+        <button type="submit" style={{ marginTop: '20px' }}>
+          Submit Goals
+        </button>
       </form>
-
     </>
   );
-
 }
 
 export default SetUserGoals;
