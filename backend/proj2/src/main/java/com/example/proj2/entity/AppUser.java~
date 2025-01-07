@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
+import java.util.Set;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -15,6 +15,14 @@ public class AppUser  {
     private int id;
 
     @Column(unique = true, length = 100,nullable = false)
+
+    @OneToMany(mappedBy = "appUser")
+    private Set<Post> posts;
+    @OneToMany(mappedBy = "appUser")
+    private Set<Tracker> trackers;
+    @OneToMany(mappedBy = "appUser")
+    private Set<Goal> goals;
+
     private String username;
     private String email;
     private String first_name;
@@ -27,6 +35,7 @@ public class AppUser  {
 
     @Column(nullable = false, length = 100)
     private String password;
+
     @CreationTimestamp
     @Column( name = "created_at")
     private Date createdAt;

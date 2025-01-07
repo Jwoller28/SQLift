@@ -12,8 +12,6 @@ function NotificationList(prop : NotiListProp)
 	const [goals, setGoals] = useState<Goal[]>([]);
 	const today = new Date();
 	const navigate = useNavigate();
-
-	const todayRes = new Date(today.getFullYear(), today.getMonth(), today.getDay());
 		
 	useEffect( () => {
 		
@@ -27,17 +25,18 @@ function NotificationList(prop : NotiListProp)
 		function beforeDate (goal : Goal)
 		{
 			let goalDate = new Date(goal.waterDate);
-			let diff = todayRes.getTime() - goalDate.getTime();
-			if(diff >= 0)
-				{
-					return goal;
-				}
+			return goalDate <= today ? goal : null;
 		}
 		}
-		getGoalsBeforeToday().then( (data) => {setGoals(data)})
+		getGoalsBeforeToday().then( (data) => {
+			console.log(goals);
+			setGoals(data)
+		})
+
 	},[])
 
-	return (
+	return(
+	<>
 		<div>
 		{goals.map((goal : Goal, index : number) => (
 		<div a-key = {goal.id} onClick = {prop.handleClick}>
@@ -48,6 +47,7 @@ function NotificationList(prop : NotiListProp)
 		)
 		}
 		</div>
+	</>
 	)
 }
 export default NotificationList;

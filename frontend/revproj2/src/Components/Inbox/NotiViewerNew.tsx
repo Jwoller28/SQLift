@@ -51,6 +51,7 @@ const NotiViewerNew: React.FC<ViewerProp> = ({ userId, goalId, clicked }) => {
           // Example: Fetch data based on userId and goalId
           const fetchData = async () => {
             let trackers = await getTrackers(userId, goalId);
+	    
             setTrackers(trackers);
         };
         fetchData();
@@ -123,9 +124,9 @@ const NotiViewerNew: React.FC<ViewerProp> = ({ userId, goalId, clicked }) => {
 
     return (
         <>
-
-            {clicked && <div>{charts}</div>}
-	    {clicked && <PostFeedSmart goalId = {goalId} userId = {userId} />}
+            	{trackers ? (clicked && <div>{charts}</div>) : (<p> Loading... </p>) }
+	    	{trackers ? (clicked && <PostFeedSmart goalId = {goalId} userId = {userId} />) : (<p> Loading... </p>) }
+	
         </>
     );
 };

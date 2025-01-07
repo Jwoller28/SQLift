@@ -2,7 +2,7 @@ import React, { MutableRefObject, useState } from 'react'
 import PostFeedDumb from './PostFeedDumb';
 
 import { useRef } from 'react';
-import {getPosts, sendPost } from '../../API/Axios';
+import {sendPost, sendPostPhoto } from '../../API/Axios';
 import { restElement } from '@babel/types';
 
 interface PostFeedProp {
@@ -24,7 +24,7 @@ function PostFeedSmart(prop : PostFeedProp) {
         formData.append('message_text', message);
     
         if (file) {
-            formData.append('photo', file);
+	    formData.append('photo', file);
         }
 
         // console.log("Before");

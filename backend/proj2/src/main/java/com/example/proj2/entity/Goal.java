@@ -5,6 +5,7 @@ import com.example.proj2.entity.type.Nutrition;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.util.Set;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -14,7 +15,13 @@ public class Goal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private Integer id;
+    private Long id;
+
+    @OneToMany(mappedBy = "goal")
+    private Set<Post> posts;
+
+    @OneToMany(mappedBy = "goal")
+    private Set<Tracker> trackers;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
@@ -35,7 +42,7 @@ public class Goal {
     public Goal() {
     }
 
-    public Goal(Integer id,  Date createdAt, double sleep, double water, Exercise exercise, Nutrition nutrition) {
+    public Goal(long id,  Date createdAt, double sleep, double water, Exercise exercise, Nutrition nutrition) {
         this.id = id;
 
         this.createdAt = createdAt;
@@ -69,11 +76,11 @@ public class Goal {
         this.waterDate = waterDate;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

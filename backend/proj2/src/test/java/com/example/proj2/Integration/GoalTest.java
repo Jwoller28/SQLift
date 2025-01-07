@@ -35,7 +35,7 @@ public class GoalTest {
 
         // Initialize Goal object with valid AppUser
         testGoal = new Goal();
-        testGoal.setId(1);
+        testGoal.setId(1L);
         testGoal.setUser(user);  // Set the AppUser ID
 
 

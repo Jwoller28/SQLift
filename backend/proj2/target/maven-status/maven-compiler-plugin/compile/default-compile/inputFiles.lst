@@ -1,3 +1,4 @@
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Configs\AWSConfig.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Configs\JwtAuthenticationFilter.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Configs\JwtUtil.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Configs\KafkaConsumerConfig.java
@@ -8,6 +9,7 @@ C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Configs\SecurityConfiguration.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Configs\WebConfig.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Controllers\AuthenticationController.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Controllers\AWSController.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Controllers\GoalController.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Controllers\PostController.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Controllers\TrackerController.java
@@ -21,8 +23,10 @@ C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\entity\Tracker.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\entity\type\Exercise.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\entity\type\Nutrition.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Enum\FileType.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Proj2Application.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\repositories\AppUserRepository.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\repositories\AWSRepository.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\repositories\GoalRepository.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\repositories\PostRepository.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\repositories\TrackerRepository.java
@@ -31,6 +35,7 @@ C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Serializer\PostSerde.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Serializer\PostSerializer.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Services\AuthenticationService.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Services\AWSService.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Services\GoalService.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Services\MyUserDetailsService.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\main\java\com\example\proj2\Services\PostService.java

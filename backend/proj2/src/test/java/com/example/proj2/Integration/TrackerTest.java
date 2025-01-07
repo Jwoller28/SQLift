@@ -38,11 +38,11 @@ public class TrackerTest {
         user.setId(1);
 
         Goal goal = new Goal();
-        goal.setId(1);
+        goal.setId(1L);
 
         // Initialize Tracker object with valid User and Goal
         testTracker = new Tracker();
-        testTracker.setId(1);
+        testTracker.setId(1L);
         testTracker.setUser(user);  // Set the User object
         testTracker.setGoal(goal);  // Set the Goal object
 
