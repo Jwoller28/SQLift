@@ -41,20 +41,35 @@ function InputPage() {
     protein: 0,
   });
 
+  // NEW: We'll store any error text here and display if not null
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // NEW
+
+  // ---------------------------------------------------------------------------
+  // 1) On mount, load token
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      setToken(JSON.parse(token));
+      try {
+        setToken(JSON.parse(token));
+      } catch {
+        // If parse fails, treat token as raw
+        setToken(token);
+      }
     } else {
-      console.error('No token found. Please log in first.');
+      setErrorMessage('No token found. Please log in first.');
       return;
     }
   }, []);
 
+  // ---------------------------------------------------------------------------
+  // 2) Once we have token, fetch /me => username
+  // ---------------------------------------------------------------------------
   useEffect(() => {
+    if (!userToken) return;
+
     const fetchMe = async () => {
       try {
-        // 1) GET /me to get username
         const meRes = await fetch('http://localhost:8080/me', {
           headers: {
             'Content-Type': 'application/json',
@@ -66,55 +81,67 @@ function InputPage() {
         if (!meRes.ok) {
           throw new Error(`GET /me failed: ${meRes.status}`);
         }
-        const username = await meRes.text(); // e.g. "user1"
+        const username = await meRes.text();
         setName(username);
-      } catch (err) {
-        console.error('Error fetching user/goal:', err);
+      } catch (err: any) {
+        setErrorMessage(`Error fetching user info: ${err.message}`);
       }
     };
-    if (userToken) {
-      fetchMe();
-    }
+
+    fetchMe();
   }, [userToken]);
 
+  // ---------------------------------------------------------------------------
+  // 3) Once we have username, fetch user => userId
+  // ---------------------------------------------------------------------------
   useEffect(() => {
-    if (userName) {
-      fetchUsername();
-    }
-  }, [userName]);
+    if (!userName) return;
 
+    const fetchUsername = async () => {
+      try {
+        const userRes = await fetch(`http://localhost:8080/username/${userName}`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
+        if (!userRes.ok) {
+          throw new Error(`GET /username/${userName} failed: ${userRes.status}`);
+        }
+        const userObj = await userRes.json();
+        setUserId(userObj.id);
+      } catch (err: any) {
+        setErrorMessage(`Error fetching user by username: ${err.message}`);
+      }
+    };
+
+    fetchUsername();
+  }, [userName, userToken]);
+
+  // ---------------------------------------------------------------------------
+  // 4) Once we have userId, fetch goal => goalId
+  // ---------------------------------------------------------------------------
   useEffect(() => {
-    if (userId) {
-      fetchGoal();
-    }
-  }, [userId]);
+    if (!userId) return;
 
-  const fetchUsername = async () => {
-    // 2) GET /username/{username} to get user object (including id)
-    const userRes = await fetch(`http://localhost:8080/username/${userName}`, {
-      headers: { Authorization: `Bearer ${userToken}` },
-    });
-    if (!userRes.ok) {
-      throw new Error(`GET /username/${userName} failed: ${userRes.status}`);
-    }
-    const userObj = await userRes.json();
-    setUserId(userObj.id);
-  };
+    const fetchGoal = async () => {
+      try {
+        const goalRes = await fetch(`http://localhost:8080/goalUser/${userId}`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
+        if (!goalRes.ok) {
+          throw new Error(`GET /goalUser/${userId} failed: ${goalRes.status}`);
+        }
+        const goalObj = await goalRes.json();
+        setGoalId(goalObj.id);
+      } catch (err: any) {
+        setErrorMessage(`Error fetching goal: ${err.message}`);
+      }
+    };
 
-  const fetchGoal = async () => {
-    // 3) GET /goalUser/{userId} to get the user’s goal object (including goalId)
-    const goalRes = await fetch(`http://localhost:8080/goalUser/${userId}`, {
-      headers: { Authorization: `Bearer ${userToken}` },
-    });
-    if (!goalRes.ok) {
-      throw new Error(`GET /goalUser/${userId} failed: ${goalRes.status}`);
-    }
-    const goalObj = await goalRes.json();
-    setGoalId(goalObj.id);
-    console.log(goalId);
-  };
+    fetchGoal();
+  }, [userId, userToken]);
 
-  // Recalc totalVolume whenever workouts changes
+  // ---------------------------------------------------------------------------
+  // 5) Recalc totalVolume whenever workouts changes
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     let total = 0;
     workouts.forEach((w) => {
@@ -126,7 +153,9 @@ function InputPage() {
     setTotalVolume(total);
   }, [workouts]);
 
-  // Handle foods + calling the Nutrition API
+  // ---------------------------------------------------------------------------
+  // 6) Foods + calling the Nutrition API
+  // ---------------------------------------------------------------------------
   const addFood = () => {
     setFoods([...foods, { name: '' }]);
   };
@@ -137,11 +166,10 @@ function InputPage() {
     setFoods(updated);
   };
 
-  // On “Fetch Nutrition” we’ll sum up all the foods from the API
   const handleFetchNutrition = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('No token found. Please log in first.');
+    const localToken = localStorage.getItem('token');
+    if (!localToken) {
+      setErrorMessage('No token found. Please log in first.');
       return;
     }
 
@@ -174,8 +202,8 @@ function InputPage() {
           totalFat += item.fat_total_g || 0;
           totalProtein += item.protein_g || 0;
         }
-      } catch (err) {
-        console.error('Error fetching nutrition for', foodName, err);
+      } catch (err: any) {
+        setErrorMessage(`Error fetching nutrition for "${foodName}": ${err.message}`);
       }
     }
 
@@ -185,21 +213,18 @@ function InputPage() {
       fat: totalFat,
       protein: totalProtein,
     });
-
-    console.log('Total from foods:', {
-      calories: totalCals,
-      carbs: totalCarbs,
-      fat: totalFat,
-      protein: totalProtein,
-    });
   };
 
-  // POST new Tracker to your backend
+  // ---------------------------------------------------------------------------
+  // 7) handleSave => create new Tracker
+  // ---------------------------------------------------------------------------
   const handleSave = async () => {
     if (!userId || !goalId) {
-      console.error('User or goal ID not yet loaded. Wait or log in again.');
+      setErrorMessage('User or goal ID not yet loaded. Please wait or log in again.');
       return;
     }
+
+
 
     const requestBody = {
       appUser: { id: userId },
@@ -212,7 +237,6 @@ function InputPage() {
         volume: totalVolume,
         exerciseDate: dayId,
       },
-
       // nutrition
       nutrition: {
         weight: parseFloat(weight) || 0,
@@ -222,11 +246,9 @@ function InputPage() {
         protein: parseFloat(nutritionTotals.protein.toFixed(2)),
         nutritionDate: dayId,
       },
-
       // sleep
       sleep: parseFloat(hoursSlept) || 0,
       sleepDate: dayId,
-
       // water
       water: parseFloat(waterIntake) || 0,
       waterDate: dayId,
@@ -248,9 +270,10 @@ function InputPage() {
 
       const created = await response.json();
       console.log('Tracker created:', created);
+      localStorage.setItem(`completed_${userId}_${dayId}`, "true");
       navigate('/calendar');
-    } catch (err) {
-      console.error('Error saving tracker:', err);
+    } catch (err: any) {
+      setErrorMessage(`Error saving tracker: ${err.message}`);
     }
   };
 
@@ -258,8 +281,14 @@ function InputPage() {
     navigate(`/progress/${dayId}`);
   };
 
+  const handleCalendar = () => {
+    navigate(`calendar`);
+  };
+
+  // ---------------------------------------------------------------------------
+  // RENDER
+  // ---------------------------------------------------------------------------
   return (
-    // Outer gradient container — similar to CalendarPage
     <div
       style={{
         padding: '0px',
@@ -273,7 +302,22 @@ function InputPage() {
         marginTop: 0,
       }}
     >
-      {/* Black “card” container in the middle */}
+      {errorMessage && (
+        <div
+          style={{
+            backgroundColor: '#ff4444',
+            color: '#fff',
+            padding: '10px 20px',
+            borderRadius: '4px',
+            marginBottom: '10px',
+            maxWidth: '800px',
+            textAlign: 'center',
+          }}
+        >
+          {errorMessage}
+        </div>
+      )}
+
       <div
         style={{
           backgroundColor: 'black',
@@ -283,9 +327,44 @@ function InputPage() {
           maxWidth: '800px',
         }}
       >
-        <h2 style={{ color: '#fff', textAlign: 'center', marginBottom: '20px' }}>
-          Input Progress for {dayId}
-        </h2>
+        
+        <div
+  style={{
+    position: 'relative', // let us absolutely position the button
+    marginBottom: '20px',
+  }}
+>
+  {/* Back button at top-left */}
+  <button
+    type="button"
+    onClick={() => navigate('/calendar')}
+    style={{
+      position: 'absolute',
+      left: 0,                  // anchor to the left
+      top: '50%',               // anchor vertically near middle
+      transform: 'translateY(-50%)', // shift button up 50% of its own height
+      padding: '8px 16px',
+      backgroundColor: '#2282ff',
+      color: '#000',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+    }}
+  >
+    Back
+  </button>
+
+  {/* Heading centered by default within this container */}
+  <h2 style={{
+    color: '#fff',
+    textAlign: 'center',  // center text within the container
+    margin: 0,            // remove extra margin
+  }}>
+    Input Progress for {dayId}
+  </h2>
+</div>
+
+
 
         <h3 style={{ color: '#fff', marginTop: '10px' }}>Exercise</h3>
         <div style={{ marginBottom: '10px' }}>
@@ -495,7 +574,7 @@ function InputPage() {
               borderRadius: '4px',
             }}
           >
-            Save Progress
+            Save
           </button>
           <button
             type="button"

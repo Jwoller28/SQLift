@@ -50,13 +50,20 @@ function ProgressPage() {
   const [totalSleep, setTotalSleep] = useState(0);
   const [totalWater, setTotalWater] = useState(0);
 
+  // NEW: We'll store any error text here for on-screen display
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   // A) On mount, fetch token
   useEffect(() => {
     const stored = localStorage.getItem('token');
     if (stored) {
-      setToken(JSON.parse(stored));
+      try {
+        setToken(JSON.parse(stored));
+      } catch {
+        setToken(stored);
+      }
     } else {
-      console.error('No token found. Please log in.');
+      setErrorMessage('No token found. Please log in first.');
     }
   }, []);
 
@@ -73,8 +80,8 @@ function ProgressPage() {
         }
         const name = await res.text();
         setUsername(name);
-      } catch (err) {
-        console.error('Error fetching /me:', err);
+      } catch (err: any) {
+        setErrorMessage(`Error fetching user info (/me): ${err.message}`);
       }
     };
     fetchMe();
@@ -93,8 +100,8 @@ function ProgressPage() {
         }
         const userObj = await res.json();
         setUserId(userObj.id);
-      } catch (err) {
-        console.error('Error fetching user:', err);
+      } catch (err: any) {
+        setErrorMessage(`Error fetching user: ${err.message}`);
       }
     };
     fetchUser();
@@ -113,8 +120,8 @@ function ProgressPage() {
         }
         const goalObj = await res.json();
         setGoal(goalObj);
-      } catch (err) {
-        console.error('Error fetching goal:', err);
+      } catch (err: any) {
+        setErrorMessage(`Error fetching goal: ${err.message}`);
       }
     };
     fetchGoal();
@@ -122,8 +129,9 @@ function ProgressPage() {
 
   // E) Then, also get all trackers => allTrackers
   useEffect(() => {
+    if (!userId || !goal || !token) return;
+
     const fetchTrackers = async () => {
-      if (!userId || !goal || !token) return;
       try {
         // Some backends require both userId & goalId to fetch trackers
         const res = await fetch(`http://localhost:8080/Tracker/${userId}/${goal.id}`, {
@@ -134,10 +142,11 @@ function ProgressPage() {
         }
         const trackers = await res.json();
         setAllTrackers(trackers);
-      } catch (err) {
-        console.error('Error fetching trackers:', err);
+      } catch (err: any) {
+        setErrorMessage(`Error fetching trackers: ${err.message}`);
       }
     };
+
     fetchTrackers();
   }, [userId, goal, token]);
 
@@ -184,6 +193,23 @@ function ProgressPage() {
         marginTop: 0,
       }}
     >
+      {/* NEW: If there's an error, display it here */}
+      {errorMessage && (
+        <div
+          style={{
+            backgroundColor: '#ff4444',
+            color: '#fff',
+            padding: '10px 20px',
+            borderRadius: '4px',
+            marginBottom: '10px',
+            maxWidth: '800px',
+            textAlign: 'center',
+          }}
+        >
+          {errorMessage}
+        </div>
+      )}
+
       {/* Black “card” container */}
       <div
         style={{

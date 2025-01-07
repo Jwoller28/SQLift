@@ -135,6 +135,14 @@ public class GoalService {
         }}
 
 
+    public void deleteGoal(Integer goalId) throws Exception {
+        Optional<Goal> existing = goalRepository.findById(goalId);
+        if (existing.isPresent()) {
+            goalRepository.deleteById(goalId);
+        } else {
+            throw new Exception("Goal not found");
+        }
+    }
 
 
 }

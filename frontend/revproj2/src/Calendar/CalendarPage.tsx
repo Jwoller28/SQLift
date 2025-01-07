@@ -12,6 +12,8 @@ function CalendarPage() {
 
   // The “end date” (or dates) from the user’s goal
   const [goalDate, setGoalDate] = useState<string | null>(null);
+  const [StartDate, setStartDate] = useState<string | null>(null);
+  
 
   // A dictionary that maps date strings ("YYYY-MM-DD") to a status.
   // We’ll populate it dynamically after fetching the goal date.
@@ -105,14 +107,15 @@ function CalendarPage() {
         }
         const goalObj = await res.json();
         
-        // Suppose your goal object might have "sleepDate" or "waterDate" etc.
-        // We'll pick one as the "end date" to highlight:
-        if (goalObj.sleepDate) {
-          // often we get something like "2025-01-29T00:00:00" from the backend
-          // let's substring(0,10) to get "2025-01-29"
-          const dateOnly = goalObj.sleepDate.substring(0, 10);
-          setGoalDate(dateOnly);
+        if (goalObj.createdAt){
+          const dateOnlyStart = goalObj.createdAt.substring(0, 10);
+          setStartDate(dateOnlyStart);
         }
+        if (goalObj.sleepDate) {
+          const dateOnlyEnd = goalObj.sleepDate.substring(0, 10);
+          setGoalDate(dateOnlyEnd);
+        }
+
       } catch (err) {
         console.error('Error fetching goal:', err);
       }
@@ -121,7 +124,7 @@ function CalendarPage() {
   }, [userId, token]);
 
   // ---------------------------------------------
-  // 5) If we have a goalDate, store it in taskStatuses with "end_date"
+  // 5) If we have goalDate and StartDate, store them in taskStatuses
   // ---------------------------------------------
   useEffect(() => {
     if (goalDate) {
@@ -132,20 +135,68 @@ function CalendarPage() {
     }
   }, [goalDate]);
 
+  useEffect(() => {
+    if (StartDate) {
+      setTaskStatuses(prev => ({
+        ...prev,
+        [StartDate]: 'start_date',
+      }));
+    }
+  }, [StartDate]);
+
+  useEffect(() => {
+    // Copy the current statuses
+    const newStatuses = { ...taskStatuses };
+  
+    // If we don’t have userId yet, skip
+    if (!userId) {
+      setTaskStatuses(newStatuses);
+      return;
+    }
+  
+    // For each day in the month, see if localStorage has 
+    // "completed_userId_dayId"
+    for (let i = 1; i <= daysInMonth; i++) {
+      const formattedDay = String(i).padStart(2, '0');
+      const formattedMonth = String(month + 1).padStart(2, '0');
+      const dayId = `${year}-${formattedMonth}-${formattedDay}`;
+  
+      const key = `completed_${userId}_${dayId}`; 
+      if (localStorage.getItem(key) === "true") {
+        newStatuses[dayId] = 'completed';
+      }
+    }
+  
+    setTaskStatuses(newStatuses);
+  }, [year, month, userId]); 
+  
+  
+
+
+
   // ---------------------------------------------
   // 6) Color coding logic
   // ---------------------------------------------
   const getDayColor = (dayId: string) => {
-    // If user has "missed" or "completed" statuses, you can set those too
     const status = taskStatuses[dayId];
-    if (status === 'missed') return '#ff0000';    // Red
-    if (status === 'end_date') return '#800080';  // Purple
+    const dayDate = new Date(dayId);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Ignore time in comparisons
+
+    // Today
+    if (dayId === todayFormatted) {
+      if (status === 'completed') return '#008000'; // Green
+      return '#164180'; // Dark Blue for today until status changes
+    }
+    
+    if (status === 'end_date') return '#800080';    // Purple
+    if (status === 'start_date') return '#800080';  // Purple
     if (status === 'completed') return '#008000'; // Green
 
-    // highlight today in yellow
-    if (dayId === todayFormatted) return '#FFEB3B'; 
-    return '#0080ff'; // Default blue
-  };
+    // Default blue 
+    return '#0080ff';
+};
+
 
   // Today's date in YYYY-MM-DD
   const today = new Date();
@@ -181,12 +232,10 @@ function CalendarPage() {
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
-  // Example placeholders
-
   const goToFeed = () => { navigate('/feed');};
   const goToInbox = () => { navigate('/inbox'); };
   const goToProfile = () => {navigate("/profile")};
-  const goToGoals = () => {/* navigate('/goals'); */};
+  const goToGoals = () => {navigate('/resetGoals');};
 
   // ---------------------------------------------
   // Render the calendar
@@ -215,7 +264,6 @@ function CalendarPage() {
         {currentDate.toLocaleString('default', { month: 'long' })} {year}
       </h1>
 
-      {/* Example nav buttons */}
       <div style={{ marginBottom: '20px', backgroundColor: '#000' }}>
         <button
           onClick={goToFeed}

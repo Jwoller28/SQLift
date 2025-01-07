@@ -77,14 +77,6 @@ public class Goal {
         this.id = id;
     }
 
-    public AppUser getUser() {
-        return appUser;
-    }
-
-    public void setUser(AppUser appUser) {
-         this.appUser = appUser;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
