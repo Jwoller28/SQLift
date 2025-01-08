@@ -3,7 +3,8 @@ package com.example.proj2.Services;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -18,17 +19,19 @@ public class PostService {
     @Autowired
     private KafkaTemplate<Long, Post> kafkaPostTemplate;
 
+    public static final Logger log = LoggerFactory.getLogger(PostService.class);
+
     @Autowired
     private PostRepository postRepostiory;
 
-    private final BlockingQueue<Post> messageQueue = new LinkedBlockingQueue<>(); // Allows for Thread Safety
+    private final BlockingQueue<Post> messageQueue = new LinkedBlockingQueue<>(100); // Allows for Thread Safety
     
     // private List<Post> postList = new ArrayList<>();
     
     public void sendPost(Post post)
     {   
         
-        CompletableFuture<SendResult<Long,Post>> future = kafkaPostTemplate.send("unprocessedPosts", post.getPost_Id(), post);
+        CompletableFuture<SendResult<Long,Post>> future = kafkaPostTemplate.send("unprocessedPosts", post);
         future.whenComplete((result, ex) -> {
             if(ex == null)
             {
@@ -59,13 +62,19 @@ public class PostService {
     // Kafka listener
     @KafkaListener(topics="processedPosts", containerFactory = "kafkaListenerContainerFactory", groupId = "app-users")
     public void listen(Post post) {
+	if(post != null)
+	{
+	log.info(post.toString());
         messageQueue.offer(post); // Add posts to the queue
-	System.out.println(post);
-        postRepostiory.save(post); //persists Post
+	System.out.println(messageQueue.size());
+        postRepostiory.saveAndFlush(post); //persists Post
+	}
     }
 
-    public Post getNextPost(long timeoutMillis) throws InterruptedException {
-        // Wait for a message or timeout
-        return messageQueue.poll(timeoutMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
+    public Post getNextPost() throws InterruptedException {
+        // If Queue is 90% to 100
+	// Start taking until it is 50%
+	
+	return messageQueue.poll();
     }
 }

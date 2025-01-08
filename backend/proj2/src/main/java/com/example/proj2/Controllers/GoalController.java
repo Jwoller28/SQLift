@@ -74,14 +74,15 @@ public class GoalController {
     }
 
     @PatchMapping("goal/{userId}")
-    public ResponseEntity<Integer> UpdateGoal(@PathVariable Integer userId, @RequestBody Goal goal) {
-        logger.info("Attempting to update goal with Date: {}", userId ); 
-        int confirmation = goalService.UpdatedGoalAllById(userId, goal);
+    public ResponseEntity<Integer> UpdateGoal(@PathVariable Integer userId,@RequestBody Goal goal) {
+        logger.info("Attempting to update goal with Date: {}",userId );  // Log ticket update attempt
+
+        int confirmation = goalService.UpdatedGoalAllById(userId,goal);
         if (confirmation == 1) {
-            logger.info("Ticket ID: {} updated successfully", userId);
+            logger.info("Ticket ID: {} updated successfully", userId);  // Log successful ticket update
             return ResponseEntity.ok(confirmation);
         } else {
-            logger.error("Failed to update ticket with ID: {}", userId);
+            logger.error("Failed to update ticket with ID: {}", userId);  // Log failed ticket update
             return ResponseEntity.status(400).body(null);
         }
     }
@@ -98,11 +99,8 @@ public class GoalController {
         } catch (Exception e) {
             logger.error("Failed to delete goal with ID: {}", goalId, e);
             return ResponseEntity.status(404).build();
-        }
     }
 
-
-
-
+}
 }
 

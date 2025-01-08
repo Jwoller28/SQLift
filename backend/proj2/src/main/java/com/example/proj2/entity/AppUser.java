@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
+import java.util.Set;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -15,18 +15,27 @@ public class AppUser  {
     private int id;
 
     @Column(unique = true, length = 100,nullable = false)
+
+    @OneToMany(mappedBy = "appUser")
+    private Set<Post> posts;
+    @OneToMany(mappedBy = "appUser")
+    private Set<Tracker> trackers;
+    @OneToMany(mappedBy = "appUser")
+    private Set<Goal> goals;
+
     private String username;
     private String email;
     private String first_name;
     private String last_name;
     private String photo_url;
-    private LocalDate waterStartDate;
-    private LocalDate sleepStartDate;
-    private LocalDate exerciseStartDate;
-    private LocalDate nutritionStartDate;
+   // private LocalDate waterStartDate;
+   // private LocalDate sleepStartDate;
+   // private LocalDate exerciseStartDate;
+   // private LocalDate nutritionStartDate;
 
     @Column(nullable = false, length = 100)
     private String password;
+
     @CreationTimestamp
     @Column( name = "created_at")
     private Date createdAt;
@@ -104,7 +113,7 @@ public class AppUser  {
     public void setId(Integer id) {
         this.id = id;
     }
-
+/*
     public LocalDate getWaterStartDate() {
         return waterStartDate;
     }
@@ -136,6 +145,8 @@ public class AppUser  {
     public void setNutritionStartDate(LocalDate nutritionStartDate) {
         this.nutritionStartDate = nutritionStartDate;
     }
+    */
+
 
     public String getUsername() {
         return username;

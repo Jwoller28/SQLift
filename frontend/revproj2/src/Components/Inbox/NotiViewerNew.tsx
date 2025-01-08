@@ -42,13 +42,21 @@ const NotiViewerNew: React.FC<ViewerProp> = ({ userId, goalId, clicked }) => {
         sleep: [],
         water: [],
     });
+
     useEffect(() => {
-        const fetchData = async () => {
+        // Ensure useEffect is only triggered once userId and goalId are valid
+        if (userId !== 0 && goalId !== 0) {
+          // Fetch or update data when userId and goalId change
+          console.log('userId:', userId, 'goalId:', goalId);
+          // Example: Fetch data based on userId and goalId
+          const fetchData = async () => {
             let trackers = await getTrackers(userId, goalId);
+	    
             setTrackers(trackers);
         };
         fetchData();
-    }, [goalId]);
+        }
+      }, [userId, goalId]); // Add userId and goalId as dependencies
 
     useEffect(() => {
         if (trackers) {
@@ -116,8 +124,9 @@ const NotiViewerNew: React.FC<ViewerProp> = ({ userId, goalId, clicked }) => {
 
     return (
         <>
-            {clicked && <div>{charts}</div>}
-	    {clicked && <PostFeedSmart goalId = {goalId} userId = {userId} />}
+            	{trackers ? (clicked && <div>{charts}</div>) : (<p> Loading... </p>) }
+	    	{trackers ? (clicked && <PostFeedSmart goalId = {goalId} userId = {userId} />) : (<p> Loading... </p>) }
+	
         </>
     );
 };

@@ -17,8 +17,12 @@ export const sendPost = async (formData : FormData) => {
 		"Content-Type": "multipart/form-data",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin': "*"
+<<<<<<< HEAD
+            }
+=======
             },
 	    withCredentials: true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
         });
         console.log("Message sent successfully!");
     } 
@@ -27,7 +31,64 @@ export const sendPost = async (formData : FormData) => {
     }
 };
 
-export const getPosts = async () => {
+
+export const getPostPhoto = async (fileName : string) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = `http://localhost:8080/s3bucket/trackr-photo-store/download/${fileName}`;
+
+        let result = await axios.get(url, {
+            headers: { 
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+
+	if(result && result.status === 200)
+		{
+		console.log("Photo retrieved!");
+		console.log(result.data);
+		return result.data;
+		}
+	else 
+	{
+		throw new Error;
+	}
+
+    } 
+    catch (error : any) {
+        console.error("Error sending message:", error);
+    }
+};
+
+export const sendPostPhoto = async (photo : FormData) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/s3bucket/trackr-photo-store/upload";
+
+        await axios.post(url, photo, {
+            headers: { 
+		"Content-Type": "multipart/form-data",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+        console.log("Photo Sent Successfully!");
+    } 
+    catch (error : any) {
+        console.error("Error sending Photo:", error);
+    }
+
+}
+
+/*export const getPosts = async () => {
     try {
 	
 	const Token = localStorage.getItem('token');
@@ -37,7 +98,12 @@ export const getPosts = async () => {
         let result = await axios.get(url, {
 		headers: {
 		"Content-Type": "application/json",
+<<<<<<< HEAD
+		Authorization:`Bearer ${Token}`,
+		'Access-Control-Allow-Origin': "*"
+=======
 		Authorization: "Bearer " + cleanToken,
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 		},
 		withCredentials: true
 	});
@@ -54,7 +120,7 @@ export const getPosts = async () => {
     } catch (error : any) {
         console.error("Error retrieving message:", error);
     }
-}
+}*/
 
 export const usernameifAuthorized = async () => {
 	try {
@@ -67,9 +133,21 @@ export const usernameifAuthorized = async () => {
 	let result = await axios.get(url, {
 		headers: {
 		"Content-Type":"application/json",
+<<<<<<< HEAD
+<<<<<<< HEAD
+		Authorization: `Bearer ${Token}`,
+		'Access-Control-Allow-Origin':"*"
+		}
+=======
 		'Authorization': "Bearer " + cleanToken,
 		},
 		'withCredentials': true
+>>>>>>> 7560f915e (Fixed quotation issue, thanks Bret)
+=======
+		'Authorization': "Bearer " + cleanToken,
+		},
+		'withCredentials': true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 	});
 
 	if(result && result.status === 200)
@@ -94,19 +172,24 @@ export const getTrackers = async (userId: number, goalId: number) => {
 	 const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
 	 const url =`http://localhost:8080/Tracker/${userId}/${goalId}`;
-
+ 
 	 let result = await axios.get(url, {
 		 headers: {
 		"Content-Type": "application/json",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin':"*"
+<<<<<<< HEAD
+		 }
+=======
 		 },
 		 withCredentials: true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 
 	 });
 	 if(result && result.status == 200)
 	{
 	   console.log("Trackers received");
+	   console.log(url);
 	   console.log(result.data);
 	   return result.data;
 	}
@@ -132,8 +215,12 @@ export const getUserByUsername = async (username : string) => {
 		"Content-Type": "application/json",
 		Authorization:"Bearer " + cleanToken,
 		'Access-Control-Allow-Origin':"*"
+<<<<<<< HEAD
+		}
+=======
 		},
 		withCredentials: true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 	});
 	if(result1 && result1.status === 200)
 	{
@@ -162,8 +249,12 @@ export const getGoalbyUserId = async(userId : number) => {
 		"Content-Type": "application/json",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin': "*"
+<<<<<<< HEAD
+		}
+=======
 		},
 		withCredentials: true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 	});
 	if(result2 && result2.status === 200)
 	{
