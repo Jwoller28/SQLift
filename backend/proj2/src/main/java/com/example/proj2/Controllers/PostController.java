@@ -75,10 +75,10 @@ public class PostController {
     {
     logger.info("Arrives at Controller");
     
-    String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
-    String contentType = photo.getContentType();
-    long fileSize = photo.getSize();
-    InputStream inputStream = photo.getInputStream();
+    //String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
+    //String contentType = photo.getContentType();
+    //long fileSize = photo.getSize();
+    //InputStream inputStream = photo.getInputStream();
    
     Post post = new Post();
 
@@ -91,8 +91,8 @@ public class PostController {
     post.setUser(appUser);
 
     post.setMessage_text(messageText);
-    post.setPhoto(fileName);
-    awsService.uploadFile("trackr-photo-store",fileName, fileSize, contentType, inputStream);
+    //post.setPhoto(fileName);
+    //awsService.uploadFile("trackr-photo-store",fileName, fileSize, contentType, inputStream);
 
     postService.sendPost(post);
 
