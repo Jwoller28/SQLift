@@ -15,6 +15,8 @@ import Inbox from './Components/Inbox/Inbox';
 import RouteGuard from './Components/RouteGuard/RouteGuard';
 import UserProfile from './Components/UserProfile/UserProfile';
 import ResetGoals from './Components/SetUserGoals/ResetGoals';
+import NavBar from './Components/NavBar/NavBar';
+import Logout from './Components/Logout/Logout';
 
 function App() {
   return (
@@ -26,30 +28,49 @@ function App() {
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<UserManagement/>}></Route>
             <Route path="/register" element={<UserRegistration />}></Route>
-            <Route path="/resetGoals" element={<ResetGoals />} />
+            <Route path="/logout" element={<Logout />}></Route>
+
+            <Route path="/resetGoals" element={
+              <RouteGuard>
+                <NavBar/><ResetGoals />
+              </RouteGuard>} />
             
             <Route path="/goals" element={
-                <SetUserGoals />
+              <RouteGuard>
+                <NavBar/><SetUserGoals />
+              </RouteGuard>
               }></Route>
 
             <Route path="/calendar" element={
               <RouteGuard>
-                <CalendarPage />
+                <NavBar/><CalendarPage />
               </RouteGuard>} />
 
             <Route path="/input/:dayId" element={
               <RouteGuard>
-                <InputPage />
+                <NavBar/><InputPage />
               </RouteGuard>} />
 
             <Route path="/progress/:dayId" element={
               <RouteGuard>
-                <ProgressPage />
+                <NavBar/><ProgressPage />
               </RouteGuard>} />
 
-	      <Route path="/feed" element={<PostList />} />
-	      <Route path="/inbox" element={<Inbox />}/>
-              <Route path="/profile" element={<UserProfile/>}></Route>
+	          <Route path="/feed" element={
+              <RouteGuard>
+                <NavBar/><PostList />
+              </RouteGuard>}/>
+
+	          <Route path="/inbox" element={
+              <RouteGuard>
+                <NavBar/><Inbox />
+              </RouteGuard>}/>
+
+            <Route path="/profile" element={
+              <RouteGuard>
+                <NavBar/><UserProfile/>
+              </RouteGuard>}/>
+
           </Routes>
         </EventsProvider>
       </AuthProvider>
