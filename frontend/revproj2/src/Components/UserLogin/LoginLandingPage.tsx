@@ -27,14 +27,19 @@ function LoginLandingPage() {
             credentials : 'include'
     });
 
-      const userToken = await responseValidToken.text();
-      console.log(userToken);
+    const userToken = await responseValidToken.text();
+    console.log(userToken);
 
     }
     userValidToken();
   }, [token]);
   
+  const context = useContext(AuthContext);
   console.log("Here is token: ",token);
+  if(!context){
+      throw new Error("Login must be used within an AuthProvider")
+  }
+  const {state, dispatch} = context;
 
   return (
     <div>LoginLandingPage

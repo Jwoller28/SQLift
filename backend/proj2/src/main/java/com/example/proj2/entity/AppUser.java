@@ -113,11 +113,7 @@ public class AppUser  {
     public void setId(Integer id) {
         this.id = id;
     }
-<<<<<<< HEAD
-
-
-=======
- /*
+/*
     public LocalDate getWaterStartDate() {
         return waterStartDate;
     }
@@ -150,7 +146,7 @@ public class AppUser  {
         this.nutritionStartDate = nutritionStartDate;
     }
     */
->>>>>>> 807c2cb3a (Implemented fix for Post and feed)
+
 
     public String getUsername() {
         return username;

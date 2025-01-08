@@ -1,5 +1,6 @@
-import React, { FormEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom'
+import React, { FormEvent, useEffect, useState } from 'react'
+
 
 function SetUserGoals() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ function SetUserGoals() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [id, setUserId] = useState<number | null>(null);
+
 
   // --------------- NEW STATE for the “end date” ---------------
   const [endDate, setEndDate] = useState(''); 
@@ -273,6 +275,7 @@ function SetUserGoals() {
 
         <button type="submit">Submit Goals</button>
       </form>
+
     </>
   );
 

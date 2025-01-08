@@ -12,12 +12,6 @@ import CalendarPage from './Calendar/CalendarPage';
 import DayView from './Calendar/DayView';
 import WeekView from './Calendar/WeekView';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
-import ProgressPage from './ProgressPage';
-import InputPage from './InputPage';
-import CalendarPage from './CalendarPage';
-import DayView from './DayView';
-import WeekView from './WeekView';
-import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostFeedSmart from './Components/PostFeed/PostFeedSmart';
 import PostList from './Components/PostFeed/PostList';
 import Inbox from './Components/Inbox/Inbox';
@@ -33,7 +27,6 @@ function App() {
 
         <EventsProvider>
           <Routes>
-            {/* MAKE SURE TO CHANGE BACK TO LOGIN here */}
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<UserManagement/>}></Route>
             <Route path="/register" element={<UserRegistration />}></Route>
@@ -41,7 +34,6 @@ function App() {
             <Route path="/goals" element={
                 <SetUserGoals />
               }></Route>
-
             <Route path="/login/page" element={
               <RouteGuard>
                 <LoginLandingPage />
@@ -78,13 +70,13 @@ function App() {
                 <NutritionApi />
               </RouteGuard>
               }></Route>
+
 	      <Route path="/feed" element={<PostList />} />
 	      <Route path="/inbox" element={<Inbox />}/>
+              <Route path="/profile" element={<UserProfile/>}></Route>
           </Routes>
         </EventsProvider>
       </AuthProvider>
-      <PostFeedSmart></PostFeedSmart>
-      <PostList></PostList>
     </div>
   );
 }

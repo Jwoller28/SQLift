@@ -17,7 +17,12 @@ export const sendPost = async (formData : FormData) => {
 		"Content-Type": "multipart/form-data",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin': "*"
+<<<<<<< HEAD
             }
+=======
+            },
+	    withCredentials: true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
         });
         console.log("Message sent successfully!");
     } 
@@ -93,8 +98,12 @@ export const sendPostPhoto = async (photo : FormData) => {
         let result = await axios.get(url, {
 		headers: {
 		"Content-Type": "application/json",
+<<<<<<< HEAD
 		Authorization:`Bearer ${Token}`,
 		'Access-Control-Allow-Origin': "*"
+=======
+		Authorization: "Bearer " + cleanToken,
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 		},
 		withCredentials: true
 	});
@@ -125,6 +134,7 @@ export const usernameifAuthorized = async () => {
 		headers: {
 		"Content-Type":"application/json",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Authorization: `Bearer ${Token}`,
 		'Access-Control-Allow-Origin':"*"
 		}
@@ -133,6 +143,11 @@ export const usernameifAuthorized = async () => {
 		},
 		'withCredentials': true
 >>>>>>> 7560f915e (Fixed quotation issue, thanks Bret)
+=======
+		'Authorization': "Bearer " + cleanToken,
+		},
+		'withCredentials': true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 	});
 
 	if(result && result.status === 200)
@@ -163,7 +178,12 @@ export const getTrackers = async (userId: number, goalId: number) => {
 		"Content-Type": "application/json",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin':"*"
+<<<<<<< HEAD
 		 }
+=======
+		 },
+		 withCredentials: true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 
 	 });
 	 if(result && result.status == 200)
@@ -195,7 +215,12 @@ export const getUserByUsername = async (username : string) => {
 		"Content-Type": "application/json",
 		Authorization:"Bearer " + cleanToken,
 		'Access-Control-Allow-Origin':"*"
+<<<<<<< HEAD
 		}
+=======
+		},
+		withCredentials: true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 	});
 	if(result1 && result1.status === 200)
 	{
@@ -224,7 +249,12 @@ export const getGoalbyUserId = async(userId : number) => {
 		"Content-Type": "application/json",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin': "*"
+<<<<<<< HEAD
 		}
+=======
+		},
+		withCredentials: true
+>>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 	});
 	if(result2 && result2.status === 200)
 	{

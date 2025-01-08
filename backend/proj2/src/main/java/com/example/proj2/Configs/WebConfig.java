@@ -24,6 +24,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     }
 
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configureer)
+    {
+	    configureer.setDefaultTimeout(5000);
+
+    }
+
     // @Bean
     // public CorsFilter corsFilter(){
     //     CorsConfiguration configuration = new CorsConfiguration();
