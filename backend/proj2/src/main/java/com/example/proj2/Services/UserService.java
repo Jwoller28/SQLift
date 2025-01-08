@@ -1,5 +1,6 @@
 package com.example.proj2.Services;
-
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.example.proj2.entity.AppUser;
 import com.example.proj2.repositories.AppUserRepository;
@@ -15,6 +16,8 @@ public class UserService {
     public UserService(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public AppUser getUserByID(Integer userID) throws Exception {
         Optional<AppUser> user = appUserRepository.findById(userID);
