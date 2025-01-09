@@ -260,7 +260,7 @@ function SetUserGoals() {
             type="number"
             value={water}
             onChange={(e) => setWater(Number(e.target.value))}
-          />
+            required/>
         </label>
         <br />
 
@@ -271,7 +271,7 @@ function SetUserGoals() {
             type="number"
             value={sleep}
             onChange={(e) => setSleep(Number(e.target.value))}
-          />
+            required/>
         </label>
         <br />
 
@@ -282,7 +282,7 @@ function SetUserGoals() {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-          />
+            required />
         </label>
         <br />
 

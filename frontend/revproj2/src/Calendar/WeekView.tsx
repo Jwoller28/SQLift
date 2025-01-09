@@ -1,32 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// Import personal events logic
 import { useEvents } from '../Components/EventsContext/EventsContext';
+// Import group events logic
+import { useGroups, GroupEvent } from '../Components/GroupContext/GroupContext';
 
 function WeekView() {
   const navigate = useNavigate();
-  
-  // Gets the function from your EventsContext 
-  // that allows retrieving events for a specific day.
-  // For instance, getEventsForDay('2024-12-25') might return an array of events.
-  const { getEventsForDay } = useEvents();
 
-  // 1) Set up local state for the "start" of the current week.
-  // By default, we find the most recent Sunday as the week's start.
-  const [currentWeekStart, setCurrentWeekStart] = useState(() => {
+  const { getEventsForDay } = useEvents();              // personal events
+  const { getAllGroupEventsForDay } = useGroups();      // group events
+
+  // We'll fetch userId from localStorage or from your AuthContext
+  const userId = Number(localStorage.getItem('userId') || 0);
+
+  // Track the start date (Sunday) of the current week
+  const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => {
     const now = new Date();
     const dayOfWeek = now.getDay(); // Sunday=0, Monday=1, etc.
     const newDate = new Date(now);
-    // Move 'newDate' back 'dayOfWeek' days to get Sunday
     newDate.setDate(now.getDate() - dayOfWeek);
-    // Set time to midnight for consistency
     newDate.setHours(0, 0, 0, 0);
     return newDate;
   });
 
-  /**
-   * Helper: returns an array of 7 Date objects
-   * starting from 'startOfWeek'.
-   */
+  // We'll store the merged events in a map dayId -> array of events
+  const [weekEventsMap, setWeekEventsMap] = useState<{
+    [dayId: string]: Array<{ id: number; title: string; description: string; group?: boolean }>;
+  }>({});
+
+  // Helper: returns an array of 7 Date objects
   function getWeekDates(startOfWeek: Date): Date[] {
     const days: Date[] = [];
     for (let i = 0; i < 7; i++) {
@@ -37,7 +41,7 @@ function WeekView() {
     return days;
   }
 
-  // 2) Navigate to previous/next week by subtracting/adding 7 days
+  // Navigate to previous/next week
   const goToPrevWeek = () => {
     const newStart = new Date(currentWeekStart);
     newStart.setDate(newStart.getDate() - 7);
@@ -50,18 +54,61 @@ function WeekView() {
     setCurrentWeekStart(newStart);
   };
 
-  // 3) Build array of 7 days for this week
-  const weekDates = getWeekDates(currentWeekStart);
-
-  // 4) On clicking a day, navigate to /day/:dayId
+  // On clicking a day, we go to /day/:dayId
+  // (Though your logic might be “past day => /input/:dayId, future => /progress/:dayId” if you prefer.)
   const handleDayClick = (dayStr: string) => {
     navigate(`/day/${dayStr}`);
   };
 
-  // 5) Optional button to go back to the main Calendar
+  // Optional button to go back to the main Calendar
   const handleCalendarButton = () => {
-    navigate('/');
+    navigate('/calendar');
   };
+
+  // Build array of 7 days for this week
+  const weekDates = getWeekDates(currentWeekStart);
+
+  // On mount or when currentWeekStart changes, load merged events for these 7 days
+  useEffect(() => {
+    async function loadWeekEvents() {
+      const newMap: {
+        [dayId: string]: Array<{ id: number; title: string; description: string; group?: boolean }>;
+      } = {};
+      for (let i = 0; i < 7; i++) {
+        const dateObj = new Date(currentWeekStart);
+        dateObj.setDate(currentWeekStart.getDate() + i);
+
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const dayId = `${year}-${month}-${day}`;
+
+        // 1) Personal events
+        const personalEvents = getEventsForDay(dayId);
+
+        // 2) Group events
+        let groupEvents: GroupEvent[] = [];
+        if (userId) {
+          groupEvents = await getAllGroupEventsForDay(dayId, userId);
+        }
+
+        // Merge them into a single array
+        const merged = [
+          ...personalEvents.map((evt) => ({ ...evt, group: false })),
+          ...groupEvents.map((gevt) => ({
+            id: gevt.id,
+            title: gevt.title,
+            description: gevt.description,
+            group: true,
+          })),
+        ];
+
+        newMap[dayId] = merged;
+      }
+      setWeekEventsMap(newMap);
+    }
+    loadWeekEvents();
+  }, [currentWeekStart, getEventsForDay, getAllGroupEventsForDay, userId]);
 
   return (
     <div
@@ -134,20 +181,26 @@ function WeekView() {
             day: 'numeric',
           });
 
-            const year = dateObj.getFullYear();
-            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-            const day = String(dateObj.getDate()).padStart(2, '0');
-            const dayId = `${year}-${month}-${day}`; // Always YYYY-MM-DD
+          const year = dateObj.getFullYear();
+          const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+          const day = String(dateObj.getDate()).padStart(2, '0');
+          const dayId = `${year}-${month}-${day}`;
 
-          // Retrieve any events for that day
-          const events = getEventsForDay(dayId);
-          
+          const events = weekEventsMap[dayId] || [];
+
+          // If there's at least one group event, we could color the tile differently
+          // Or if you have "completed" logic, you'd do it here as well
+          const hasGroupEvent = events.some((e) => e.group);
+
+          // Decide tile color
+          const tileBg = hasGroupEvent ? '#ff4444' : '#2c2c54';
+
           return (
             <div
               key={index}
               onClick={() => handleDayClick(dayId)}
               style={{
-                backgroundColor: '#2c2c54',
+                backgroundColor: tileBg,
                 border: '1px solid #444',
                 borderRadius: '4px',
                 padding: '10px',
@@ -155,7 +208,6 @@ function WeekView() {
               }}
             >
               <div style={{ fontWeight: 'bold' }}>{dayLabel}</div>
-              {/* List out events or say "No events" */}
               {events.length === 0 ? (
                 <div style={{ fontStyle: 'italic', fontSize: '0.9em' }}>
                   No events
@@ -175,6 +227,11 @@ function WeekView() {
                   >
                     <div style={{ fontWeight: 'bold' }}>{evt.title}</div>
                     <div style={{ fontSize: '0.85em' }}>{evt.description}</div>
+                    {evt.group && (
+                      <div style={{ fontSize: '0.7em', fontStyle: 'italic' }}>
+                        (Group Event)
+                      </div>
+                    )}
                   </div>
                 ))
               )}
