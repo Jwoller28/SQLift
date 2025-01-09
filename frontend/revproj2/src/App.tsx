@@ -5,10 +5,13 @@ import { AuthProvider } from './Components/UserContext/UserContext';
 import { EventsProvider } from './Components/EventsContext/EventsContext';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import UserRegistration from './Components/UserRegistration/UserRegistration';
-
+import { GroupProvider } from './Components/GroupContext/GroupContext';
 import ProgressPage from './Calendar/ProgressPage';
 import InputPage from './Calendar/InputPage';
 import CalendarPage from './Calendar/CalendarPage';
+import GroupPage from './Calendar/GroupPage';
+import DayView from './Calendar/DayView';
+import WeekView from './Calendar/WeekView';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostList from './Components/PostFeed/PostList';
 import Inbox from './Components/Inbox/Inbox';
@@ -24,54 +27,71 @@ function App() {
       <AuthProvider>
 
         <EventsProvider>
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<UserManagement/>}></Route>
-            <Route path="/register" element={<UserRegistration />}></Route>
-            <Route path="/logout" element={<Logout />}></Route>
+          <GroupProvider>
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/login" element={<UserManagement/>}></Route>
+              <Route path="/register" element={<UserRegistration />}></Route>
+              <Route path="/logout" element={<Logout />}></Route>
 
-            <Route path="/resetGoals" element={
-              <RouteGuard>
-                <NavBar/><ResetGoals />
-              </RouteGuard>} />
-            
-            <Route path="/goals" element={
-              <RouteGuard>
-                <NavBar/><SetUserGoals />
-              </RouteGuard>
-              }></Route>
+              <Route path="/resetGoals" element={
+                <RouteGuard>
+                  <NavBar/><ResetGoals />
+                </RouteGuard>} />
+              
+              <Route path="/goals" element={
+                <RouteGuard>
+                  <SetUserGoals />
+                </RouteGuard>
+                }></Route>
 
-            <Route path="/calendar" element={
-              <RouteGuard>
-                <NavBar/><CalendarPage />
-              </RouteGuard>} />
+              <Route path="/calendar" element={
+                <RouteGuard>
+                  <NavBar/><CalendarPage />
+                </RouteGuard>} />
 
-            <Route path="/input/:dayId" element={
-              <RouteGuard>
-                <NavBar/><InputPage />
-              </RouteGuard>} />
+                <Route path="/groups" element={
+                <RouteGuard>
+                  <NavBar/><GroupPage />
+                </RouteGuard>} />
 
-            <Route path="/progress/:dayId" element={
-              <RouteGuard>
-                <NavBar/><ProgressPage />
-              </RouteGuard>} />
+                <Route path="/day/:dayId" element={
+                <RouteGuard>
+                  <NavBar/><DayView />
+                </RouteGuard>} />
 
-	          <Route path="/feed" element={
-              <RouteGuard>
-                <NavBar/><PostList />
-              </RouteGuard>}/>
+                <Route path="/Week" element={
+                <RouteGuard>
+                  <NavBar/><WeekView />
+                </RouteGuard>} />
 
-	          <Route path="/inbox" element={
-              <RouteGuard>
-                <NavBar/><Inbox />
-              </RouteGuard>}/>
+              <Route path="/input/:dayId" element={
+                <RouteGuard>
+                  <NavBar/><InputPage />
+                </RouteGuard>} />
 
-            <Route path="/profile" element={
-              <RouteGuard>
-                <NavBar/><UserProfile/>
-              </RouteGuard>}/>
+              <Route path="/progress/:dayId" element={
+                <RouteGuard>
+                  <NavBar/><ProgressPage />
+                </RouteGuard>} />
 
-          </Routes>
+              <Route path="/feed" element={
+                <RouteGuard>
+                  <NavBar/><PostList />
+                </RouteGuard>}/>
+
+              <Route path="/inbox" element={
+                <RouteGuard>
+                  <NavBar/><Inbox />
+                </RouteGuard>}/>
+
+              <Route path="/profile" element={
+                <RouteGuard>
+                  <NavBar/><UserProfile/>
+                </RouteGuard>}/>
+
+            </Routes>
+          </GroupProvider>
         </EventsProvider>
       </AuthProvider>
     </div>

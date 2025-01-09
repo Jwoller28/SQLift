@@ -2,6 +2,10 @@ package com.example.proj2.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import java.util.Set;
+import java.util.HashSet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 import java.time.LocalDate;
@@ -35,8 +39,18 @@ public class AppUser  {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public AppUser() {
-    }
+    // MANY-TO-MANY with Group
+    @ManyToMany
+    @JoinTable(
+        name = "group_memberships",
+        joinColumns = @JoinColumn(name = "user_id"), 
+        inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+
+    @JsonIgnore
+    private Set<Group> groups = new HashSet<>();
+
+    public AppUser() {}
 
     public AppUser(Integer id, String username, String password) {
         this.id = id;
@@ -103,6 +117,14 @@ public class AppUser  {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+    
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
     }
 
     public LocalDate getWaterStartDate() {
