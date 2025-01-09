@@ -80,3 +80,7 @@ yarn-debug.log*
 yarn-error.log*
 backend/proj2/src/main/resources/application.properties
 backend/proj2/target/classes/application.properties
+application.properties
+.properties
+*.properties
+

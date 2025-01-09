@@ -53,14 +53,6 @@ public class UserService {
                 existingAppUser.setLast_name(appUser.getLast_name());
             if(appUser.getPhoto_url()!=null)
                 existingAppUser.setPhoto_url(appUser.getPhoto_url());
-            if(appUser.getExerciseStartDate()!=null)
-                existingAppUser.setExerciseStartDate(appUser.getExerciseStartDate());
-            if(appUser.getNutritionStartDate()!=null)
-                existingAppUser.setNutritionStartDate(appUser.getNutritionStartDate());
-            if(appUser.getWaterStartDate()!=null)
-                existingAppUser.setWaterStartDate(appUser.getWaterStartDate());
-            if(appUser.getSleepStartDate()!=null)
-                existingAppUser.setSleepStartDate(appUser.getSleepStartDate());
 
             appUserRepository.save(existingAppUser);
 

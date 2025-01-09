@@ -37,7 +37,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
 		.authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/login", "/register", "/sse/posts").permitAll().requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers("/login", "/register").permitAll().requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

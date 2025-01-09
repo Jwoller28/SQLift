@@ -34,6 +34,22 @@ import com.example.proj2.entity.Post;
 import com.example.proj2.Services.PostService;
 import com.example.proj2.Services.AWSService;
 import com.example.proj2.Configs.JwtUtil;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
+import com.example.proj2.entity.Comment;
+import com.example.proj2.entity.Post;
+import com.example.proj2.Services.CommentService;
+import com.example.proj2.Services.PostService;
 
 @RestController
 public class PostController {
@@ -41,8 +57,8 @@ public class PostController {
     @Autowired
     final static Logger logger = LoggerFactory.getLogger(PostController.class);
     
-    @Autowired
-    private AWSService awsService;
+    //@Autowired
+    //private AWSService awsService;
 
     @Autowired
     private PostService postService;
@@ -56,9 +72,9 @@ public class PostController {
 
     private ExecutorService nonBlockingService = Executors.newCachedThreadPool();
 
-    public PostController(AWSService awsService, PostService postService, ObjectMapper objectMapper, JwtUtil jwtUtil)
+    public PostController(PostService postService, ObjectMapper objectMapper, JwtUtil jwtUtil)
     {
-	this.awsService = awsService;
+	//this.awsService = awsService;
 	this.postService = postService;
 	this.objectMapper = objectMapper;
 	this.jwtUtil = jwtUtil;
@@ -68,8 +84,7 @@ public class PostController {
     // Turn the Request Param into Request Body with object that has these fields
     public ResponseEntity<String> sendPost(@RequestParam("goal_id") long goalId,
     @RequestParam("user_id") int userId,
-    @RequestParam("message_text") String messageText,
-    @RequestPart("photo") MultipartFile photo)
+    @RequestParam("message_text") String messageText)
     {
     try
     {
@@ -85,7 +100,6 @@ public class PostController {
     Goal goal = new Goal();
     goal.setId(goalId);
     post.setGoal(goal);
-
     AppUser appUser = new AppUser();
     appUser.setId(userId);    
     post.setUser(appUser);
@@ -112,57 +126,32 @@ public class PostController {
     // }
 
 
-@GetMapping(value="/sse/posts", produces=MediaType.TEXT_EVENT_STREAM_VALUE) //SSE
-public ResponseEntity<SseEmitter> poll(HttpServletRequest request) {
-    logger.info("Arrives at Controller (GET)");
-    
-    logger.info(request.getHeader("Authorization"));
+@GetMapping(value="/live/posts")
+public ResponseEntity<Post> poll() {
 
-    String authHeader = request.getHeader("Authorization");
-	// logger.info(authHeader);
-        String token = null;
-        String username = null;
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-	    //logger.info(token);
-            username = jwtUtil.extractUsername(token);
-	    logger.info(username);
-        }
-
-        // Proceed with the filter only if we have a valid token and username
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (jwtUtil.validateToken(token)) {
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(username, null, null);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        }
-
-    SseEmitter emitter = new SseEmitter(30000L);
-    nonBlockingService.execute( () -> {
-    try {
-        Post post = postService.getNextPost(); // This call waits for the next post
-        if (post != null) {
-	    String postString = objectMapper.writeValueAsString(post);
-		
-            emitter.send(postString);
-	    emitter.complete();
-       }
-    }
-    catch (Exception e) {
-        // Handle interruption gracefully, logging the error and setting the interrupt flag
-	emitter.completeWithError(e);
-	logger.error("Error processing post: ", e);
-    }
-    });
-
-    return ResponseEntity.ok().body(emitter);
+	Post post = postService.getNextPost();
+	if(post != null)
+	{
+		return ResponseEntity.ok().body(post);
+	}
+	return ResponseEntity.noContent().build();
 }
 
+
+@GetMapping(value="/posts")
+public ResponseEntity<List<Post>> getAll(){
+
+	List<Post> posts = postService.getAllPosts();
+	
+	if(posts != null)
+	{
+		return ResponseEntity.ok().body(posts);
+	}
+	return ResponseEntity.noContent().build();
 }
+
+
+
+}
+
 

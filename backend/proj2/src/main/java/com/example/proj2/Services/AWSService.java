@@ -18,9 +18,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class AWSService implements AWSRepository {
 
+@Service
+public class AWSService {
+//implements AWSRepository
+/*
 	@Autowired
 	private AmazonS3 s3Client;
 	
@@ -73,4 +75,7 @@ public class AWSService implements AWSRepository {
 			s3Client.deleteObject(bucketName, keyName);
 			log.info("File deleted from bucket({}): {}" , bucketName, keyName);
 		}
+
+*/		
 }
+

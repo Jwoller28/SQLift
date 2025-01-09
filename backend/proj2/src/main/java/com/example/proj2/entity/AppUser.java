@@ -22,6 +22,8 @@ public class AppUser  {
     private Set<Tracker> trackers;
     @OneToMany(mappedBy = "appUser")
     private Set<Goal> goals;
+    @OneToMany(mappedBy = "user")
+    private Set<Comment> comments;
 
     private String username;
     private String email;

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 
+/*
 @RestController
 @RequestMapping("/s3bucket")
 
@@ -63,3 +64,4 @@ public class AWSController
 			return ResponseEntity.ok().build();
 		}
 }
+*/

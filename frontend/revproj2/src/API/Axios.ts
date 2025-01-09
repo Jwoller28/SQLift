@@ -17,12 +17,8 @@ export const sendPost = async (formData : FormData) => {
 		"Content-Type": "multipart/form-data",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin': "*"
-<<<<<<< HEAD
-            }
-=======
             },
 	    withCredentials: true
->>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
         });
         console.log("Message sent successfully!");
     } 
@@ -31,6 +27,37 @@ export const sendPost = async (formData : FormData) => {
     }
 };
 
+export const getStoredPosts = async () => {
+	try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+	const url = "http://localhost:8080/posts";
+
+	let result = await axios.get(url, {
+	headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		"Access-Control-Allow-Origin":"*"
+		},
+		withCredentials: true
+	});
+	if(result && result.status == 200)
+		{
+		console.log("Stored Posts Shown");	
+		console.log(result.data);
+		return result.data;
+		}
+	else
+		{
+		throw new Error;
+		}
+	}
+	catch(error: any)
+	{
+		console.error("Error sending message: ", error);
+	}
+};
 
 export const getPostPhoto = async (fileName : string) => {
     try {
@@ -88,22 +115,17 @@ export const sendPostPhoto = async (photo : FormData) => {
 
 }
 
-/*export const getPosts = async () => {
+export const getPost = async () => {
     try {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = "http://localhost:8080/posts";
+        const url = "http://localhost:8080/live/posts";
 
         let result = await axios.get(url, {
 		headers: {
 		"Content-Type": "application/json",
-<<<<<<< HEAD
-		Authorization:`Bearer ${Token}`,
-		'Access-Control-Allow-Origin': "*"
-=======
 		Authorization: "Bearer " + cleanToken,
->>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 		},
 		withCredentials: true
 	});
@@ -120,7 +142,7 @@ export const sendPostPhoto = async (photo : FormData) => {
     } catch (error : any) {
         console.error("Error retrieving message:", error);
     }
-}*/
+}
 
 export const usernameifAuthorized = async () => {
 	try {
@@ -133,21 +155,11 @@ export const usernameifAuthorized = async () => {
 	let result = await axios.get(url, {
 		headers: {
 		"Content-Type":"application/json",
-<<<<<<< HEAD
-<<<<<<< HEAD
-		Authorization: `Bearer ${Token}`,
-		'Access-Control-Allow-Origin':"*"
-		}
-=======
+		'Access-Control-Allow-Origin':"*",
 		'Authorization': "Bearer " + cleanToken,
 		},
 		'withCredentials': true
->>>>>>> 7560f915e (Fixed quotation issue, thanks Bret)
-=======
-		'Authorization': "Bearer " + cleanToken,
-		},
-		'withCredentials': true
->>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
+
 	});
 
 	if(result && result.status === 200)
@@ -178,12 +190,8 @@ export const getTrackers = async (userId: number, goalId: number) => {
 		"Content-Type": "application/json",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin':"*"
-<<<<<<< HEAD
-		 }
-=======
 		 },
 		 withCredentials: true
->>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 
 	 });
 	 if(result && result.status == 200)
@@ -215,12 +223,8 @@ export const getUserByUsername = async (username : string) => {
 		"Content-Type": "application/json",
 		Authorization:"Bearer " + cleanToken,
 		'Access-Control-Allow-Origin':"*"
-<<<<<<< HEAD
-		}
-=======
 		},
 		withCredentials: true
->>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 	});
 	if(result1 && result1.status === 200)
 	{
@@ -249,12 +253,8 @@ export const getGoalbyUserId = async(userId : number) => {
 		"Content-Type": "application/json",
 		Authorization: "Bearer " + cleanToken,
 		'Access-Control-Allow-Origin': "*"
-<<<<<<< HEAD
-		}
-=======
 		},
 		withCredentials: true
->>>>>>> 608dd333b4909b50ca38f595d6107542e8e65e9f
 	});
 	if(result2 && result2.status === 200)
 	{
@@ -302,4 +302,58 @@ export const getGoalsbyUserId = async(userId : number) => {
 	catch(error: any) {
 		console.error("Error retrieving goals: ", error);
 	}
+}
+
+export const getCommentsByPost = async(postId : number) => {
+	try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+	const url = `http://localhost:8080/fetch/comment/${postId}`;
+
+	let result =  await axios.get(url, {
+		headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+		},
+		withCredentials: true
+	});
+	if(result && result.status === 200)
+	{
+		console.log("Comments for Post acquired");
+		console.log(result.data);
+		return result.data;
+	}
+	else
+	{
+		throw new Error;
+	}
+	}
+	catch(error: any) {
+		console.error("Error retrieving Post Comments: ", error);
+	}
+}
+
+
+export const sendComment = async (comment : FormData) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/create/comment";
+		console.log(comment);
+        await axios.post(url, comment, {
+            headers: { 
+		"Content-Type": "multipart/form-data",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+        console.log("Comment Sent!");
+    } 
+    catch (error : any) {
+        console.error("Error sending Comment:", error);
+    }
 }
