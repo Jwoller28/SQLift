@@ -4,6 +4,8 @@ import com.example.proj2.entity.Goal;
 import jakarta.persistence.ManyToOne;
 import com.example.proj2.entity.Comment;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,14 +47,32 @@ public class Post {
     @Column(name = "filename")
     private String photo;
 
-    @Column(name = "tags")
+    @ElementCollection
+    @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "tag")
     private List<String> tags;
 
     @OneToMany
     private List<Comment> comments;
 
 
-    public String getMessage_text() {
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public String getMessageText() {
         return message_text;
     }
 
@@ -60,7 +80,7 @@ public class Post {
         return comments;
     }
 
-    public void setMessage_text(String message_text) {
+    public void setMessageText(String message_text) {
         this.message_text = message_text;
     }
 

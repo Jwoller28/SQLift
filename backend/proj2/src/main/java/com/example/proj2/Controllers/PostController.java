@@ -35,7 +35,7 @@ import com.example.proj2.Services.PostService;
 import com.example.proj2.Services.AWSService;
 import com.example.proj2.Configs.JwtUtil;
 import java.util.List;
-
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
+
 import com.example.proj2.entity.Comment;
 import com.example.proj2.entity.Post;
 import com.example.proj2.Services.CommentService;
@@ -78,7 +78,7 @@ public class PostController {
     // Turn the Request Param into Request Body with object that has these fields
     public ResponseEntity<String> sendPost(@RequestParam("goal_id") long goalId,
     @RequestParam("user_id") int userId,
-    @RequestParam("message_text") String messageText)
+    @RequestParam("message_text") String messageText, @RequestParam("message_tags") String messageTags)
     {
     try
     {
@@ -97,10 +97,13 @@ public class PostController {
     AppUser appUser = new AppUser();
     appUser.setId(userId);    
     post.setUser(appUser);
-
-    post.setMessage_text(messageText);
+    logger.info("Post Text: " + messageText);
+    post.setMessageText(messageText);
+    
     //post.setPhoto(fileName);
     //awsService.uploadFile("trackr-photo-store",fileName, fileSize, contentType, inputStream);
+    List<String> tags = Arrays.asList(messageTags.split(","));
+    post.setTags(tags);
 
     postService.sendPost(post);
 

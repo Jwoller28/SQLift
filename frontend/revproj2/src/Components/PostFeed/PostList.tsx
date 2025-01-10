@@ -1,28 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { getStoredPosts, getPost } from '../../API/Axios';
+import { getStoredPosts, getPost, getFilteredPost, getFilteredStoredPosts } from '../../API/Axios';
 import { useLocation } from 'react-router-dom';
+import FeedSearch from './FeedSearch';
 import CommentList from './Comments/CommentList';
 
 function PostList() {
   const [posts, setPosts] = useState<any[]>([]);
-  const postIds: number[] = [];
+  const [postIds, setPostIds] = useState<number[]>([]); // Track post IDs in state
   const location = useLocation();
-  const [click, setClick] = useState<{ [key: number]: boolean }>({}); // Ensure click is an object
+  const [click, setClick] = useState<{ [key: number]: boolean }>({});
+  const [change, onChange] = useState("");
+  const [searched, setSearched] = useState(false);
 
   useEffect(() => {
     let interval: any;
 
-    // Polling only if the current route is '/feed'
     if (location.pathname === '/feed') {
       const poll = async () => {
         try {
-          const newPost = await getPost();
+          let newPost;
+          if (searched === false && change === "") {
+            newPost = await getPost();
+          } else {
+            newPost = await getFilteredPost();
+          }
+
           if (!newPost) {
             throw new Error('No new post');
           } else {
             if (!postIds.includes(newPost.post_id)) {
               console.log('New Post: ' + newPost);
-              postIds.push(newPost.post_id);
+              setPostIds((prevPostIds) => [...prevPostIds, newPost.post_id]);
               setPosts((prevPosts) => [newPost, ...prevPosts]);
             }
           }
@@ -31,55 +39,65 @@ function PostList() {
         }
       };
 
-      poll(); // Run polling immediately once effect runs
-      interval = setInterval(poll, 5000); // Start polling every 5 seconds
+      poll();
+      interval = setInterval(poll, 5000);
 
-      // Cleanup function to clear the polling interval when the user navigates away
-      return () => {
-        if (interval) clearInterval(interval);
-      };
+      return () => clearInterval(interval);
     }
 
-    // Cleanup if location changes (i.e., not on /feed anymore)
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [location.pathname]); // Dependency array to trigger polling on pathname change
+    return () => clearInterval(interval);
+  }, [location.pathname, change, searched]);
 
   useEffect(() => {
     const getDB = async () => {
-      let postList = await getStoredPosts();
+      let postList;
+      if (searched === false && change === "") {
+        postList = await getStoredPosts();
+      } else {
+        postList = await getFilteredStoredPosts();
+      }
       console.log('Get Stored Posts: ', postList);
-      setPosts(postList as any[]);
+      setPosts(postList);
     };
-    getDB();
-  }, []);
 
-  // Update click state for individual post
+    getDB();
+  }, [searched, change]);
+
   function handleClick(postId: number) {
     setClick((prev) => ({ ...prev, [postId]: !prev[postId] }));
   }
 
-  return (
-    <div>
-      <h3>Consumed Messages: </h3>
-      <div>
-        {posts.map((post, index) => (
-          <div key={index}>
-            <h5>Goal ID: {post.goal.id}</h5>
-            <a>User ID: {post.user.id}</a>
-            <p>Message Text: {post.message_text}</p>
-            <p>Date: {post.creation} </p>
-            <button>Edit</button>
-            <button onClick={() => handleClick(post.postId)}>Comment</button>
-            {/* Pass the entire click object, not just a boolean */}
-            {click[post.postId] && <CommentList post={post} />}
-            <img loading="lazy" src={post.photo} width="200" height="auto" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+    // Function to format the tags with # before each word and spaces in between
+    const formatTags = (tags: string[]) => {
+      return tags
+        .map(tag => `#${tag}`)  // Add # before each tag
+        .join(' ');             // Join tags with spaces
+    };
 
+    return (
+        <div>
+          <h3>We will get there Together!</h3>
+          <div>
+            <FeedSearch onChange={onChange} setSearched={setSearched}></FeedSearch>
+          </div>
+          <div>
+            {searched && posts === undefined && <p>No Posts Match this Criteria</p>}
+            {posts.map((post) => (
+              <div key={post.postId}> {/* Use postId as the key for better stability */}
+                <h5>Goal ID: {post.goal.id}</h5>
+                <a>User ID: {post.user.id}</a>
+                <p>Message Text: {post.messageText}</p>
+                <p>Date: {post.creation} </p>
+                {post.tags && post.tags.length > 0 && (
+                  <p>Tags: {formatTags(post.tags)}</p>
+                )}
+                <button onClick={() => handleClick(post.postId)}>Comment</button>
+                {click[post.postId] && <CommentList post={post} />}
+                <img loading="lazy" src={post.photo} width="200" height="auto" />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
 export default PostList;

@@ -138,7 +138,7 @@ public class AppUser  {
         this.groups = groups;
     }
 
-    public LocalDate getWaterStartDate() {
+   /* public LocalDate getWaterStartDate() {
         return waterStartDate;
     }
 
@@ -169,8 +169,7 @@ public class AppUser  {
     public void setNutritionStartDate(LocalDate nutritionStartDate) {
         this.nutritionStartDate = nutritionStartDate;
     }
-    */
-
+*/
 
     public String getUsername() {
         return username;

@@ -13,6 +13,7 @@ interface PostFeedProp {
 function PostFeedSmart(prop : PostFeedProp) {
     const [message, setMessage] = useState("");
     const [file, setFile] = useState<File | undefined>(undefined);
+    const [tags, setTags] = useState("");
     const formRef : MutableRefObject<HTMLFormElement | null> = useRef(null);
 
     const handleSubmit = async (e : any) => {
@@ -22,7 +23,7 @@ function PostFeedSmart(prop : PostFeedProp) {
         formData.append('goal_id', prop.goalId.toString());
         formData.append('user_id', prop.userId.toString());
         formData.append('message_text', message);
-    
+        formData.append('message_tags', tags)
         if (file) {
 	    formData.append('photo', file);
         }
@@ -42,6 +43,7 @@ function PostFeedSmart(prop : PostFeedProp) {
                 formData.delete("goal_id");
                 formData.delete("user_id");
                 formData.delete("message_text");
+                formData.delete("message_tags");
                 formData.delete("photo");
             } catch (error) {
                 console.error("Error in sending data:", error);
@@ -61,7 +63,7 @@ function PostFeedSmart(prop : PostFeedProp) {
        
         <>
              <div>
-            <PostFeedDumb formRef = {formRef} setFile = {setFile} setMessage = {setMessage} onSubmit = {handleSubmit}></PostFeedDumb> </div>
+            <PostFeedDumb formRef = {formRef} setFile = {setFile} setMessage = {setMessage} setTags = {setTags} onSubmit = {handleSubmit}></PostFeedDumb> </div>
 
  	</>
     )

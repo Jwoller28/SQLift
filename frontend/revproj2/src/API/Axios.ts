@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from 'react';
+import {searchType} from '../Components/PostFeed/FeedSearch';
 
 
 const Token : string | null = localStorage.getItem('token');
@@ -357,3 +358,88 @@ export const sendComment = async (comment : FormData) => {
         console.error("Error sending Comment:", error);
     }
 }
+
+
+
+export const sendTypeFilter = async (searchType : searchType) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/filter";
+
+        await axios.post(url, searchType, {
+            headers: { 
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+        console.log("Type sent successfully!");
+    } 
+    catch (error : any) {
+        console.error("Error sending Type:", error);
+    }
+};
+
+export const getFilteredPost = async () => {
+    try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/filter/live/post";
+
+        let result = await axios.get(url, {
+		headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		},
+		withCredentials: true
+	});
+        if(result && result.status === 200)
+        {
+            console.log("Filtered Post Retrieved!");
+            console.log(result.data);
+            return result.data;
+        }
+        else{
+            throw new Error;
+        }
+        
+    } catch (error : any) {
+        console.error("Error retrieving message:", error);
+    }
+}
+
+export const getFilteredStoredPosts = async () => {
+	try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+	const url = "http://localhost:8080/filter/posts";
+
+	let result = await axios.get(url, {
+	headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		"Access-Control-Allow-Origin":"*"
+		},
+		withCredentials: true
+	});
+	if(result && result.status == 200)
+		{
+		console.log("Filtered Stored Posts Shown");	
+		console.log(result.data);
+		return result.data;
+		}
+	else
+		{
+		throw new Error;
+		}
+	}
+	catch(error: any)
+	{
+		console.error("Error sending message: ", error);
+	}
+};
