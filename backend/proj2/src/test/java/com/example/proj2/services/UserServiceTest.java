@@ -1,61 +1,102 @@
-/**package com.example.proj2.services;
+package test.java.com.example.proj2.services;
 
-import com.example.proj2.models.User;
-import com.example.proj2.repositories.UserRepository;
-import com.example.proj2.exceptions.UserAlreadyExistsException; 
+import com.example.proj2.entity.AppUser;
+import com.example.proj2.repositories.AppUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
-class UserServiceTest {
+public class UserServiceTest {
 
+    @Mock
+    private AppUserRepository appUserRepository;
+
+    @InjectMocks
     private UserService userService;
-    private UserRepository userRepository = Mockito.mock(UserRepository.class);
 
     @BeforeEach
-    void setUp() {
-        userService = new UserService(userRepository);
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void registerNewUser_Success() {
-        User user = new User();
-        user.setUsername("testUser");
-        user.setEmail("test@example.com");
-        user.setPassword("plaintext");
+    public void testGetUserByID_Success() throws Exception {
+        AppUser user = new AppUser();
+        when(appUserRepository.findById(1)).thenReturn(Optional.of(user));
 
-        // Mock: user does not exist
-        Mockito.when(userRepository.existsByUsername("testUser")).thenReturn(false);
-        // Mock: saving user returns the same object with an assigned ID
-        Mockito.when(userRepository.save(Mockito.any(User.class)))
-               .thenAnswer(invocation -> {
-                   User saved = invocation.getArgument(0);
-                   saved.setId(1); // Simulate auto-generated ID
-                   return saved;
-               });
+        AppUser result = userService.getUserByID(1);
 
-        User savedUser = userService.registerNewUser(user);
-        assertNotNull(savedUser, "User should be saved successfully");
-        assertEquals("testUser", savedUser.getUsername());
-        assertEquals("test@example.com", savedUser.getEmail());
-        assertEquals(1L, savedUser.getId());
+        assertEquals(user, result);
     }
 
     @Test
-    void registerNewUser_AlreadyExists() {
-        User user = new User();
-        user.setUsername("testUser");
+    public void testGetUserByID_Exception() {
+        when(appUserRepository.findById(1)).thenReturn(Optional.empty());
 
-        // Mock: user does exist
-        Mockito.when(userRepository.existsByUsername("testUser")).thenReturn(true);
-
-        assertThrows(UserAlreadyExistsException.class, () -> {
-            userService.registerNewUser(user);
+        Exception exception = assertThrows(Exception.class, () -> {
+            userService.getUserByID(1);
         });
+
+        assertEquals(Exception.class, exception.getClass());
     }
 
+    @Test
+    public void testGetUserByUsername_Success() throws Exception {
+        AppUser user = new AppUser();
+        when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+
+        AppUser result = userService.getUserByUsername("testuser");
+
+        assertEquals(user, result);
+    }
+
+    @Test
+    public void testGetUserByUsername_Exception() {
+        when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(Exception.class, () -> {
+            userService.getUserByUsername("testuser");
+        });
+
+        assertEquals(Exception.class, exception.getClass());
+    }
+
+    @Test
+    public void testUpdateUser_Success() {
+        AppUser existingUser = new AppUser();
+        existingUser.setFirst_name("OldFirstName");
+        existingUser.setLast_name("OldLastName");
+
+        AppUser updatedUser = new AppUser();
+        updatedUser.setFirst_name("NewFirstName");
+        updatedUser.setLast_name("NewLastName");
+
+        when(appUserRepository.findById(1)).thenReturn(Optional.of(existingUser));
+        when(appUserRepository.save(existingUser)).thenReturn(existingUser);
+
+        int result = userService.updateUser(1, updatedUser);
+
+        assertEquals(1, result);
+        assertEquals("NewFirstName", existingUser.getFirst_name());
+        assertEquals("NewLastName", existingUser.getLast_name());
+    }
+
+    @Test
+    public void testUpdateUser_Failure() {
+        AppUser updatedUser = new AppUser();
+
+        when(appUserRepository.findById(1)).thenReturn(Optional.empty());
+
+        int result = userService.updateUser(1, updatedUser);
+
+        assertEquals(0, result);
+    }
 }
-*/

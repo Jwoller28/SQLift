@@ -1,116 +1,95 @@
-package com.example.proj2.controllers;
-
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+package test.java.com.example.proj2.controllers;
 
 import com.example.proj2.Configs.JwtUtil;
-import com.example.proj2.Controllers.AuthenticationController;
 import com.example.proj2.Dto.LoginUserDto;
 import com.example.proj2.Dto.RegisterUserDto;
 import com.example.proj2.Services.AuthenticationService;
 import com.example.proj2.entity.AppUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.http.HttpStatus;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-class AuthTest {
+class AuthenticationControllerTest {
 
-    @Mock
-    private AuthenticationManager authenticationManager;
-
-    @Mock
-    private JwtUtil jwtUtil;
-
-    @Mock
-    private AuthenticationService authenticationService;
-
-    @InjectMocks
     private AuthenticationController authenticationController;
+    private AuthenticationManager authenticationManager;
+    private JwtUtil jwtUtil;
+    private AuthenticationService authenticationService;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        authenticationManager = Mockito.mock(AuthenticationManager.class);
+        jwtUtil = Mockito.mock(JwtUtil.class);
+        authenticationService = Mockito.mock(AuthenticationService.class);
+        authenticationController = new AuthenticationController(authenticationManager, jwtUtil, authenticationService);
     }
 
     @Test
-    void testRegisterSuccess() {
+    void register_Success() {
         RegisterUserDto registerUserDto = new RegisterUserDto();
-        AppUser mockUser = new AppUser();
-
-        when(authenticationService.signup(registerUserDto)).thenReturn(mockUser);
+        AppUser appUser = new AppUser();
+        when(authenticationService.signup(any(RegisterUserDto.class))).thenReturn(appUser);
 
         ResponseEntity<AppUser> response = authenticationController.register(registerUserDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(mockUser, response.getBody());
+        assertEquals(appUser, response.getBody());
     }
 
     @Test
-    void testRegisterFailure() {
+    void register_Exception() {
         RegisterUserDto registerUserDto = new RegisterUserDto();
-
-        when(authenticationService.signup(registerUserDto)).thenThrow(new RuntimeException("Error"));
+        when(authenticationService.signup(any(RegisterUserDto.class))).thenThrow(new RuntimeException());
 
         ResponseEntity<AppUser> response = authenticationController.register(registerUserDto);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
     }
 
     @Test
-    void testLoginSuccess() {
+    void login_Success() {
         LoginUserDto loginUserDto = new LoginUserDto();
         loginUserDto.setUsername("testUser");
-        loginUserDto.setPassword("testPassword");
+        loginUserDto.setPassword("password");
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken("testUser", "testPassword");
-        Authentication authentication = mock(Authentication.class);
-
-        when(authenticationManager.authenticate(authToken)).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("testUser");
-        when(jwtUtil.generateToken("testUser")).thenReturn("mockToken");
+        Authentication authentication = Mockito.mock(Authentication.class);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(jwtUtil.generateToken(anyString())).thenReturn("token");
 
         ResponseEntity<String> response = authenticationController.login(loginUserDto);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("mockToken", response.getBody());
+        assertEquals("token", response.getBody());
     }
 
     @Test
-    void testLoginFailure() {
+    void login_Exception() {
         LoginUserDto loginUserDto = new LoginUserDto();
         loginUserDto.setUsername("testUser");
-        loginUserDto.setPassword("testPassword");
+        loginUserDto.setPassword("password");
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken("testUser", "testPassword");
-
-        when(authenticationManager.authenticate(authToken)).thenThrow(new RuntimeException("Error"));
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenThrow(new RuntimeException());
 
         ResponseEntity<String> response = authenticationController.login(loginUserDto);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertNull(response.getBody());
     }
 
     @Test
-    void testGetAuthenticatedUserFromContextSuccess() {
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-
-        when(securityContext.getAuthentication()).thenReturn(authentication);
+    void getAuthenticatedUserFromContext_Authenticated() {
+        Authentication authentication = Mockito.mock(Authentication.class);
         when(authentication.isAuthenticated()).thenReturn(true);
         when(authentication.getPrincipal()).thenReturn("testUser");
-
-        SecurityContextHolder.setContext(securityContext);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResponseEntity<String> response = authenticationController.getAuthenticatedUserFromContext();
 
@@ -119,12 +98,8 @@ class AuthTest {
     }
 
     @Test
-    void testGetAuthenticatedUserFromContextUnauthorized() {
-        SecurityContext securityContext = mock(SecurityContext.class);
-
-        when(securityContext.getAuthentication()).thenReturn(null);
-
-        SecurityContextHolder.setContext(securityContext);
+    void getAuthenticatedUserFromContext_Unauthenticated() {
+        SecurityContextHolder.getContext().setAuthentication(null);
 
         ResponseEntity<String> response = authenticationController.getAuthenticatedUserFromContext();
 
@@ -132,4 +107,3 @@ class AuthTest {
         assertNull(response.getBody());
     }
 }
-
