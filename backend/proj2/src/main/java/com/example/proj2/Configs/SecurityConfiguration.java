@@ -1,6 +1,5 @@
 package com.example.proj2.Configs;
 
-import com.example.proj2.Services.MyUserDetailsService;
 import com.example.proj2.repositories.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import com.example.proj2.service.UserService;
+import com.example.proj2.service.MyUserDetailsService;
+
 
 @Configuration
 @EnableWebSecurity

@@ -10,38 +10,42 @@ function DayView() {
 
   // personal events
   const { events: personalEvents } = useEvents();
-  // group events
-  const { myGroups, fetchGroupEvents } = useGroups();
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
+
+  const { groups, myGroups, fetchGroupEvents, createGroupEvent } = useGroups();
+
 
   // We'll store the merged events for display
-  const [allEvents, setAllEvents] = useState<Array<{id: number; title: string; description: string; group?: boolean}>>([]);
+  const [allEvents, setAllEvents] = useState<Array<{id: number; title: string; description: string; group?: boolean; groupName?: string;}>>([]);
 
   useEffect(() => {
     if (!dayId) return;
 
     async function loadEventsForDay() {
-      // 1) Personal events for this day:
-      const personalForDay = personalEvents.filter((evt) => evt.day === dayId)
-        .map((evt) => ({ ...evt, group: false }));
-
-      // 2) Group events for this day:
-      let groupE: Array<{ id: number; title: string; description: string; group: boolean }> = [];
+      const personalForDay = personalEvents
+        .filter((evt) => evt.day === dayId)
+        .map((evt) => ({ ...evt, group: false, groupName: 'Personal Event' })); // Add groupName
+    
+      let groupE: Array<{ id: number; title: string; description: string; group: boolean; groupName?: string }> = [];
       for (const gId of myGroups) {
         const gEvents: GroupEvent[] = await fetchGroupEvents(gId);
+        const group = groups.find((g) => g.id === gId); // Find the group name
         const dayEvents = gEvents
           .filter((ge) => ge.day === dayId)
-          .map((ge) => ({ 
-            id: ge.id, 
-            title: ge.title, 
-            description: ge.description, 
-            group: true 
+          .map((ge) => ({
+            id: ge.id,
+            title: ge.title,
+            description: ge.description,
+            group: true,
+            groupName: group ? group.name : 'Unknown Group', // Include group name
           }));
         groupE = groupE.concat(dayEvents);
       }
-
-      const merged = [...personalForDay, ...groupE];
-      setAllEvents(merged);
-    }
+    
+      setAllEvents([...personalForDay, ...groupE]);
+    }    
     loadEventsForDay();
   }, [dayId, personalEvents, myGroups, fetchGroupEvents]);
 
@@ -97,52 +101,67 @@ function DayView() {
       <h2>Day View for {dayId}</h2>
 
       <h3>All Events for This Day</h3>
-      {allEvents.length === 0 ? (
-        <p style={{ fontStyle: 'italic' }}>No events for this day.</p>
-      ) : (
-        allEvents.map((evt) => (
-          <div
-            key={evt.id}
-            style={{
-              marginBottom: '10px',
-              padding: '10px',
-              border: '1px solid #444',
-              borderRadius: '4px',
-              backgroundColor: evt.group ? '#3c3c8c' : '#2c2c54',
-            }}
-          >
-            <strong>{evt.title}</strong>
-            <p>{evt.description}</p>
-            {evt.group && <p style={{ fontStyle: 'italic' }}>(Group Event)</p>}
-          </div>
-        ))
-      )}
+      {allEvents.map((evt) => (
+        <div
+          key={evt.id}
+          style={{
+            marginBottom: '10px',
+            padding: '10px',
+            border: '1px solid #444',
+            borderRadius: '4px',
+            backgroundColor: '#3c3c8c',
+          }}
+        >
+          <strong>{evt.title}</strong>
+          <p>{evt.description}</p>
+          <p style={{ fontStyle: 'italic' }}>{evt.groupName}</p> {/* Display group or personal */}
+        </div>
+      ))}
+
 
       {/* Buttons */}
       <div style={{ marginTop: '20px' }}>
         <button
           onClick={goBackToCalendar}
           style={{
-            padding: '8px 16px',
-            backgroundColor: '#555',
-            color: '#fff',
-            border: 'none',
-            cursor: 'pointer',
-            marginRight: '10px',
+            margin: '10px 10px',
+          padding: '10px 10px',
+          backgroundColor: '#555',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
           }}
         >
           Back to Calendar
         </button>
+
+        <button
+        onClick={() => navigate(`/createEvent/${dayId}`)}
+        style={{
+          margin: '10px 10px',
+          padding: '10px 10px',
+          backgroundColor: '#007BFF',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+        }}
+      >
+        Create New Event
+      </button>
 
         {/* If the day is future => show "Go to Progress" */}
         {isFutureDay ? (
           <button
             onClick={goToProgress}
             style={{
-              padding: '8px 16px',
+              margin: '10px 10px',
+              padding: '10px 10px',
               backgroundColor: '#007BFF',
               color: '#fff',
               border: 'none',
+              borderRadius: '4px',
               cursor: 'pointer',
             }}
           >
@@ -153,10 +172,12 @@ function DayView() {
           <button
             onClick={goToInput}
             style={{
-              padding: '8px 16px',
+              margin: '10px 10px',
+              padding: '10px 10px',
               backgroundColor: '#007BFF',
               color: '#fff',
               border: 'none',
+              borderRadius: '4px',
               cursor: 'pointer',
             }}
           >
