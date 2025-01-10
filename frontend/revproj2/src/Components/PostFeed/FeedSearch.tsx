@@ -12,7 +12,7 @@ export interface searchType {
 }
 
 function FeedSearch(prop: FeedSearchProp) {
-  const typeIn = document.querySelector('#typeInput') as HTMLInputElement; // Ensure type casting
+  const typeIn = document.querySelector('#typeInput') as HTMLSelectElement; // Ensure type casting
   const [searchQuery, setSearchQuery] = useState("");
 
   // Function to send the search object to API
@@ -40,7 +40,7 @@ function FeedSearch(prop: FeedSearchProp) {
     prop.setSearched(false);             // Reset the searched flag
 
     if (typeIn) {
-      typeIn.value = "";                 // Reset the datalist input value
+      typeIn.selectedIndex = -1;                // Reset the datalist input value
     }
   };
 
@@ -48,12 +48,11 @@ function FeedSearch(prop: FeedSearchProp) {
     <>
       <label htmlFor="search-form">Search the Feed: </label>
       <form id="search-form">
-        <input type="text" id="typeInput" list="typesearch" placeholder="Filter by..." />
-        <datalist id="typesearch">
-          <option value="usernames" />
-          <option value="text" />
-          <option value="tags" />
-        </datalist>
+        <select id = "typeInput">
+            <option value = "username">username</option>
+            <option value = "tags">tags</option>
+            <option value = "text">text</option>
+        </select>
         <input
           type="search"
           id="feed-search"

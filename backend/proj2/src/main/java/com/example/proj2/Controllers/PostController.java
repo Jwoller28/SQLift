@@ -78,7 +78,7 @@ public class PostController {
     // Turn the Request Param into Request Body with object that has these fields
     public ResponseEntity<String> sendPost(@RequestParam("goal_id") long goalId,
     @RequestParam("user_id") int userId,
-    @RequestParam("message_text") String messageText, @RequestParam("message_tags") String messageTags)
+    @RequestParam("message_text") String messageText, @RequestParam("message_tags") String messageTags, @RequestParam("username") String username)
     {
     try
     {
@@ -95,7 +95,8 @@ public class PostController {
     goal.setId(goalId);
     post.setGoal(goal);
     AppUser appUser = new AppUser();
-    appUser.setId(userId);    
+    appUser.setId(userId);
+    appUser.setUsername(username);    
     post.setUser(appUser);
     logger.info("Post Text: " + messageText);
     post.setMessageText(messageText);

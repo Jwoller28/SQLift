@@ -69,7 +69,7 @@ public class SearchService {
         String searchValue = sTypeDTO.getValue();
 
         switch (sTypeDTO.getType().toLowerCase()) {
-            case "usernames":
+            case "username":
                 if (searchValue != null) {
                     return postRepository.findPostsByUsernameContains(searchValue);
                 }
