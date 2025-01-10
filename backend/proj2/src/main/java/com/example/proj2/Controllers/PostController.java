@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.proj2.entity.Post;
-import com.example.proj2.Services.PostService;
+import com.example.proj2.service.PostService;
 
 @RestController
 public class PostController {

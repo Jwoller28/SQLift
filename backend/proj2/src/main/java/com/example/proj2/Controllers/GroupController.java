@@ -1,6 +1,6 @@
 package com.example.proj2.Controllers;
 import com.example.proj2.Dto.CreateGroupDto;
-import com.example.proj2.Services.GroupService;
+import com.example.proj2.service.GroupService;
 import com.example.proj2.entity.Group;
 import com.example.proj2.entity.GroupEvent;
 import org.springframework.http.ResponseEntity;
@@ -83,15 +83,17 @@ public class GroupController {
     }
 
     // POST /groups/{groupId}/events => create event
-    // could pass in a JSON body or @RequestParam
     @PostMapping("/{groupId}/events")
-    public ResponseEntity<?> createEvent(@PathVariable int groupId,
-                                         @RequestParam String title,
-                                         @RequestParam String description,
-                                         @RequestParam String day) {
+    public ResponseEntity<?> createGroupEvent(
+        @PathVariable int groupId,
+        @RequestBody Map<String, String> eventData
+    ) {
         try {
-            GroupEvent evt = groupService.createGroupEvent(groupId, title, description, day);
-            return ResponseEntity.ok(evt);
+            String title = eventData.get("title");
+            String description = eventData.get("description");
+            String day = eventData.get("day");
+            GroupEvent event = groupService.createGroupEvent(groupId, title, description, day);
+            return ResponseEntity.ok(event);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

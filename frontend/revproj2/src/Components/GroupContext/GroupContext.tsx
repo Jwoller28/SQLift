@@ -190,25 +190,74 @@ export function GroupProvider({ children }: { children: React.ReactNode }) {
   /**
    * 6) createGroupEvent: POST /groups/{groupId}/events
    */
-  async function createGroupEvent(groupId: number, day: string, title: string, description: string) {
+  async function createGroupEvent(
+    groupId: number,
+    day: string,
+    title: string,
+    description: string
+  ) {
     try {
-      const token = localStorage.getItem('token') ? JSON.parse(String(localStorage.getItem('token'))) : null;
-      const res = await fetch(`http://localhost:8080/groups/${groupId}/events`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+      const token = localStorage.getItem("token")
+        ? JSON.parse(localStorage.getItem("token")!)
+        : null;
+  
+      const userId = localStorage.getItem("id")
+        ? JSON.parse(localStorage.getItem("id")!)
+        : null;
+  
+      const isPersonalEvent = groupId === -1; // Personal events are identified by groupId = -1
+  
+      // Construct request body
+      const bodyObject = isPersonalEvent
+        ? { title, description, day, userId }
+        : { title, description, day };
+  
+      // Safeguard: Remove any undefined or null properties
+      Object.keys(bodyObject).forEach(
+        (key) =>
+          (bodyObject as any)[key] === undefined &&
+          delete (bodyObject as any)[key]
+      );
+  
+      const body = JSON.stringify(bodyObject);
+      console.log("Request Body:", body); 
+
+  
+      // Log the endpoint and body for debugging
+      const endpoint = isPersonalEvent
+        ? `http://localhost:8080/personal-events`
+        : `http://localhost:8080/groups/${groupId}/events`;
+      console.log("Endpoint:", endpoint);
+      console.log("Request Body:", body);
+  
+      // Send the request
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ day, title, description }),
+        body,
       });
+  
       if (!res.ok) {
-        throw new Error(`POST /groups/${groupId}/events failed: ${res.status}`);
+        throw new Error(
+          `POST ${
+            isPersonalEvent ? "/personal-events" : `/groups/${groupId}/events`
+          } failed: ${res.status}`
+        );
       }
-      // Possibly re-fetch or do something if you want to store group events in local state
+  
+      const newEvent = await res.json();
+      console.log("Created event:", newEvent);
     } catch (err) {
-      console.error('Error creating group event:', err);
+      console.error("Error creating event:", err);
     }
   }
+  
+  
+  
+  
 
   /**
    * 7) getAllGroupEventsForDay: merges events from all groups the user is in for a given day
