@@ -1,94 +1,143 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+
 import { useEvents } from '../Components/EventsContext/EventsContext';
+import { useGroups, GroupEvent } from '../Components/GroupContext/GroupContext';
 
 function DayView() {
   const navigate = useNavigate();
-  const { dayId } = useParams();
-  const { addEvent, getEventsForDay } = useEvents();
+  const { dayId } = useParams();  // e.g. "2025-01-08"
 
-  // Local state for our form inputs
-  const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
+  // personal events
+  const { events: personalEvents } = useEvents();
+  // group events
+  const { myGroups, fetchGroupEvents } = useGroups();
 
-  // Return only events for this day
-  const eventsToday = dayId ? getEventsForDay(dayId) : [];
+  // We'll store the merged events for display
+  const [allEvents, setAllEvents] = useState<Array<{id: number; title: string; description: string; group?: boolean}>>([]);
 
-  // Handler for form submission
-  function handleAddEvent(e: React.FormEvent) {
-    e.preventDefault();
+  useEffect(() => {
     if (!dayId) return;
-    addEvent(dayId, title, desc);
-    setTitle('');
-    setDesc('');
+
+    async function loadEventsForDay() {
+      // 1) Personal events for this day:
+      const personalForDay = personalEvents.filter((evt) => evt.day === dayId)
+        .map((evt) => ({ ...evt, group: false }));
+
+      // 2) Group events for this day:
+      let groupE: Array<{ id: number; title: string; description: string; group: boolean }> = [];
+      for (const gId of myGroups) {
+        const gEvents: GroupEvent[] = await fetchGroupEvents(gId);
+        const dayEvents = gEvents
+          .filter((ge) => ge.day === dayId)
+          .map((ge) => ({ 
+            id: ge.id, 
+            title: ge.title, 
+            description: ge.description, 
+            group: true 
+          }));
+        groupE = groupE.concat(dayEvents);
+      }
+
+      const merged = [...personalForDay, ...groupE];
+      setAllEvents(merged);
+    }
+    loadEventsForDay();
+  }, [dayId, personalEvents, myGroups, fetchGroupEvents]);
+
+  // Decide if the day is future or not
+  const [isFutureDay, setIsFutureDay] = useState(false);
+
+  useEffect(() => {
+    if (!dayId) return;
+    // e.g. dayId = "2025-01-08"
+    const parts = dayId.split('-');
+    if (parts.length === 3) {
+      const y = Number(parts[0]);
+      const m = Number(parts[1]) - 1; // 0-based
+      const d = Number(parts[2]);
+      const dateObj = new Date(y, m, d, 0, 0, 0);
+      const now = new Date();
+      now.setHours(0,0,0,0);
+      // if day is strictly greater than now => future
+      if (dateObj.getTime() > now.getTime()) {
+        setIsFutureDay(true);
+      } else {
+        setIsFutureDay(false);
+      }
+    }
+  }, [dayId]);
+
+  // Handlers for navigating to input or progress
+  function goToInput() {
+    // e.g. /input/2025-01-08
+    if (dayId) {
+      navigate(`/input/${dayId}`);
+    }
+  }
+  function goToProgress() {
+    if (dayId) {
+      navigate(`/progress/${dayId}`);
+    }
   }
 
-  const handleCalendarButton = () => {
+  function goBackToCalendar() {
     navigate('/calendar');
-  };
+  }
 
   return (
     <div
       style={{
-        backgroundColor: '#1e1e4e', // Dark blue background
-        color: '#ffffff',           // White text
+        backgroundColor: '#1e1e4e',
+        color: '#ffffff',
         minHeight: '100vh',
         padding: '20px',
       }}
     >
-      <h2 style={{ marginBottom: '10px' }}>Day View</h2>
-      <p>
-        You clicked on day: <strong>{dayId}</strong>
-      </p>
+      <h2>Day View for {dayId}</h2>
 
-      <h3 style={{ marginTop: '30px' }}>Add an Event</h3>
-      <form
-        onSubmit={handleAddEvent}
-        style={{
-          marginBottom: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          maxWidth: '300px',
-        }}
-      >
-        <label style={{ marginBottom: '5px' }}>
-          Title:
-          <input
+      <h3>All Events for This Day</h3>
+      {allEvents.length === 0 ? (
+        <p style={{ fontStyle: 'italic' }}>No events for this day.</p>
+      ) : (
+        allEvents.map((evt) => (
+          <div
+            key={evt.id}
             style={{
-              display: 'block',
-              width: '100%',
-              marginTop: '5px',
               marginBottom: '10px',
-              padding: '8px',
+              padding: '10px',
               border: '1px solid #444',
-              backgroundColor: '#333',
-              color: '#fff',
+              borderRadius: '4px',
+              backgroundColor: evt.group ? '#3c3c8c' : '#2c2c54',
             }}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </label>
-        <label style={{ marginBottom: '5px' }}>
-          Description:
-          <input
-            style={{
-              display: 'block',
-              width: '100%',
-              marginTop: '5px',
-              marginBottom: '10px',
-              padding: '8px',
-              border: '1px solid #444',
-              backgroundColor: '#333',
-              color: '#fff',
-            }}
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-          />
-        </label>
+          >
+            <strong>{evt.title}</strong>
+            <p>{evt.description}</p>
+            {evt.group && <p style={{ fontStyle: 'italic' }}>(Group Event)</p>}
+          </div>
+        ))
+      )}
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+      {/* Buttons */}
+      <div style={{ marginTop: '20px' }}>
+        <button
+          onClick={goBackToCalendar}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#555',
+            color: '#fff',
+            border: 'none',
+            cursor: 'pointer',
+            marginRight: '10px',
+          }}
+        >
+          Back to Calendar
+        </button>
+
+        {/* If the day is future => show "Go to Progress" */}
+        {isFutureDay ? (
           <button
-            type="submit"
+            onClick={goToProgress}
             style={{
               padding: '8px 16px',
               backgroundColor: '#007BFF',
@@ -97,45 +146,24 @@ function DayView() {
               cursor: 'pointer',
             }}
           >
-            Add Event
+            Go to Progress
           </button>
+        ) : (
+          // Otherwise show "Go to Input"
           <button
-            type="button"
-            onClick={handleCalendarButton}
+            onClick={goToInput}
             style={{
               padding: '8px 16px',
-              backgroundColor: '#555',
+              backgroundColor: '#007BFF',
               color: '#fff',
               border: 'none',
               cursor: 'pointer',
             }}
           >
-            Back to Calendar
+            Go to Input
           </button>
-        </div>
-      </form>
-
-      <h3>Events for This Day</h3>
-      {eventsToday.length === 0 ? (
-        <p style={{ fontStyle: 'italic' }}>No events yet for this day.</p>
-      ) : (
-        eventsToday.map((event) => (
-          <div
-            key={event.id}
-            style={{
-              border: '1px solid #555',
-              padding: '10px',
-              marginBottom: '10px',
-              backgroundColor: '#2c2c54',
-            }}
-          >
-            <p style={{ fontWeight: 'bold', marginBottom: '5px' }}>
-              {event.title}
-            </p>
-            <p>{event.description}</p>
-          </div>
-        ))
-      )}
+        )}
+      </div>
     </div>
   );
 }

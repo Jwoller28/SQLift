@@ -47,12 +47,22 @@ public class UserService {
 
         if(existingAppUserOptional.isPresent()){
             AppUser existingAppUser=existingAppUserOptional.get();
-            if(appUser.getFirst_name()!=null)
+            if(appUser.getFirst_name()!="")
                 existingAppUser.setFirst_name(appUser.getFirst_name());
-            if(appUser.getLast_name()!=null)
+            if(appUser.getLast_name()!="")
                 existingAppUser.setLast_name(appUser.getLast_name());
-            if(appUser.getPhoto_url()!=null)
+            if(appUser.getPhoto_url()!="")
                 existingAppUser.setPhoto_url(appUser.getPhoto_url());
+            if(appUser.getExerciseStartDate()!=null)
+                existingAppUser.setExerciseStartDate(appUser.getExerciseStartDate());
+            if(appUser.getNutritionStartDate()!=null)
+                existingAppUser.setNutritionStartDate(appUser.getNutritionStartDate());
+            if(appUser.getWaterStartDate()!=null)
+                existingAppUser.setWaterStartDate(appUser.getWaterStartDate());
+            if(appUser.getSleepStartDate()!=null)
+                existingAppUser.setSleepStartDate(appUser.getSleepStartDate());
+            if(appUser.getEmail()!="")
+                existingAppUser.setEmail(appUser.getEmail());
 
             appUserRepository.save(existingAppUser);
 

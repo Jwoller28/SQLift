@@ -66,18 +66,12 @@ public class PostController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private final JwtUtil jwtUtil;
-
-
-    private ExecutorService nonBlockingService = Executors.newCachedThreadPool();
 
     public PostController(PostService postService, ObjectMapper objectMapper, JwtUtil jwtUtil)
     {
 	//this.awsService = awsService;
 	this.postService = postService;
 	this.objectMapper = objectMapper;
-	this.jwtUtil = jwtUtil;
     }
 
     @PostMapping(value = "posts")

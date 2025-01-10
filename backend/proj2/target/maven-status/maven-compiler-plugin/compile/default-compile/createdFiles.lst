@@ -1,5 +1,6 @@
 com\example\proj2\Controllers\PostController.class
 com\example\proj2\Services\TrackerService.class
+com\example\proj2\Controllers\GroupController.class
 com\example\proj2\entity\Goal.class
 com\example\proj2\Serializer\PostSerializer.class
 com\example\proj2\Configs\WebConfig.class
@@ -7,6 +8,7 @@ com\example\proj2\Dto\RegisterUserDto.class
 com\example\proj2\Services\GoalService.class
 com\example\proj2\repositories\TrackerRepository.class
 com\example\proj2\Serializer\PostDeserializer.class
+com\example\proj2\entity\GroupEvent.class
 com\example\proj2\Response\LoginResponse.class
 com\example\proj2\Services\AuthenticationService.class
 com\example\proj2\Controllers\GoalController.class
@@ -17,10 +19,16 @@ com\example\proj2\repositories\AWSRepository.class
 com\example\proj2\Dto\LoginUserDto.class
 com\example\proj2\Dto\TrackerDto.class
 com\example\proj2\Services\CommentService.class
+com\example\proj2\Services\GroupService.class
+com\example\proj2\Dto\LoginUserDto.class
+com\example\proj2\Dto\TrackerDto.class
+com\example\proj2\repositories\GroupEventRepository.class
+com\example\proj2\entity\Group.class
 com\example\proj2\entity\type\Exercise.class
 com\example\proj2\entity\Comment.class
 com\example\proj2\Configs\KafkaProducerConfig.class
 com\example\proj2\Services\AWSService.class
+com\example\proj2\Dto\CreateGroupDto.class
 com\example\proj2\Configs\KafkaStreamsConfig.class
 com\example\proj2\Controllers\CommentController.class
 com\example\proj2\repositories\AppUserRepository.class
@@ -37,6 +45,7 @@ com\example\proj2\Controllers\TrackerController.class
 com\example\proj2\entity\Tracker.class
 com\example\proj2\Services\UserService.class
 com\example\proj2\entity\type\Nutrition.class
+com\example\proj2\repositories\GroupRepository.class
 com\example\proj2\Serializer\PostSerde.class
 com\example\proj2\Enum\FileType.class
 com\example\proj2\Proj2Application.class

@@ -226,7 +226,6 @@ function ResetGoals() {
 
       navigate('/calendar');
     } catch (err: any) {
-      // NEW: Show on-screen error
       setErrorMessage(`Error updating goal: ${err.message}`);
     }
   }
@@ -236,7 +235,6 @@ function ResetGoals() {
   // ---------------------------------------------------------------------------
   return (
     <div style={{ padding: '20px' }}>
-      {/* NEW: If there's an error, display it here */}
       {errorMessage && (
         <div
           style={{
@@ -344,7 +342,7 @@ function ResetGoals() {
             type="number"
             value={water}
             onChange={(e) => setWater(Number(e.target.value))}
-          />
+            required/>
         </label>
         <br />
 
@@ -355,7 +353,7 @@ function ResetGoals() {
             type="number"
             value={sleep}
             onChange={(e) => setSleep(Number(e.target.value))}
-          />
+            required/>
         </label>
         <br />
 
@@ -365,7 +363,7 @@ function ResetGoals() {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-          />
+            required/>
         </label>
         <br />
 
