@@ -1,7 +1,7 @@
 package com.example.proj2.Controllers;
 
 
-import com.example.proj2.Services.UserService;
+import com.example.proj2.service.UserService;
 import com.example.proj2.entity.AppUser;
 import com.example.proj2.entity.Tracker;
 import org.slf4j.Logger;

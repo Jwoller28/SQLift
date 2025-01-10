@@ -50,27 +50,24 @@ function Inbox() {
 		usernameifAuthorized().then((username) => {
 			getUserByUsername(username).then((data)=>{
 				let user = data;
+				console.log(user)
 				setUserId(user.id);
 				})
 		})
 	}, [])
 	
-	const handleClick2 = useCallback((event : any) => {
-	let clickedGoal = event.target.getAttribute('a-key');
-	setDiv((prev) => (prev != clickedGoal ? clickedGoal : prev));
-	setClicked((prev) => !prev);
-	}, []);
-
-	const handleClick = (event : any) => {
+	const handleClick2 = (event : any) => {
 		let clickedGoal = event.target.getAttribute('a-key');
-		setDiv(clickedGoal);
+		console.log(clickedGoal);
+		setDiv((prev) => (prev != clickedGoal ? clickedGoal : prev));
+		console.log(div);
 		setClicked((prev) => !prev);
-		}
+	};
 		
 	
   return (
     <>
-    	<div>
+        <div>
 		<NotificationList handleClick = {handleClick2} />
 	</div>
 	<div>

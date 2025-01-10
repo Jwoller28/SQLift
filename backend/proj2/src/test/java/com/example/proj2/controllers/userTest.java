@@ -4,7 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.example.proj2.Controllers.UserController;
-import com.example.proj2.Services.UserService;
+import com.example.proj2.service.UserService;
 import com.example.proj2.entity.AppUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

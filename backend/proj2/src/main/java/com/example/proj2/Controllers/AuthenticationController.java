@@ -3,7 +3,7 @@ package com.example.proj2.Controllers;
 import com.example.proj2.Configs.JwtUtil;
 import com.example.proj2.Dto.LoginUserDto;
 import com.example.proj2.Dto.RegisterUserDto;
-import com.example.proj2.Services.AuthenticationService;
+import com.example.proj2.service.AuthenticationService;
 import com.example.proj2.entity.AppUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +11,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.slf4j.LoggerFactory;
+import com.example.proj2.service.UserService;
+
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController

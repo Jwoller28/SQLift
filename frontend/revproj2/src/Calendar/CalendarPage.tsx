@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEvents } from '../Components/EventsContext/EventsContext';
+import { useGroups } from '../Components/GroupContext/GroupContext';
 
 function CalendarPage() {
   const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // We'll store everything we need here:
+  // If you track user ID, token, etc. (some of this logic you already have):
   const [token, setToken] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [userId, setUserId] = useState<number | null>(null);
 
-  // The “end date” (or dates) from the user’s goal
+  // For your start/end date logic
   const [goalDate, setGoalDate] = useState<string | null>(null);
   const [StartDate, setStartDate] = useState<string | null>(null);
-  
 
-  // A dictionary that maps date strings ("YYYY-MM-DD") to a status.
-  // We’ll populate it dynamically after fetching the goal date.
+  // A dictionary that maps date "YYYY-MM-DD" => "end_date" or "start_date" or "completed"
   const [taskStatuses, setTaskStatuses] = useState<{ [key: string]: string }>({});
 
-  // For building the calendar
+  // Build the month
   const year = currentDate.getFullYear();
-  const month = currentDate.getMonth(); // 0-based in JS
+  const month = currentDate.getMonth(); // 0-based
   const firstDayOfMonth = new Date(year, month, 1);
-  const firstDayOfWeek = firstDayOfMonth.getDay();
+  const firstDayOfWeek = firstDayOfMonth.getDay(); // e.g. Sunday=0
   const lastDayOfMonth = new Date(year, month + 1, 0);
   const daysInMonth = lastDayOfMonth.getDate();
 
-  // Build an array of days (with null for blank cells in the grid)
+  // Build an array of (null or dayNumber)
   const calendarCells: Array<number | null> = [];
   for (let i = 0; i < firstDayOfWeek; i++) {
     calendarCells.push(null);
@@ -36,21 +36,16 @@ function CalendarPage() {
     calendarCells.push(day);
   }
 
-  // ---------------------------------------------
-  // 1) On mount, get token from localStorage
-  // ---------------------------------------------
+  // ---------------------
+  //  Token / me logic
+  // ---------------------
   useEffect(() => {
     const rawToken = localStorage.getItem('token');
     if (rawToken) {
-      // If you stored the token as a raw string, do: setToken(rawToken);
-      // If you did JSON.stringify, parse it:
       setToken(JSON.parse(rawToken));
     }
   }, []);
 
-  // ---------------------------------------------
-  // 2) Once we have token, fetch /me => username
-  // ---------------------------------------------
   useEffect(() => {
     if (!token) return;
     const fetchMe = async () => {
@@ -70,9 +65,6 @@ function CalendarPage() {
     fetchMe();
   }, [token]);
 
-  // ---------------------------------------------
-  // 3) Once we have username, get user object => userId
-  // ---------------------------------------------
   useEffect(() => {
     if (!username || !token) return;
     const fetchUser = async () => {
@@ -92,9 +84,7 @@ function CalendarPage() {
     fetchUser();
   }, [username, token]);
 
-  // ---------------------------------------------
-  // 4) Once we have userId, fetch the user’s goal => get the “end date”
-  // ---------------------------------------------
+  // If you have goal tracking (start/end date):
   useEffect(() => {
     if (!userId || !token) return;
     const fetchGoal = async () => {
@@ -106,8 +96,8 @@ function CalendarPage() {
           throw new Error(`GET /goalUser/${userId} failed: ${res.status}`);
         }
         const goalObj = await res.json();
-        
-        if (goalObj.createdAt){
+
+        if (goalObj.createdAt) {
           const dateOnlyStart = goalObj.createdAt.substring(0, 10);
           setStartDate(dateOnlyStart);
         }
@@ -115,7 +105,6 @@ function CalendarPage() {
           const dateOnlyEnd = goalObj.sleepDate.substring(0, 10);
           setGoalDate(dateOnlyEnd);
         }
-
       } catch (err) {
         console.error('Error fetching goal:', err);
       }
@@ -123,12 +112,10 @@ function CalendarPage() {
     fetchGoal();
   }, [userId, token]);
 
-  // ---------------------------------------------
-  // 5) If we have goalDate and StartDate, store them in taskStatuses
-  // ---------------------------------------------
+  // If we have goal start/end, mark them in taskStatuses
   useEffect(() => {
     if (goalDate) {
-      setTaskStatuses(prev => ({
+      setTaskStatuses((prev) => ({
         ...prev,
         [goalDate]: 'end_date',
       }));
@@ -137,94 +124,118 @@ function CalendarPage() {
 
   useEffect(() => {
     if (StartDate) {
-      setTaskStatuses(prev => ({
+      setTaskStatuses((prev) => ({
         ...prev,
         [StartDate]: 'start_date',
       }));
     }
   }, [StartDate]);
 
+  // If we have "completed" in localStorage
   useEffect(() => {
-    // Copy the current statuses
     const newStatuses = { ...taskStatuses };
-  
-    // If we don’t have userId yet, skip
     if (!userId) {
       setTaskStatuses(newStatuses);
       return;
     }
-  
-    // For each day in the month, see if localStorage has 
-    // "completed_userId_dayId"
     for (let i = 1; i <= daysInMonth; i++) {
       const formattedDay = String(i).padStart(2, '0');
       const formattedMonth = String(month + 1).padStart(2, '0');
       const dayId = `${year}-${formattedMonth}-${formattedDay}`;
-  
-      const key = `completed_${userId}_${dayId}`; 
-      if (localStorage.getItem(key) === "true") {
+      const key = `completed_${userId}_${dayId}`;
+      if (localStorage.getItem(key) === 'true') {
         newStatuses[dayId] = 'completed';
       }
     }
-  
     setTaskStatuses(newStatuses);
-  }, [year, month, userId]); 
-  
-  
+  }, [year, month, userId]);
 
+  // ---------------------------
+  // Merge personal & group events => color code days
+  // ---------------------------
+  const { getAllGroupEventsForDay } = useGroups();
+  const { fetchPersonalEvents, events: personalEvents } = useEvents(); // all personal events in memory
 
+  // We'll store which day has ANY event in a set
+  const [daysWithAnyEvents, setDaysWithAnyEvents] = useState<Set<string>>(new Set());
 
-  // ---------------------------------------------
-  // 6) Color coding logic
-  // ---------------------------------------------
-  const getDayColor = (dayId: string) => {
-    const status = taskStatuses[dayId];
-    const dayDate = new Date(dayId);
-    const now = new Date();
-    now.setHours(0, 0, 0, 0); // Ignore time in comparisons
-
-    // Today
-    if (dayId === todayFormatted) {
-      if (status === 'completed') return '#008000'; // Green
-      return '#164180'; // Dark Blue for today until status changes
+  useEffect(() => {
+    if (userId && token) {
+      fetchPersonalEvents();
     }
-    
-    if (status === 'end_date') return '#800080';    // Purple
-    if (status === 'start_date') return '#800080';  // Purple
-    if (status === 'completed') return '#008000'; // Green
+  }, [userId, token, fetchPersonalEvents]);
 
-    // Default blue 
-    return '#0080ff';
-};
+  useEffect(() => {
+    if (!userId) return;
 
+    // We'll build up a new Set of dayIds that have personal or group events
+    const newSet = new Set<string>();
 
-  // Today's date in YYYY-MM-DD
+    // 1) Mark personal events day
+    personalEvents.forEach((evt) => {
+      newSet.add(evt.day);
+    });
+
+    // 2) For each day in the month, also check group events
+    const gatherGroupDays = async () => {
+      for (let i = 1; i <= daysInMonth; i++) {
+        const dayId = `${year}-${(month + 1).toString().padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        const groupEvts = await getAllGroupEventsForDay(dayId, userId);
+        if (groupEvts.length > 0) {
+          newSet.add(dayId);
+        }
+      }
+      setDaysWithAnyEvents(newSet);
+    };
+    gatherGroupDays();
+  }, [userId, personalEvents, year, month, daysInMonth, getAllGroupEventsForDay]);
+
+  // Color logic:
   const today = new Date();
   const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(
     today.getDate()
   ).padStart(2, '0')}`;
 
-  // When user clicks a day in the calendar
-  const handleDayClick = (dayNumber: number) => {
+  function getDayColor(dayId: string): string {
+    const status = taskStatuses[dayId];
+    // if day has ANY event (personal or group)
+    const hasAny = daysWithAnyEvents.has(dayId);
+
+    // If you also want to preserve your start_date, end_date, completed logic:
+    if (dayId === todayFormatted) {
+      if (status === 'completed') return '#008000'; // Green
+      return '#164180'; // Dark Blue for today's date
+    }
+
+    if (status === 'end_date' || status === 'start_date') {
+      return '#800080'; // purple
+    }
+    if (status === 'completed') {
+      return '#008000'; // green
+    }
+    if (hasAny) {
+      // color for any user event
+      // e.g. red if you want to highlight "has event"
+      return '#ff0000';
+    }
+    // default
+    return '#0080ff';
+  }
+
+  // --------------------------
+  // Day click => always goes to /day/:dayId
+  // The DayView will handle "Input" vs "Progress" buttons.
+  // --------------------------
+  function handleDayClick(dayNumber: number) {
     const formattedDay = String(dayNumber).padStart(2, '0');
     const formattedMonth = String(month + 1).padStart(2, '0');
-    const dayId = `${year}-${formattedMonth}-${formattedDay}`; // "YYYY-MM-DD"
+    const dayId = `${year}-${formattedMonth}-${formattedDay}`;
+    navigate(`/day/${dayId}`);
+  }
 
-    // Compare date with "today" to decide if it’s future or not
-    const clickedDate = new Date(year, month, dayNumber);
-    const now = new Date();
-    now.setHours(0, 0, 0, 0); // zero out time
-
-    if (clickedDate > now) {
-      // Future date => progress page
-      navigate(`/progress/${dayId}`);
-    } else {
-      // Past or today => input page
-      navigate(`/input/${dayId}`);
-    }
-  };
-
-  // Month navigation
+  // --------------------------
+  // Month Navigation
+  // --------------------------
   const goToPrevMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
   };
@@ -232,14 +243,7 @@ function CalendarPage() {
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
-  const goToFeed = () => { navigate('/feed');};
-  const goToInbox = () => { navigate('/inbox'); };
-  const goToProfile = () => {navigate("/profile")};
-  const goToGoals = () => {navigate('/resetGoals');};
 
-  // ---------------------------------------------
-  // Render the calendar
-  // ---------------------------------------------
   return (
     <div
       style={{
@@ -251,43 +255,40 @@ function CalendarPage() {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        marginTop: 0
+        margin: 0,
       }}
     >
       <h1
         style={{
           fontFamily: 'Arial, sans-serif',
           color: '#ffffff',
-          fontSize: '50px'
+          fontSize: '50px',
+          marginTop: 0,
         }}
       >
         {currentDate.toLocaleString('default', { month: 'long' })} {year}
       </h1>
 
-      <div style={{ marginBottom: '20px', backgroundColor: '#000' }}>
-        <button
-          onClick={goToFeed}
-          style={{
-            padding: '10px 10px',
-            backgroundColor: '#2282ff',
-            color: '#000',
-            border: 'none',
-            cursor: 'pointer',
-            margin: '5px'
-          }}
-        >
-          Feed
-        </button>
-
+      <div
+        style={{
+          marginBottom: '20px',
+          backgroundColor: '#000',
+          padding: '10px',
+          borderRadius: '10px',
+          minWidth: '350px',
+        }}
+      >
         <button
           onClick={goToPrevMonth}
           style={{
-            padding: '10px 10px',
+            padding: '10px 20px',
             backgroundColor: '#2282ff',
             color: '#000',
             border: 'none',
             cursor: 'pointer',
-            margin: '5px'
+            margin: '10px',
+            borderRadius: '10px',
+            fontSize: '18px',
           }}
         >
           Prev Month
@@ -296,61 +297,20 @@ function CalendarPage() {
         <button
           onClick={goToNextMonth}
           style={{
-            padding: '10px 10px',
+            padding: '10px 20px',
             backgroundColor: '#2282ff',
             color: '#000',
             border: 'none',
             cursor: 'pointer',
-            margin: '5px'
+            margin: '10px',
+            borderRadius: '10px',
+            fontSize: '18px',
           }}
         >
           Next Month
         </button>
-
-        <button
-          onClick={goToGoals}
-          style={{
-            padding: '10px 10px',
-            backgroundColor: '#2282ff',
-            color: '#000',
-            border: 'none',
-            cursor: 'pointer',
-            margin: '5px'
-          }}
-        >
-          Goals
-        </button>
-
-        <button
-          onClick={goToInbox}
-          style={{
-            padding: '10px 10px',
-            backgroundColor: '#2282ff',
-            color: '#000',
-            border: 'none',
-            cursor: 'pointer',
-            margin: '5px'
-          }}
-        >
-          Inbox
-        </button>
-
-        <button
-          onClick={goToProfile}
-          style={{
-            padding: '10px 10px',
-            backgroundColor: '#2282ff',
-            color: '#000',
-            border: 'none',
-            cursor: 'pointer',
-            margin: '5px'
-          }}
-        >
-          Profile
-        </button>
       </div>
 
-      {/* Calendar Grid */}
       <div
         style={{
           backgroundColor: 'black',
@@ -358,7 +318,7 @@ function CalendarPage() {
           borderRadius: '10px',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <div
@@ -369,7 +329,7 @@ function CalendarPage() {
             textAlign: 'center',
             fontWeight: 'bold',
             marginBottom: '20px',
-            color: '#ffffff'
+            color: '#ffffff',
           }}
         >
           <div>Sun</div>
@@ -385,26 +345,27 @@ function CalendarPage() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(7, 100px)',
-            gap: '10px'
+            gap: '10px',
           }}
         >
           {calendarCells.map((cell, index) => {
             if (cell === null) {
+              // empty cell for pre-month offset
               return (
                 <div
                   key={index}
                   style={{
                     height: '100px',
                     border: '1px solid #ccc',
-                    background: '#b0c4de'
+                    background: '#b0c4de',
                   }}
                 />
               );
             } else {
-              const formattedDay = String(cell).padStart(2, '0');
-              const formattedMonth = String(month + 1).padStart(2, '0');
-              const dayId = `${year}-${formattedMonth}-${formattedDay}`;
-              const backgroundColor = getDayColor(dayId);
+              const dayStr = String(cell).padStart(2, '0');
+              const monthStr = String(month + 1).padStart(2, '0');
+              const dayId = `${year}-${monthStr}-${dayStr}`;
+              const bgColor = getDayColor(dayId);
 
               return (
                 <div
@@ -417,11 +378,11 @@ function CalendarPage() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    background: backgroundColor,
+                    background: bgColor,
                     color: '#ffffff',
                     borderRadius: '6px',
                     fontWeight: 'bold',
-                    transition: 'background 0.3s, transform 0.2s'
+                    transition: 'background 0.3s, transform 0.2s',
                   }}
                 >
                   {cell}

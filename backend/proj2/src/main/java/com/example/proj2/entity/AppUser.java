@@ -2,8 +2,13 @@ package com.example.proj2.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
+import java.util.Set;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -15,18 +20,29 @@ public class AppUser  {
     private int id;
 
     @Column(unique = true, length = 100,nullable = false)
+
+    @OneToMany(mappedBy = "appUser")
+    private Set<Post> posts;
+    @OneToMany(mappedBy = "appUser")
+    private Set<Tracker> trackers;
+    @OneToMany(mappedBy = "appUser")
+    private Set<Goal> goals;
+    @OneToMany(mappedBy = "user")
+    private Set<Comment> comments;
+
     private String username;
     private String email;
     private String first_name;
     private String last_name;
     private String photo_url;
-    private LocalDate waterStartDate;
-    private LocalDate sleepStartDate;
-    private LocalDate exerciseStartDate;
-    private LocalDate nutritionStartDate;
+   // private LocalDate waterStartDate;
+   // private LocalDate sleepStartDate;
+   // private LocalDate exerciseStartDate;
+   // private LocalDate nutritionStartDate;
 
     @Column(nullable = false, length = 100)
     private String password;
+
     @CreationTimestamp
     @Column( name = "created_at")
     private Date createdAt;
@@ -35,8 +51,22 @@ public class AppUser  {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public AppUser() {
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<PersonalEvent> personalEvents;
+
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_groups",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    @JsonIgnore
+    private Set<Group> groups = new HashSet<>();
+
+
+    public AppUser() {}
 
     public AppUser(Integer id, String username, String password) {
         this.id = id;
@@ -70,7 +100,13 @@ public class AppUser  {
 
 
 
+    public List<PersonalEvent> getPersonalEvents() {
+        return personalEvents;
+    }
 
+    public void setPersonalEvents(List<PersonalEvent> personalEvents) {
+        this.personalEvents = personalEvents;
+    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -105,7 +141,15 @@ public class AppUser  {
         this.id = id;
     }
 
-    public LocalDate getWaterStartDate() {
+    public Set<Group> getGroups() {
+        return groups;
+    }
+    
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
+    }
+
+   /* public LocalDate getWaterStartDate() {
         return waterStartDate;
     }
 
@@ -136,6 +180,7 @@ public class AppUser  {
     public void setNutritionStartDate(LocalDate nutritionStartDate) {
         this.nutritionStartDate = nutritionStartDate;
     }
+*/
 
     public String getUsername() {
         return username;
