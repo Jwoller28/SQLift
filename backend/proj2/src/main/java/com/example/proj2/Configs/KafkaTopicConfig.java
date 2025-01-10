@@ -39,5 +39,10 @@ public class KafkaTopicConfig {
             return new NewTopic("processedPosts", 5, (short) 1);
         }
 
+        @Bean
+        public NewTopic filteredPosts() {
+            return new NewTopic("filteredPosts", 5, (short) 1);
+        }
+
 
 }

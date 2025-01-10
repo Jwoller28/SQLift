@@ -1,93 +1,112 @@
-import React, { useEffect, useState } from 'react'
-import { getPosts } from '../../API/Axios';
-
-export interface Post {
-    // post_id:number;
-    goal_id:number;
-    user_id:number;
-    message_text:string;
-    photo: string;
-
-}
+import React, { useState, useEffect } from 'react';
+import { getStoredPosts, getPost, getFilteredPost, getFilteredStoredPosts } from '../../API/Axios';
+import { useLocation } from 'react-router-dom';
+import FeedSearch from './FeedSearch';
+import CommentList from './Comments/CommentList';
 
 function PostList() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<any[]>([]); // Ensure this is always an array
+  const [postIds, setPostIds] = useState<number[]>([]); // Track post IDs in state
+  const location = useLocation();
+  const [click, setClick] = useState<{ [key: number]: boolean }>({});
+  const [change, onChange] = useState("");
+  const [searched, setSearched] = useState(false);
 
-  // Start polling function with delay
-  const startPolling = async () => {
-      while (true) {
-          try {
-              const newPost = await getPosts();
-              if(!newPost)
-              {
-                throw Error;
-              }
-              console.log("New Post: " + newPost)
-              setPosts((prevPosts) => [newPost, ...prevPosts]); // Appends at the start of the list
-              }
-          catch (error) {
-              console.error("Error during polling:", error);
+  // Polling for new posts
+  useEffect(() => {
+    let interval: any;
+
+    if (location.pathname === '/feed') {
+      const poll = async () => {
+        try {
+          let newPost;
+          if (searched === false && change === "") {
+            newPost = await getPost();
+          } else {
+            newPost = await getFilteredPost();
           }
 
-          // Delay between polling requests (e.g., 5 seconds)
-          await new Promise((resolve) => setTimeout(resolve, 5000)); // Adjust polling interval as needed
-      }
-  };
+          if (!newPost) {
+            throw new Error('No new post');
+          } else {
+            if (!postIds.includes(newPost.post_id)) {
+              console.log('New Post: ' + newPost);
+              setPostIds((prevPostIds) => [...prevPostIds, newPost.post_id]);
+              setPosts((prevPosts) => [newPost, ...prevPosts]);
+            }
+          }
+        } catch (error) {
+          console.error('Error during Polling: ', error);
+        }
+      };
 
-  useEffect(() => {
-      startPolling(); // Start polling when component mounts
-  }, []); // Empty dependency array ensures it runs only once
+      poll();
+      interval = setInterval(poll, 5000);
 
-
-  function cleanBase64(base64: string | undefined): string {
-    if (!base64) {
-        console.error("Received an invalid base64 string:", base64);
-        return '';  // Return an empty string if base64 is undefined or null
+      return () => clearInterval(interval);
     }
-    return base64.replace(/[\r\n]/g, "").replace(/\s/g, "");
+
+    return () => clearInterval(interval);
+  }, [location.pathname, change, searched, postIds]);
+
+  // Fetching posts from the database (initial and filtered)
+  useEffect(() => {
+    const getDB = async () => {
+      let postList;
+      if (searched === false && change === "") {
+        postList = await getStoredPosts();
+      } else {
+        postList = await getFilteredStoredPosts();
+      }
+      console.log('Get Stored Posts: ', postList);
+      setPosts(postList || []); // Ensure it's always an array
+    };
+
+    getDB();
+  }, [searched, change]);
+
+  // Handling comment toggling
+  function handleClick(postId: number) {
+    setClick((prev) => ({ ...prev, [postId]: !prev[postId] }));
   }
 
+  // Function to format the tags with # before each word and spaces in between
+  const formatTags = (tags: string[]) => {
+    return tags
+      .map(tag => `#${tag}`)  // Add # before each tag
+      .join(' ');             // Join tags with spaces
+  };
 
-  function binaryStringToImage(binaryData: string | undefined): string {
-    if (!binaryData) {
-        console.error("No binary data provided:", binaryData);
-        return '';  // Return a default or placeholder image if data is missing
-    }
-    
-    const cleanData = cleanBase64(binaryData); // Clean base64 string
-    const binaryString = atob(cleanData); // Decoding the base64 binary string
-    const byteArray = new Uint8Array(binaryString.length);
-
-    // Convert the binary string to a byte array
-    for (let i = 0; i < binaryString.length; i++) {
-        byteArray[i] = binaryString.charCodeAt(i);
-    }
-
-    // Create a Blob from the byte array and use Object URL
-    const blob = new Blob([byteArray], { type: 'image/png' }); // Update MIME type if needed
-    const url = URL.createObjectURL(blob);
-
-    return url;
+  return (
+    <div>
+      <h3>We will get there Together!</h3>
+      <div>
+        <FeedSearch onChange={onChange} setSearched={setSearched}></FeedSearch>
+      </div>
+      <div>
+        {searched && posts.length === 0 && <p>No Posts Match this Criteria</p>}
+        {posts.length === 0 ? (
+          <p>Loading posts...</p>
+        ) : (
+          posts.map((post) => (
+            <div key={post.postId}> {/* Use postId as the key for better stability */}
+              <h5>Goal ID: {post.goal.id}</h5>
+              <a>User ID: {post.user.id}</a>
+              <p>Username: {post.user.username}</p>
+              <p>Message Text: {post.messageText}</p>
+              <p>Date: {post.creation} </p>
+              {post.tags && post.tags.length > 0 && (
+                <p>Tags: {formatTags(post.tags)}</p>
+              )}
+              <button onClick={() => handleClick(post.postId)}>Comment</button>
+              {click[post.postId] && <CommentList post={post} />}
+              <img loading="lazy" src={post.photo} width="200" height="auto" />
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
 }
 
-    return (
-      <div>
-          <h3>Consumed Messages: </h3>
-            <div>
-            {posts.map((post,index) => (
-                      <div key = {index}>
-                        <h5>Goal ID: {post.goal_id}</h5>
-                        <p>User ID: {post.user_id}</p>
-                        <p>Messge Text: {post.message_text}</p>
-                        <img loading="lazy" src = {binaryStringToImage(post.photo)} width="200" height="auto"></img>
-                        </div>
-                  ))}
-            </div>
-      </div>
-      )
-    }
-  
-  export default PostList
-
-  
-  
+export default PostList;

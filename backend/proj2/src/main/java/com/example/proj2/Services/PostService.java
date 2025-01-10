@@ -3,14 +3,18 @@ package com.example.proj2.service;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 import com.example.proj2.entity.Post;
 import com.example.proj2.repositories.PostRepository;
+import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 @Service
 public class PostService {
@@ -18,17 +22,19 @@ public class PostService {
     @Autowired
     private KafkaTemplate<Long, Post> kafkaPostTemplate;
 
-    @Autowired
-    private PostRepository postRepostiory;
+    public static final Logger log = LoggerFactory.getLogger(PostService.class);
 
-    private final BlockingQueue<Post> messageQueue = new LinkedBlockingQueue<>(); // Allows for Thread Safety
+    @Autowired
+    private PostRepository postRepository;
+
+    private final BlockingQueue<Post> postQueue = new LinkedBlockingQueue<>(100); // Allows for Thread Safety
     
     // private List<Post> postList = new ArrayList<>();
     
     public void sendPost(Post post)
     {   
         
-        CompletableFuture<SendResult<Long,Post>> future = kafkaPostTemplate.send("unprocessedPosts", post.getPost_Id(), post);
+        CompletableFuture<SendResult<Long,Post>> future = kafkaPostTemplate.send("unprocessedPosts", post);
         future.whenComplete((result, ex) -> {
             if(ex == null)
             {
@@ -54,18 +60,31 @@ public class PostService {
     //     return ret;
     // }
 
-        
-
     // Kafka listener
     @KafkaListener(topics="processedPosts", containerFactory = "kafkaListenerContainerFactory", groupId = "app-users")
     public void listen(Post post) {
-        messageQueue.offer(post); // Add posts to the queue
-	System.out.println(post);
-        postRepostiory.save(post); //persists Post
+	if(post != null)
+	{
+	log.info(post.toString());
+	Post postIn = postRepository.saveAndFlush(post); // Keep persisted Post
+        postQueue.offer(postIn); // Add posts to the queue
+	System.out.println(postQueue.size());
+	}
     }
 
-    public Post getNextPost(long timeoutMillis) throws InterruptedException {
-        // Wait for a message or timeout
-        return messageQueue.poll(timeoutMillis, java.util.concurrent.TimeUnit.MILLISECONDS);
+    public Post getNextPost() {
+	return postQueue.poll();
     }
+
+    public List<Post> getAllPosts(){
+
+	return postRepository.findAll(Sort.by(Sort.Direction.DESC, "creation"));
+
+	}
+    
+    public Post getAPost(long id) {
+        return (postRepository.findById(id)).get();
+    }
+     
+    
 }

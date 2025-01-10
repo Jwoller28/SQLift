@@ -4,6 +4,11 @@ import com.example.proj2.entity.AppUser;
 import com.example.proj2.repositories.AppUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
+import com.example.proj2.entity.AppUser;
+import com.example.proj2.repositories.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -44,15 +49,15 @@ public class UserService {
                 existingAppUser.setLast_name(appUser.getLast_name());
             if (appUser.getPhoto_url() != null && !appUser.getPhoto_url().isEmpty())
                 existingAppUser.setPhoto_url(appUser.getPhoto_url());
-            if (appUser.getExerciseStartDate() != null)
+            /*if(appUser.getExerciseStartDate()!=null)
                 existingAppUser.setExerciseStartDate(appUser.getExerciseStartDate());
             if (appUser.getNutritionStartDate() != null)
                 existingAppUser.setNutritionStartDate(appUser.getNutritionStartDate());
             if (appUser.getWaterStartDate() != null)
                 existingAppUser.setWaterStartDate(appUser.getWaterStartDate());
-            if (appUser.getSleepStartDate() != null)
-                existingAppUser.setSleepStartDate(appUser.getSleepStartDate());
-            if (appUser.getEmail() != null && !appUser.getEmail().isEmpty())
+            if(appUser.getSleepStartDate()!=null)
+                existingAppUser.setSleepStartDate(appUser.getSleepStartDate());*/
+            if(appUser.getEmail()!="")
                 existingAppUser.setEmail(appUser.getEmail());
 
             appUserRepository.save(existingAppUser);

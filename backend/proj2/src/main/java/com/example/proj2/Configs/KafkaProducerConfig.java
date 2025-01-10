@@ -32,9 +32,10 @@ public class KafkaProducerConfig {
 
         // Images need to be serialized into bytes, so we'll have to implement a byte serializer rather than string when we start the image database.
         configProps.put(
-            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class); // Keys have an int value
+            ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class); // Keys have a long value
         configProps.put(
             ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, PostSerializer.class); // will convert posts objects into byte arrays then sent to Broker
+										 //
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 

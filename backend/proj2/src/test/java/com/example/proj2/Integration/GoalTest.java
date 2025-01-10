@@ -35,8 +35,8 @@ public class GoalTest {
 
         // Initialize Goal object with valid AppUser
         testGoal = new Goal();
-        testGoal.setId(1);
-        testGoal.setAppUser(user);  // Set the AppUser ID
+        testGoal.setId(1L);
+        testGoal.setUser(user);  // Set the AppUser ID
 
 
         // You can also set other fields of the Goal if needed
@@ -53,7 +53,7 @@ public class GoalTest {
         // Verify the result
         assertNotNull(savedGoal);
         assertEquals(testGoal.getId(), savedGoal.getId());
-        assertEquals(testGoal.getAppUser().getId(), savedGoal.getAppUser().getId());
+        assertEquals(testGoal.getUser().getId(), savedGoal.getUser().getId());
 
     }
 
@@ -81,6 +81,6 @@ public class GoalTest {
 
         // Verify the result
         assertTrue(foundGoal.isPresent());
-        assertEquals(testGoal.getAppUser().getId(), foundGoal.get().getAppUser().getId());
+        assertEquals(testGoal.getUser().getId(), foundGoal.get().getUser().getId());
     }
 }
