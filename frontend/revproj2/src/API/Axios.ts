@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from 'react';
+import {searchType} from '../Components/PostFeed/FeedSearch';
 
 
 const Token : string | null = localStorage.getItem('token');
@@ -27,12 +28,100 @@ export const sendPost = async (formData : FormData) => {
     }
 };
 
-export const getPosts = async () => {
+export const getStoredPosts = async () => {
+	try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+	const url = "http://localhost:8080/posts";
+
+	let result = await axios.get(url, {
+	headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		"Access-Control-Allow-Origin":"*"
+		},
+		withCredentials: true
+	});
+	if(result && result.status == 200)
+		{
+		console.log("Stored Posts Shown");	
+		console.log(result.data);
+		return result.data;
+		}
+	else
+		{
+		throw new Error;
+		}
+	}
+	catch(error: any)
+	{
+		console.error("Error sending message: ", error);
+	}
+};
+
+export const getPostPhoto = async (fileName : string) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = `http://localhost:8080/s3bucket/trackr-photo-store/download/${fileName}`;
+
+        let result = await axios.get(url, {
+            headers: { 
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+
+	if(result && result.status === 200)
+		{
+		console.log("Photo retrieved!");
+		console.log(result.data);
+		return result.data;
+		}
+	else 
+	{
+		throw new Error;
+	}
+
+    } 
+    catch (error : any) {
+        console.error("Error sending message:", error);
+    }
+};
+
+export const sendPostPhoto = async (photo : FormData) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/s3bucket/trackr-photo-store/upload";
+
+        await axios.post(url, photo, {
+            headers: { 
+		"Content-Type": "multipart/form-data",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+        console.log("Photo Sent Successfully!");
+    } 
+    catch (error : any) {
+        console.error("Error sending Photo:", error);
+    }
+
+}
+
+export const getPost = async () => {
     try {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = "http://localhost:8080/posts";
+        const url = "http://localhost:8080/live/posts";
 
         let result = await axios.get(url, {
 		headers: {
@@ -67,9 +156,11 @@ export const usernameifAuthorized = async () => {
 	let result = await axios.get(url, {
 		headers: {
 		"Content-Type":"application/json",
+		'Access-Control-Allow-Origin':"*",
 		'Authorization': "Bearer " + cleanToken,
 		},
 		'withCredentials': true
+
 	});
 
 	if(result && result.status === 200)
@@ -94,7 +185,7 @@ export const getTrackers = async (userId: number, goalId: number) => {
 	 const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
 	 const url =`http://localhost:8080/Tracker/${userId}/${goalId}`;
-
+ 
 	 let result = await axios.get(url, {
 		 headers: {
 		"Content-Type": "application/json",
@@ -107,6 +198,7 @@ export const getTrackers = async (userId: number, goalId: number) => {
 	 if(result && result.status == 200)
 	{
 	   console.log("Trackers received");
+	   console.log(url);
 	   console.log(result.data);
 	   return result.data;
 	}
@@ -212,3 +304,142 @@ export const getGoalsbyUserId = async(userId : number) => {
 		console.error("Error retrieving goals: ", error);
 	}
 }
+
+export const getCommentsByPost = async(postId : number) => {
+	try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+	const url = `http://localhost:8080/fetch/comment/${postId}`;
+
+	let result =  await axios.get(url, {
+		headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+		},
+		withCredentials: true
+	});
+	if(result && result.status === 200)
+	{
+		console.log("Comments for Post acquired");
+		console.log(result.data);
+		return result.data;
+	}
+	else
+	{
+		throw new Error;
+	}
+	}
+	catch(error: any) {
+		console.error("Error retrieving Post Comments: ", error);
+	}
+}
+
+
+export const sendComment = async (comment : FormData) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/create/comment";
+		console.log(comment);
+        await axios.post(url, comment, {
+            headers: { 
+		"Content-Type": "multipart/form-data",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+        console.log("Comment Sent!");
+    } 
+    catch (error : any) {
+        console.error("Error sending Comment:", error);
+    }
+}
+
+
+
+export const sendTypeFilter = async (searchType : searchType) => {
+    try {
+
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/filter";
+
+        await axios.post(url, searchType, {
+            headers: { 
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		'Access-Control-Allow-Origin': "*"
+            },
+	    withCredentials: true
+        });
+        console.log("Type sent successfully!");
+    } 
+    catch (error : any) {
+        console.error("Error sending Type:", error);
+    }
+};
+
+export const getFilteredPost = async () => {
+    try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+        const url = "http://localhost:8080/filter/live/post";
+
+        let result = await axios.get(url, {
+		headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		},
+		withCredentials: true
+	});
+        if(result && result.status === 200)
+        {
+            console.log("Filtered Post Retrieved!");
+            console.log(result.data);
+            return result.data;
+        }
+        else{
+            throw new Error;
+        }
+        
+    } catch (error : any) {
+        console.error("Error retrieving message:", error);
+    }
+}
+
+export const getFilteredStoredPosts = async () => {
+	try {
+	
+	const Token = localStorage.getItem('token');
+	const cleanToken = Token?.replace(/"/g, "");
+	const url = "http://localhost:8080/filter/posts";
+
+	let result = await axios.get(url, {
+	headers: {
+		"Content-Type": "application/json",
+		Authorization: "Bearer " + cleanToken,
+		"Access-Control-Allow-Origin":"*"
+		},
+		withCredentials: true
+	});
+	if(result && result.status == 200)
+		{
+		console.log("Filtered Stored Posts Shown");	
+		console.log(result.data);
+		return result.data;
+		}
+	else
+		{
+		throw new Error;
+		}
+	}
+	catch(error: any)
+	{
+		console.error("Error sending message: ", error);
+	}
+};

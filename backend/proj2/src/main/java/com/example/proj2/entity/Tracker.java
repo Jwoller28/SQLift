@@ -6,6 +6,7 @@ import com.example.proj2.entity.type.Nutrition;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.util.Set;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -14,20 +15,21 @@ public class Tracker {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id_tracker", referencedColumnName = "id", nullable = false)
     private AppUser appUser;
+    
     @ManyToOne
-    @JoinColumn(name = "goal_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "goal_id_tracker", referencedColumnName = "id", nullable = false)
     private Goal goal;
 
     public AppUser getAppUser() {
         return appUser;
     }
 
-    public Tracker(Integer id, AppUser appUser, Goal goal, Date createdAt, double sleep, double water, Exercise exercise, Nutrition nutrition) {
+    public Tracker(Long id, AppUser appUser, Goal goal, Date createdAt, double sleep, double water, Exercise exercise, Nutrition nutrition) {
         this.id = id;
         this.appUser = appUser;
         this.goal = goal;
@@ -53,6 +55,7 @@ public class Tracker {
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
+    
     private double sleep;
     private double water;
     @Embedded
@@ -65,7 +68,7 @@ public class Tracker {
     public Tracker() {
     }
 
-    public Tracker(Integer id, AppUser appUser, Date createdAt, double sleep, double water, Exercise exercise, Nutrition nutrition) {
+    public Tracker(Long id, AppUser appUser, Date createdAt, double sleep, double water, Exercise exercise, Nutrition nutrition) {
         this.id = id;
         this.appUser = appUser;
         this.createdAt = createdAt;
@@ -75,11 +78,11 @@ public class Tracker {
         this.nutrition = nutrition;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

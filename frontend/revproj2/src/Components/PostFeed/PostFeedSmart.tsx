@@ -2,7 +2,7 @@ import React, { MutableRefObject, useState } from 'react'
 import PostFeedDumb from './PostFeedDumb';
 
 import { useRef } from 'react';
-import {getPosts, sendPost } from '../../API/Axios';
+import {sendPost, sendPostPhoto, usernameifAuthorized } from '../../API/Axios';
 import { restElement } from '@babel/types';
 
 interface PostFeedProp {
@@ -13,6 +13,7 @@ interface PostFeedProp {
 function PostFeedSmart(prop : PostFeedProp) {
     const [message, setMessage] = useState("");
     const [file, setFile] = useState<File | undefined>(undefined);
+    const [tags, setTags] = useState("");
     const formRef : MutableRefObject<HTMLFormElement | null> = useRef(null);
 
     const handleSubmit = async (e : any) => {
@@ -22,11 +23,12 @@ function PostFeedSmart(prop : PostFeedProp) {
         formData.append('goal_id', prop.goalId.toString());
         formData.append('user_id', prop.userId.toString());
         formData.append('message_text', message);
-    
+        formData.append('message_tags', tags)
+        let username = await usernameifAuthorized();
         if (file) {
-            formData.append('photo', file);
+	    formData.append('photo', file);
         }
-
+        formData.append('username', username);
         // console.log("Before");
         // console.log(formData.get("goal_id"));
         // console.log(formData.get("user_id"));
@@ -42,7 +44,9 @@ function PostFeedSmart(prop : PostFeedProp) {
                 formData.delete("goal_id");
                 formData.delete("user_id");
                 formData.delete("message_text");
+                formData.delete("message_tags");
                 formData.delete("photo");
+                formData.delete("username");
             } catch (error) {
                 console.error("Error in sending data:", error);
             }
@@ -61,7 +65,8 @@ function PostFeedSmart(prop : PostFeedProp) {
        
         <>
              <div>
-            <PostFeedDumb formRef = {formRef} setFile = {setFile} setMessage = {setMessage} onSubmit = {handleSubmit}></PostFeedDumb> </div>
+            <PostFeedDumb formRef = {formRef} setFile = {setFile} setMessage = {setMessage} setTags = {setTags} onSubmit = {handleSubmit}></PostFeedDumb> 
+            </div>
 
  	</>
     )
