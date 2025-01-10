@@ -1,7 +1,7 @@
 package com.example.proj2.Controllers;
 
 
-import com.example.proj2.Services.TrackerService;
+import com.example.proj2.service.TrackerService;
 import com.example.proj2.entity.Tracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

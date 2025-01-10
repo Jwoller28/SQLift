@@ -7,7 +7,7 @@ import com.example.proj2.Configs.JwtUtil;
 import com.example.proj2.Controllers.AuthenticationController;
 import com.example.proj2.Dto.LoginUserDto;
 import com.example.proj2.Dto.RegisterUserDto;
-import com.example.proj2.Services.AuthenticationService;
+import com.example.proj2.service.AuthenticationService;
 import com.example.proj2.entity.AppUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

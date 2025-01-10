@@ -1,4 +1,4 @@
-package com.example.proj2.Services;
+package com.example.proj2.service;
 
 import com.example.proj2.entity.AppUser;
 import com.example.proj2.repositories.AppUserRepository;
@@ -19,12 +19,11 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .build();
+        return userRepository.findByUsername(username)
+                .map(user -> User.withUsername(user.getUsername())
+                        .password(user.getPassword())
+                        .roles("USER") // Modify roles as needed
+                        .build())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 }

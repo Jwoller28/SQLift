@@ -37,6 +37,7 @@ build/
  
 .properties
 node_modules
+node_modules/
  
 
 ### VS Code ###

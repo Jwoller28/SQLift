@@ -1,4 +1,4 @@
-package com.example.proj2.Services;
+package com.example.proj2.service;
 
 import com.example.proj2.entity.AppUser;
 import com.example.proj2.entity.Group;
@@ -60,17 +60,17 @@ public class GroupService {
         userRepo.save(u);
     }
 
-    // create group event
-    public GroupEvent createGroupEvent(int groupId, String title, String desc, String day) throws Exception {
-        Group g = groupRepo.findById(groupId).orElseThrow(() -> new Exception("Group not found"));
+    public GroupEvent createGroupEvent(int groupId, String title, String description, String day) throws Exception {
+        Group group = groupRepo.findById(groupId).orElseThrow(() -> new Exception("Group not found"));
+        GroupEvent event = new GroupEvent();
+        event.setTitle(title);
+        event.setDescription(description);
+        event.setDay(day);
+        event.setGroup(group);
 
-        GroupEvent evt = new GroupEvent();
-        evt.setTitle(title);
-        evt.setDescription(desc);
-        evt.setDay(day);
-        evt.setGroup(g);
-        return eventRepo.save(evt);
+        return eventRepo.save(event);
     }
+
 
     // list group events
     public List<GroupEvent> getGroupEvents(int groupId) throws Exception {

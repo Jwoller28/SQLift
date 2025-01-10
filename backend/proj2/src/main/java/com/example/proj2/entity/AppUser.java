@@ -2,6 +2,7 @@ package com.example.proj2.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,16 +51,20 @@ public class AppUser  {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    // MANY-TO-MANY with Group
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<PersonalEvent> personalEvents;
+
+
     @ManyToMany
     @JoinTable(
-        name = "group_memberships",
-        joinColumns = @JoinColumn(name = "user_id"), 
+        name = "user_groups",
+        joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "group_id")
     )
-
     @JsonIgnore
     private Set<Group> groups = new HashSet<>();
+
 
     public AppUser() {}
 
@@ -95,7 +100,13 @@ public class AppUser  {
 
 
 
+    public List<PersonalEvent> getPersonalEvents() {
+        return personalEvents;
+    }
 
+    public void setPersonalEvents(List<PersonalEvent> personalEvents) {
+        this.personalEvents = personalEvents;
+    }
 
     public Date getCreatedAt() {
         return createdAt;

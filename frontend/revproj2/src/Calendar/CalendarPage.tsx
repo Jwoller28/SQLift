@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// If you have separate contexts for personal events, import them:
 import { useEvents } from '../Components/EventsContext/EventsContext';
 import { useGroups } from '../Components/GroupContext/GroupContext';
 
@@ -155,10 +154,16 @@ function CalendarPage() {
   // Merge personal & group events => color code days
   // ---------------------------
   const { getAllGroupEventsForDay } = useGroups();
-  const { events: personalEvents } = useEvents(); // all personal events in memory
+  const { fetchPersonalEvents, events: personalEvents } = useEvents(); // all personal events in memory
 
   // We'll store which day has ANY event in a set
   const [daysWithAnyEvents, setDaysWithAnyEvents] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (userId && token) {
+      fetchPersonalEvents();
+    }
+  }, [userId, token, fetchPersonalEvents]);
 
   useEffect(() => {
     if (!userId) return;

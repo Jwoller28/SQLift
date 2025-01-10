@@ -1,4 +1,4 @@
-package com.example.proj2.Services;
+package com.example.proj2.service;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
