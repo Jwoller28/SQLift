@@ -23,7 +23,6 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        cache-dependency-path: subdir/yarn.lock
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
         
