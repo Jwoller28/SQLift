@@ -1,6 +1,6 @@
 package com.example.proj2.Controllers;
 import com.example.proj2.Dto.CreateGroupDto;
-import com.example.proj2.service.GroupService;
+import com.example.proj2.Services.GroupService;
 import com.example.proj2.entity.Group;
 import com.example.proj2.entity.GroupEvent;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.example.proj2.service;
+package com.example.proj2.Services;
 
 
 import com.example.proj2.Dto.RegisterUserDto;

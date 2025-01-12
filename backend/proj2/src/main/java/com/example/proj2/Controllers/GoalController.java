@@ -1,13 +1,13 @@
 package com.example.proj2.Controllers;
 
 import java.util.List;
-import com.example.proj2.service.GoalService;
+import com.example.proj2.Services.GoalService;
 import com.example.proj2.entity.Goal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.proj2.service.UserService;
+import com.example.proj2.Services.UserService;
 
 
 

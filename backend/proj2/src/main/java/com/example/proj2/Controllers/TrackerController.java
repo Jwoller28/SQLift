@@ -1,7 +1,7 @@
 package com.example.proj2.Controllers;
 
 
-import com.example.proj2.service.TrackerService;
+import com.example.proj2.Services.TrackerService;
 import com.example.proj2.entity.Tracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,7 @@ public class TrackerController {
         }
         catch (Exception e){
             logger.error("error creating Tracker "+trackerDto);
+ 	    logger.error(e.getMessage());
             return ResponseEntity.status(401).body(null);
         }
     }

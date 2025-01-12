@@ -18,9 +18,9 @@ public class CommentService {
     
     // Get All Comments By User
 
-    public Comment persistComment(Comment comment)
+    public void persistComment(Comment comment)
     {
-        return commentRepository.saveAndFlush(comment);
+        commentRepository.saveAndFlush(comment);
     }
 
     public List<Comment> getUserComments(AppUser u)
