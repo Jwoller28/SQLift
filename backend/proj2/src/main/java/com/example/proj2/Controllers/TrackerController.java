@@ -30,6 +30,7 @@ public class TrackerController {
         }
         catch (Exception e){
             logger.error("error creating Tracker "+trackerDto);
+ 	    logger.error(e.getMessage());
             return ResponseEntity.status(401).body(null);
         }
     }

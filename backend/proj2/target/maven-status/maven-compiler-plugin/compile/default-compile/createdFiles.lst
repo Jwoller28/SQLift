@@ -26,6 +26,7 @@ com\example\proj2\Configs\KafkaTopicConfig.class
 com\example\proj2\Configs\KafkaConsumerConfig.class
 com\example\proj2\Controllers\TrackerController.class
 com\example\proj2\entity\Tracker.class
+com\example\proj2\Services\UserService.class
 com\example\proj2\entity\type\Nutrition.class
 com\example\proj2\Enum\FileType.class
 com\example\proj2\Proj2Application.class
