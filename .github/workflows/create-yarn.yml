@@ -17,17 +17,17 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
 
     # Change directory to where package.json is located
     - name: Change directory to frontend
       run: cd frontend
 
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        
     # Install dependencies using yarn.lock
     - name: Install dependencies
       run: yarn install --frozen-lockfile
