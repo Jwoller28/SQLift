@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,7 +24,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        
+
+    # Install dependencies using yarn.lock
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+      # --frozen-lockfile ensures yarn uses yarn.lock and does not modify it
+    
     - name: Build Yarn App
       run: yarn build
     
