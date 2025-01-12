@@ -38,11 +38,6 @@ jobs:
         
     - name: Create Jacoco Report
     - run: mvn jacoco:report
-    - run: mkdir report && cp target/sites/*.html report
-    - uses: actions/upload-artifact@v4
-      with:
-        name: Report Site
-        path: report
       
     - name: Build with Maven
       run: mvn -B package --file pom.xml
