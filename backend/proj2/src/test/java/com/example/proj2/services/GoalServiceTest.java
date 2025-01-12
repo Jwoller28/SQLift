@@ -34,7 +34,7 @@ public class GoalServiceTest {
     @Test
     public void testCreateGoal() throws Exception {
         Goal goal = new Goal();
-        goal.setId(1);
+        goal.setId(1L);
 
         when(goalRepository.save(any(Goal.class))).thenReturn(goal);
 
@@ -47,7 +47,7 @@ public class GoalServiceTest {
     @Test
     public void testGetUsersGoal() throws Exception {
         Goal goal = new Goal();
-        goal.setId(1);
+        goal.setId(1L);
 
         when(goalRepository.findByAppUserId(1)).thenReturn(Optional.of(goal));
 
@@ -60,7 +60,7 @@ public class GoalServiceTest {
     @Test
     public void testGetByGoalId() throws Exception {
         Goal goal = new Goal();
-        goal.setId(1);
+        goal.setId(1L);
 
         when(goalRepository.findById(1)).thenReturn(Optional.of(goal));
 
@@ -73,10 +73,10 @@ public class GoalServiceTest {
     @Test
     public void testGetAllGoalsbyUser() {
         Goal goal1 = new Goal();
-        goal1.setId(1);
+        goal1.setId(1L);
 
         Goal goal2 = new Goal();
-        goal2.setId(2);
+        goal2.setId(2L);
 
         List<Goal> goals = Arrays.asList(goal1, goal2);
         when(goalRepository.findAllByAppUserId(1)).thenReturn(Optional.of(goals));
@@ -90,7 +90,7 @@ public class GoalServiceTest {
     @Test
     public void testUpdatedGoalAllById() {
         Goal existingGoal = new Goal();
-        existingGoal.setId(1);
+        existingGoal.setId(1L);
         existingGoal.setNutrition(new Nutrition());
         existingGoal.setExercise(new Exercise());
 
@@ -110,7 +110,7 @@ public class GoalServiceTest {
     @Test
     public void testDeleteGoal() throws Exception {
         Goal goal = new Goal();
-        goal.setId(1);
+        goal.setId(1L);
 
         when(goalRepository.findById(1)).thenReturn(Optional.of(goal));
 

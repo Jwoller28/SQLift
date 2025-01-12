@@ -13,4 +13,12 @@ C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\Integration\GoalTest.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\Integration\TrackerTest.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\AuthServiceTest.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\CommentServiceTest.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\GoalServiceTest.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\GroupServiceTest.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\MyUserDetailsServiceTest.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\PersonalEventServiceTest.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\PostServiceTest.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\SearchServiceTest.java
+C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\TrackerServiceTest.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\services\UserServiceTest.java
