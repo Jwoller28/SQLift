@@ -13,7 +13,7 @@ function WeekView() {
   const { getAllGroupEventsForDay } = useGroups();      // group events
 
   // We'll fetch userId from localStorage or from your AuthContext
-  const userId = Number(localStorage.getItem('userId') || 0);
+  const userId = Number(localStorage.getItem('id') || 0);
 
   // Track the start date (Sunday) of the current week
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => {

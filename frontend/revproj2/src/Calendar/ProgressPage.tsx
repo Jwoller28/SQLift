@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-// Minimal interface for your Tracker. Adjust as needed.
 interface ITracker {
   id: number;
   exercise?: {
@@ -24,36 +23,39 @@ interface ITracker {
   waterDate?: string;
 }
 
-// Minimal interface for your Goal. Adjust as needed.
 interface IGoal {
   id: number;
-  sleep: number; // e.g. total hours to achieve
-  water: number; // e.g. total ounces to achieve
-  // If you have nutrition or exercise goals, add them here
+  sleep: number; // Maps directly to the "sleep" column
+  water: number; // Maps directly to the "water" column
+  weight?: number; // Maps directly to the "weight" column
+  burnedCalories?: number; // Maps to "calories_burned"
+  exerciseDuration?: number; // Maps to "duration"
+  caloriesConsumed?: number; // Maps to "kal"
+  volume?: number; // Maps to "volume"
 }
 
+
 function ProgressPage() {
-  const { dayId } = useParams(); // e.g., "2024-12-31"
+  const { dayId } = useParams();
   const navigate = useNavigate();
 
-  // Basic user/goal tokens and IDs
   const [token, setToken] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [goal, setGoal] = useState<IGoal | null>(null);
 
-  // Trackers
   const [allTrackers, setAllTrackers] = useState<ITracker[]>([]);
   const [dayTracker, setDayTracker] = useState<ITracker | null>(null);
 
-  // Summations for total progress
   const [totalSleep, setTotalSleep] = useState(0);
   const [totalWater, setTotalWater] = useState(0);
-
-  // NEW: We'll store any error text here for on-screen display
+  const [totalExerciseCalories, setTotalExerciseCalories] = useState(0);
+  const [totalExerciseDuration, setTotalExerciseDuration] = useState(0);
+  const [totalNutritionCalories, setTotalNutritionCalories] = useState(0);
+  const [totalWeight, setWeight] = useState(0);
+  const [totalVolume, setVolume] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // A) On mount, fetch token
   useEffect(() => {
     const stored = localStorage.getItem('token');
     if (stored) {
@@ -67,7 +69,6 @@ function ProgressPage() {
     }
   }, []);
 
-  // B) Once we have token, get username from /me
   useEffect(() => {
     if (!token) return;
     const fetchMe = async () => {
@@ -75,9 +76,7 @@ function ProgressPage() {
         const res = await fetch('http://18.221.145.66:8080/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) {
-          throw new Error(`GET /me failed: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`GET /me failed: ${res.status}`);
         const name = await res.text();
         setUsername(name);
       } catch (err: any) {
@@ -87,7 +86,6 @@ function ProgressPage() {
     fetchMe();
   }, [token]);
 
-  // C) Once we have username, get user object => userId
   useEffect(() => {
     if (!username || !token) return;
     const fetchUser = async () => {
@@ -95,9 +93,7 @@ function ProgressPage() {
         const res = await fetch(`http://18.221.145.66:8080/username/${username}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) {
-          throw new Error(`GET /username/${username} failed: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`GET /username/${username} failed: ${res.status}`);
         const userObj = await res.json();
         setUserId(userObj.id);
       } catch (err: any) {
@@ -107,7 +103,6 @@ function ProgressPage() {
     fetchUser();
   }, [username, token]);
 
-  // D) Once we have userId, get the user's goal
   useEffect(() => {
     if (!userId || !token) return;
     const fetchGoal = async () => {
@@ -115,44 +110,54 @@ function ProgressPage() {
         const res = await fetch(`http://18.221.145.66:8080/goalUser/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) {
-          throw new Error(`GET /goalUser/${userId} failed: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`GET /goalUser/${userId} failed: ${res.status}`);
         const goalObj = await res.json();
-        setGoal(goalObj);
+
+        console.log("Fetched goal object:", goalObj);
+        // Map the response to the correct interface structure
+        setGoal({
+          id: goalObj.id,
+          sleep: goalObj.sleep || 0,
+          water: goalObj.water || 0,
+          weight: goalObj.nutrition.weight || 0,
+          burnedCalories: goalObj.exercise.caloriesBurned || 0,
+          exerciseDuration: goalObj.exercise.duration || 0, 
+          caloriesConsumed: goalObj.nutrition.kal || 0,
+          volume: goalObj.exercise.volume || 0, 
+        });
       } catch (err: any) {
         setErrorMessage(`Error fetching goal: ${err.message}`);
       }
     };
     fetchGoal();
   }, [userId, token]);
+  
+  useEffect(() => {
+    if (goal) {
+      console.log('Goal state updated:', goal);
+    }
+  }, [goal]);
 
-  // E) Then, also get all trackers => allTrackers
+
   useEffect(() => {
     if (!userId || !goal || !token) return;
-
     const fetchTrackers = async () => {
       try {
-        // Some backends require both userId & goalId to fetch trackers
-        const res = await fetch(`http://18.221.145.66:8080/Tracker/${userId}/${goal.id}`, {
+        const res = await fetch(`http://localhost:8080/Tracker/${userId}/${goal.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) {
-          throw new Error(`GET /Tracker/${userId}/${goal.id} failed: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`GET /Tracker/${userId}/${goal.id} failed: ${res.status}`);
         const trackers = await res.json();
+        console.log("Fetched trackers:", trackers);
         setAllTrackers(trackers);
       } catch (err: any) {
         setErrorMessage(`Error fetching trackers: ${err.message}`);
       }
     };
-
     fetchTrackers();
   }, [userId, goal, token]);
 
-  // F) Once we have allTrackers, find the specific day, sum totals
   useEffect(() => {
-    // 1) Find day tracker
     const foundTracker =
       allTrackers.find((t) => {
         const exDate = t.exercise?.exerciseDate;
@@ -163,15 +168,31 @@ function ProgressPage() {
       }) || null;
     setDayTracker(foundTracker);
 
-    // 2) Sum total sleep, water, etc.
     let sumSleep = 0;
     let sumWater = 0;
+    let sumExerciseCalories = 0;
+    let sumExerciseDuration = 0;
+    let sumNutritionCalories = 0;
+    let sumWeight = 0;
+    let sumVolume = 0;
+
     allTrackers.forEach((t) => {
       sumSleep += t.sleep || 0;
       sumWater += t.water || 0;
+      sumWeight += t.nutrition?.weight || 0;
+      sumExerciseCalories += t.exercise?.caloriesBurned || 0;
+      sumExerciseDuration += t.exercise?.duration || 0;
+      sumNutritionCalories += t.nutrition?.kal || 0;
+      sumVolume += t.exercise?.volume || 0;
     });
+
     setTotalSleep(sumSleep);
     setTotalWater(sumWater);
+    setTotalExerciseCalories(sumExerciseCalories);
+    setTotalExerciseDuration(sumExerciseDuration);
+    setTotalNutritionCalories(sumNutritionCalories);
+    setWeight(sumWeight);
+    setVolume(sumVolume);
   }, [allTrackers, dayId]);
 
   const goBack = () => {
@@ -179,7 +200,6 @@ function ProgressPage() {
   };
 
   return (
-    // Outer gradient container — similar to CalendarPage
     <div
       style={{
         padding: '0px',
@@ -193,7 +213,6 @@ function ProgressPage() {
         marginTop: 0,
       }}
     >
-      {/* NEW: If there's an error, display it here */}
       {errorMessage && (
         <div
           style={{
@@ -210,7 +229,6 @@ function ProgressPage() {
         </div>
       )}
 
-      {/* Black “card” container */}
       <div
         style={{
           backgroundColor: 'black',
@@ -224,7 +242,6 @@ function ProgressPage() {
           Progress for {dayId}
         </h2>
 
-        {/* Display the day’s data if found */}
         {dayTracker ? (
           <div style={{ marginBottom: '20px' }}>
             <p>
@@ -244,6 +261,9 @@ function ProgressPage() {
             </p>
             <p>
               <strong>Weight (lbs):</strong> {dayTracker.nutrition?.weight ?? 0}
+            </p>
+            <p>
+              <strong>Calories Consumed (kal):</strong> {dayTracker.nutrition?.kal ?? 0} min
             </p>
             <p>
               <strong>Carbs (g):</strong> {dayTracker.nutrition?.carb ?? 0}
@@ -266,17 +286,46 @@ function ProgressPage() {
         <h3 style={{ color: '#fff', marginTop: '10px' }}>Total Progress So Far</h3>
         {goal ? (
           <>
-            <p>
-              <strong>Hours Slept:</strong> {totalSleep}/{goal.sleep} hour goal
-            </p>
-            <p>
-              <strong>Water Drank:</strong> {totalWater}/{goal.water} oz goal
-            </p>
-            {/* Add additional comparisons if your goal has more fields */}
+            {totalSleep > 0 && (
+              <p>
+                <strong>Hours Slept:</strong> {totalSleep}/{goal.sleep} total hours
+              </p>
+            )}
+            {totalWater > 0 && (
+              <p>
+                <strong>Water Drank:</strong> {totalWater}/{goal.water} total oz
+              </p>
+            )}
+            {totalExerciseCalories > 0 && (
+              <p>
+                <strong>Calories Burned:</strong> {totalExerciseCalories}/{goal.burnedCalories} total kal burned
+              </p>
+            )}
+            {totalExerciseDuration > 0 && (
+              <p>
+                <strong>Exercise Duration:</strong> {totalExerciseDuration}/{goal.exerciseDuration} total minutes
+              </p>
+            )}
+            {totalNutritionCalories > 0 && (
+              <p>
+                <strong>Calories Consumed:</strong> {totalNutritionCalories}/{goal.caloriesConsumed} total kal consumed
+              </p>
+            )}
+            {totalWeight > 0 && (
+              <p>
+                <strong>Weight:</strong> {totalWeight}/{goal.weight} lbs lost
+              </p>
+            )}
+            {totalVolume > 0 && (
+              <p>
+                <strong>Volume:</strong> {totalVolume}/{goal.volume} lbs
+              </p>
+            )}
           </>
         ) : (
           <p>No goal found.</p>
         )}
+
 
         <button
           onClick={goBack}
@@ -298,3 +347,6 @@ function ProgressPage() {
 }
 
 export default ProgressPage;
+
+
+

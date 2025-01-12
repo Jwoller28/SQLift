@@ -17,6 +17,7 @@ type UserLoginProps ={
 
 // Form that gets displayed on the webpage
 function UserLogin({username, setUsername, password, setPassword, handleSubmit, handleRegister}: UserLoginProps) {
+  // localStorage.clear();
   const navigate = useNavigate();
 
   return (
