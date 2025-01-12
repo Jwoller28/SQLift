@@ -35,6 +35,7 @@ public class GoalController {
             return ResponseEntity.status(401).body(null);
         }
     }
+    
     @GetMapping("goalUser/{userId}")
     public ResponseEntity<Goal> getUsersGoal(@PathVariable Integer userId) {
         try{
@@ -102,8 +103,18 @@ public class GoalController {
         } catch (Exception e) {
             logger.error("Failed to delete goal with ID: {}", goalId, e);
             return ResponseEntity.status(404).build();
+        }
     }
 
-}
+
+    @PostMapping("/resetGoals/{userId}")
+    public ResponseEntity<String> resetUserGoals(@PathVariable Integer userId) {
+        boolean success = goalService.resetGoalsForUser(userId);
+        if (success) {
+            return ResponseEntity.ok("Goals reset successfully!");
+        }
+        return ResponseEntity.status(404).body("User goals not found or reset failed.");
+    }
+
 }
 

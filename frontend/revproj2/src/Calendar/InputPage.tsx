@@ -215,6 +215,9 @@ function InputPage() {
     });
   };
 
+  
+
+
   // ---------------------------------------------------------------------------
   // 7) handleSave => create new Tracker
   // ---------------------------------------------------------------------------
@@ -267,9 +270,7 @@ function InputPage() {
       if (!response.ok) {
         throw new Error(`Failed to create tracker. Status: ${response.status}`);
       }
-
-      const created = await response.json();
-      console.log('Tracker created:', created);
+      
       localStorage.setItem(`completed_${userId}_${dayId}`, "true");
       navigate('/calendar');
     } catch (err: any) {
@@ -281,10 +282,6 @@ function InputPage() {
     navigate(`/progress/${dayId}`);
   };
 
-  const handleCalendar = () => {
-    navigate(`calendar`);
-  };
-
   // ---------------------------------------------------------------------------
   // RENDER
   // ---------------------------------------------------------------------------
@@ -292,7 +289,7 @@ function InputPage() {
     <div
       style={{
         padding: '0px',
-        background: 'linear-gradient(to bottom, #3370ff, #ADD8E6)',
+        background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
         color: '#fff',
         minHeight: '100vh',
         display: 'flex',
@@ -320,7 +317,7 @@ function InputPage() {
 
       <div
         style={{
-          backgroundColor: 'black',
+          background: 'linear-gradient(to bottom, #2F2F2F , #1A1A1A )',
           padding: '20px',
           borderRadius: '10px',
           width: '80%',
@@ -340,9 +337,9 @@ function InputPage() {
     onClick={() => navigate('/calendar')}
     style={{
       position: 'absolute',
-      left: 0,                  // anchor to the left
-      top: '50%',               // anchor vertically near middle
-      transform: 'translateY(-50%)', // shift button up 50% of its own height
+      left: 0,                  
+      top: '50%',               
+      transform: 'translateY(-50%)', 
       padding: '8px 16px',
       backgroundColor: '#2282ff',
       color: '#000',

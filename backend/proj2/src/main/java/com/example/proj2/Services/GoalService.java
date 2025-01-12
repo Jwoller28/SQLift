@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,21 +23,33 @@ public class GoalService {
     }
 
     public Goal createGoal(Goal goal) throws Exception {
-
-
         return goalRepository.save(goal);
     }
 
     public Goal getUsersGoal(Integer userId) throws Exception {
         logger.error("Attempting to get the query the goal "+userId);
-        Optional<Goal> goal = goalRepository.findByAppUserId(userId);
-
+        Optional<Goal> goal = goalRepository.findMostRecent(userId);
         if (goal.isPresent()){
             logger.error(" query successful "+goal.get());
             return goal.get();}
         else
             throw new Exception();
     }
+
+    public List<Goal> getAllGoalsbyUser(int userId)
+        {
+            Optional<List<Goal>> goals = goalRepository.findAllByAppUserId(userId);
+
+            if(goals.isPresent()){
+
+                return goals.get();
+            }
+            else
+                return null;
+        }
+
+    
+    
     public Goal getByGoalId(Integer goalId) throws Exception {
         Optional<Goal> goal = goalRepository.findById(goalId);
 
@@ -44,18 +57,6 @@ public class GoalService {
             return goal.get();
         else
             throw new Exception();
-    }
-
-    public List<Goal> getAllGoalsbyUser(int userId)
-    {
-	    Optional<List<Goal>> goals = goalRepository.findAllByAppUserId(userId);
-
-	    if(goals.isPresent()){
-
-		    return goals.get();
-	    }
-	    else
-		    return null;
     }
 
     public int UpdatedGoalAllById(Integer goalID,Goal goal) {
@@ -143,6 +144,19 @@ public class GoalService {
             throw new Exception("Goal not found");
         }
     }
+
+    public boolean resetGoalsForUser(Integer userId) {
+        Optional<List<Goal>> userGoalsOpt = goalRepository.findAllByAppUserId(userId);
+        if (userGoalsOpt.isPresent()) {
+            List<Goal> userGoals = userGoalsOpt.get();
+            for (Goal goal : userGoals) {
+                goalRepository.delete(goal);   
+            }
+            return true;
+        }
+        return false;
+    }
+
 
 
 }

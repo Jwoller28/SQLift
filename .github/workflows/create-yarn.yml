@@ -13,25 +13,24 @@ jobs:
     strategy:
       matrix:
         node-version: [22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-      
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
 
-    # Install dependencies using yarn.lock
-    - name: Install dependencies
-      run: yarn install --frozen-lockfile
-      # --frozen-lockfile ensures yarn uses yarn.lock and does not modify it
+    # Change directory to where package.json is located
+    - name: Install Node.js and dependencies in frontend
+      run: |
+        cd frontend
+        npm install -g yarn
+        yarn install --frozen-lockfile
     
     - name: Build Yarn App
-      run: yarn build
+      run: |
+        cd frontend
+        yarn build
     
     - name: Test Yarn App
-      run: yarn test
+      run: |
+        cd frontend
+        yarn testname: Yarn Build and Tests CI
