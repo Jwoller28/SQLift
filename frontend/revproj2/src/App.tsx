@@ -21,6 +21,7 @@ import UserProfile from './Components/UserProfile/UserProfile';
 import ResetGoals from './Components/SetUserGoals/ResetGoals';
 import NavBar from './Components/NavBar/NavBar';
 import Logout from './Components/Logout/Logout';
+import MakeNewGoal from './Components/SetUserGoals/MakeNewGoal';
 
 function App() {
   return (
@@ -46,6 +47,12 @@ function App() {
                 </RouteGuard>
                 }></Route>
 
+                <Route path="/newGoal" element={
+                  <RouteGuard>
+                    <MakeNewGoal />
+                  </RouteGuard>
+                }></Route>
+              
               <Route path="/createEvent/:dayId" element={
                 <RouteGuard>
                   <CreateEventPage />

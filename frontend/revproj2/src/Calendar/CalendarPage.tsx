@@ -15,6 +15,7 @@ function CalendarPage() {
   // For your start/end date logic
   const [goalDate, setGoalDate] = useState<string | null>(null);
   const [StartDate, setStartDate] = useState<string | null>(null);
+  const [goalCheck, setGoalCheck] = useState<Boolean | null>(false);
 
   // A dictionary that maps date "YYYY-MM-DD" => "end_date" or "start_date" or "completed"
   const [taskStatuses, setTaskStatuses] = useState<{ [key: string]: string }>({});
@@ -77,6 +78,7 @@ function CalendarPage() {
         }
         const userObj = await res.json();
         setUserId(userObj.id);
+        localStorage.setItem('id', userObj.id);
       } catch (err) {
         console.error('Error fetching user:', err);
       }
@@ -84,7 +86,6 @@ function CalendarPage() {
     fetchUser();
   }, [username, token]);
 
-  // If you have goal tracking (start/end date):
   useEffect(() => {
     if (!userId || !token) return;
     const fetchGoal = async () => {
@@ -96,10 +97,11 @@ function CalendarPage() {
           throw new Error(`GET /goalUser/${userId} failed: ${res.status}`);
         }
         const goalObj = await res.json();
-
+        setGoalCheck(true);
         if (goalObj.createdAt) {
-          const dateOnlyStart = goalObj.createdAt.substring(0, 10);
-          setStartDate(dateOnlyStart);
+          const today = new Date();
+          const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+          setStartDate(todayFormatted);
         }
         if (goalObj.sleepDate) {
           const dateOnlyEnd = goalObj.sleepDate.substring(0, 10);
@@ -111,6 +113,16 @@ function CalendarPage() {
     };
     fetchGoal();
   }, [userId, token]);
+
+  useEffect(() => {
+    if(goalCheck == true){
+      const today = new Date();
+      const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      const checkEnd = goalDate && todayFormatted ? new Date(todayFormatted) >= new Date(goalDate) : false; 
+      if(checkEnd){ navigate('/newGoal') }
+      setGoalCheck(false);
+    }
+  },[goalCheck]);
 
   // If we have goal start/end, mark them in taskStatuses
   useEffect(() => {
@@ -203,23 +215,22 @@ function CalendarPage() {
 
     // If you also want to preserve your start_date, end_date, completed logic:
     if (dayId === todayFormatted) {
-      if (status === 'completed') return '#008000'; // Green
-      return '#164180'; // Dark Blue for today's date
+      if (status === 'completed') return '#4CAF50'; // Green
+      return '#0099FF'; // today
     }
 
-    if (status === 'end_date' || status === 'start_date') {
-      return '#800080'; // purple
+    if (status === 'end_date' || status === 'start_date'){
+      return '#C613D0'; // end or start
     }
     if (status === 'completed') {
-      return '#008000'; // green
+      return '#4CAF50'; // green
     }
     if (hasAny) {
       // color for any user event
-      // e.g. red if you want to highlight "has event"
-      return '#ff0000';
+      return '#DC143C';
     }
     // default
-    return '#0080ff';
+    return '#3C3C3C';
   }
 
   // --------------------------
@@ -244,18 +255,21 @@ function CalendarPage() {
   };
 
 
+
+
   return (
     <div
       style={{
         padding: '0px',
-        background: 'linear-gradient(to bottom, #3370ff, #ADD8E6)',
+        background: 'linear-gradient(135deg, #ff6bcb, #504dff)', // background
         color: '#000000',
-        minHeight: '100vh',
+        minHeight: '110vh',
         display: 'flex',
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
         margin: 0,
+        
       }}
     >
       <h1
@@ -263,7 +277,7 @@ function CalendarPage() {
           fontFamily: 'Arial, sans-serif',
           color: '#ffffff',
           fontSize: '50px',
-          marginTop: 0,
+          marginTop: 10,
         }}
       >
         {currentDate.toLocaleString('default', { month: 'long' })} {year}
@@ -272,7 +286,7 @@ function CalendarPage() {
       <div
         style={{
           marginBottom: '20px',
-          backgroundColor: '#000',
+          background: 'linear-gradient(to bottom, #2F2F2F , #2F2F2F )',
           padding: '10px',
           borderRadius: '10px',
           minWidth: '350px',
@@ -282,7 +296,7 @@ function CalendarPage() {
           onClick={goToPrevMonth}
           style={{
             padding: '10px 20px',
-            backgroundColor: '#2282ff',
+            backgroundColor: '#0099FF',
             color: '#000',
             border: 'none',
             cursor: 'pointer',
@@ -298,7 +312,7 @@ function CalendarPage() {
           onClick={goToNextMonth}
           style={{
             padding: '10px 20px',
-            backgroundColor: '#2282ff',
+            backgroundColor: '#0099FF',
             color: '#000',
             border: 'none',
             cursor: 'pointer',
@@ -313,7 +327,8 @@ function CalendarPage() {
 
       <div
         style={{
-          backgroundColor: 'black',
+          // backgroundColor: '#757073',
+          background: 'linear-gradient(to bottom, #2F2F2F , #1A1A1A )',
           padding: '20px',
           borderRadius: '10px',
           display: 'flex',

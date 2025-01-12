@@ -4,7 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.example.proj2.Controllers.GoalController;
-import com.example.proj2.service.GoalService;
+import com.example.proj2.Services.GoalService;
 import com.example.proj2.entity.Goal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
