@@ -149,7 +149,6 @@ public class Tracker {
     public void setNutrition(Nutrition nutrition) {
         this.nutrition = nutrition;
     }
-
     @Override
     public String toString() {
         return "Tracker{" +
@@ -160,7 +159,7 @@ public class Tracker {
                 ", water=" + water +
                 ", exercise=" + exercise +
                 ", nutrition=" + nutrition +
-                ", nutrition=" + goal +
+                ", goal=" + goal +
                 '}';
     }
 }

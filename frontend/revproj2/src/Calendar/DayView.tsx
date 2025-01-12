@@ -92,29 +92,44 @@ function DayView() {
   return (
     <div
       style={{
-        backgroundColor: '#1e1e4e',
+        background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
         color: '#ffffff',
         minHeight: '100vh',
-        padding: '20px',
+        padding: '50px',
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
       }}
     >
-      <h2>Day View for {dayId}</h2>
+      <div
+      style={{
+        marginBottom: '20px',
+        background: 'linear-gradient(to bottom, #2F2F2F , #2F2F2F )',
+        padding: '50px',
+        borderRadius: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+      }}>
+        
+      <h2>All Events for {dayId}</h2>
 
-      <h3>All Events for This Day</h3>
       {allEvents.map((evt) => (
         <div
           key={evt.id}
           style={{
             marginBottom: '10px',
-            padding: '10px',
+            fontSize: 18,
+            marginTop: '10px',
+            padding: '15px 85px',
             border: '1px solid #444',
             borderRadius: '4px',
-            backgroundColor: '#3c3c8c',
+            backgroundColor: '#504dff',
           }}
         >
           <strong>{evt.title}</strong>
           <p>{evt.description}</p>
-          <p style={{ fontStyle: 'italic' }}>{evt.groupName}</p> {/* Display group or personal */}
+          <strong style={{ fontStyle: 'italic' }}>{evt.groupName}</strong> {/* Display group or personal */}
         </div>
       ))}
 
@@ -184,6 +199,7 @@ function DayView() {
             Go to Input
           </button>
         )}
+      </div>
       </div>
     </div>
   );
