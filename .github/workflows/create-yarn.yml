@@ -1,0 +1,34 @@
+name: Yarn Build and Tests CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        cache-dependency-path: subdir/yarn.lock
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+        
+    - name: Build Yarn App
+      run: yarn build
+    
+    - name: Test Yarn App
+      run: yarn test
