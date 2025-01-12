@@ -3,7 +3,7 @@ package com.example.proj2.Controllers;
 import com.example.proj2.Configs.JwtUtil;
 import com.example.proj2.Dto.LoginUserDto;
 import com.example.proj2.Dto.RegisterUserDto;
-import com.example.proj2.service.AuthenticationService;
+import com.example.proj2.Services.AuthenticationService;
 import com.example.proj2.entity.AppUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.slf4j.LoggerFactory;
-import com.example.proj2.service.UserService;
+import com.example.proj2.Services.UserService;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "18.221.145.66")
 @RestController
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
@@ -74,7 +75,8 @@ public class AuthenticationController {
         }
 
     }
-    @CrossOrigin(origins = "http://localhost:3000")
+    // @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "18.221.145.66")
     @GetMapping("/me")
     public ResponseEntity<String> getAuthenticatedUserFromContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

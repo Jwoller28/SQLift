@@ -72,7 +72,7 @@ function ProgressPage() {
     if (!token) return;
     const fetchMe = async () => {
       try {
-        const res = await fetch('http://localhost:8080/me', {
+        const res = await fetch('http://18.221.145.66:8080/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -92,7 +92,7 @@ function ProgressPage() {
     if (!username || !token) return;
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/username/${username}`, {
+        const res = await fetch(`http://18.221.145.66:8080/username/${username}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -112,7 +112,7 @@ function ProgressPage() {
     if (!userId || !token) return;
     const fetchGoal = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/goalUser/${userId}`, {
+        const res = await fetch(`http://18.221.145.66:8080/goalUser/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -134,7 +134,7 @@ function ProgressPage() {
     const fetchTrackers = async () => {
       try {
         // Some backends require both userId & goalId to fetch trackers
-        const res = await fetch(`http://localhost:8080/Tracker/${userId}/${goal.id}`, {
+        const res = await fetch(`http://18.221.145.66:8080/Tracker/${userId}/${goal.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {

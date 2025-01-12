@@ -10,7 +10,7 @@ import java.util.Optional;
 import com.example.proj2.entity.Comment;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long>
+public interface CommentRepository extends JpaRepository<Comment, Integer>
 {
 
     public Optional<List<Comment>> findAllBySuperComment(Comment c);

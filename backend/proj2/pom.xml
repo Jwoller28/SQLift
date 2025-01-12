@@ -14,7 +14,7 @@
     <name>proj2</name>
     <description>Demo project for Spring Boot</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <!-- Spring Boot Core -->
@@ -115,7 +115,6 @@
 		        <artifactId>jaxb-api</artifactId>
 			<version>2.3.0</version>
 		</dependency>
-	</dependencies>
 
         <!-- JWT -->
         <dependency>

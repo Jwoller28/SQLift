@@ -1,4 +1,4 @@
-package com.example.proj2.repository;
+package com.example.proj2.repositories;
 
 import com.example.proj2.entity.PersonalEvent;
 import org.springframework.data.jpa.repository.JpaRepository;

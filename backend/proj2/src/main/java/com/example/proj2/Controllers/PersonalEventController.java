@@ -2,8 +2,8 @@ package com.example.proj2.Controllers;
 
 import com.example.proj2.entity.AppUser;
 import com.example.proj2.entity.PersonalEvent;
-import com.example.proj2.service.PersonalEventService;
-import com.example.proj2.service.UserService;
+import com.example.proj2.Services.PersonalEventService;
+import com.example.proj2.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

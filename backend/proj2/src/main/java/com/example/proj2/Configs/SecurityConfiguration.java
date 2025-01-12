@@ -17,8 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.example.proj2.service.UserService;
-import com.example.proj2.service.MyUserDetailsService;
+import com.example.proj2.Services.UserService;
+import com.example.proj2.Services.MyUserDetailsService;
 
 
 @Configuration
