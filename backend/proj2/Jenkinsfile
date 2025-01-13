@@ -6,7 +6,9 @@ pipeline{
     stages{
         stage('Compile and Clean'){
             steps{
-                sh 'mvn clean compile'
+                dir('backend/proj2'){
+                    sh 'mvn clean compile'
+                }
             }
         }
         stage('deploy'){
