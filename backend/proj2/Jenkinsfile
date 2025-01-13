@@ -11,6 +11,13 @@ pipeline{
                 }
             }
         }
+        stage('Test'){
+            steps{
+                dir('backend/proj2'){
+                    sh 'mvn test'
+                }
+            }
+        }
         stage('deploy'){
             steps{
                 dir('backend/proj2'){
