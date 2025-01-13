@@ -15,19 +15,19 @@ jest.mock('react-router-dom', () => {
     };
   });
 
-jest.mock('../Components/EventsContext/EventsContext', () => ({
+jest.mock('../../src/Components/EventsContext/EventsContext', () => ({
   useEvents: jest.fn(),
 }));
 
-jest.mock('../Components/GroupContext/GroupContext', () => ({
+jest.mock('../../src/Components/GroupContext/GroupContext', () => ({
   useGroups: jest.fn(),
 }));
 
 describe('DayView', () => {
-  const mockNavigate = useNavigate as jest.Mock;
-  const mockUseParams = useParams as jest.Mock;
-  const mockUseEvents = useEvents as jest.Mock;
-  const mockUseGroups = useGroups as jest.Mock;
+  const mockNavigate = useNavigate as jest.Mock<any>;
+  const mockUseParams = useParams as jest.Mock<any>;
+  const mockUseEvents = useEvents as jest.Mock<any>;
+  const mockUseGroups = useGroups as jest.Mock<any>;
 
   beforeEach(() => {
     mockNavigate.mockReset();

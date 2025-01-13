@@ -1,5 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import UserLogin from "../Components/UserLogin/UserLogin";
+import UserLogin from "../../../src/Components/UserLogin/UserLogin";
+import React from "react";
+/**
+ * @jest-environment jsdom
+ */
 
 
 test('Renders the user login page and tests if the username and password state gets updated after they are entered', () =>{

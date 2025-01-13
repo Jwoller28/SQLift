@@ -11,7 +11,6 @@ import InputPage from './Calendar/InputPage';
 import CalendarPage from './Calendar/CalendarPage';
 import GroupPage from './Calendar/GroupPage';
 import DayView from './Calendar/DayView';
-import WeekView from './Calendar/WeekView';
 import CreateEventPage from './Calendar/CreateEventPage';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostList from './Components/PostFeed/PostList';

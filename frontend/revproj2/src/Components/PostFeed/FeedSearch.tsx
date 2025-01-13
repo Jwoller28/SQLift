@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { sendTypeFilter } from '../../API/Axios';
 
-interface FeedSearchProp {
-  onChange: Function; // Checking if input is clear
-  setSearched: Function; // Checking when to use filter
+export interface FeedSearchProps {
+  onSearch: (query: string, isSearched: boolean) => void;
+  searchQuery: string;
+  searched: boolean;
 }
 
 export interface searchType {
@@ -11,59 +12,66 @@ export interface searchType {
   value: string;
 }
 
-function FeedSearch(prop: FeedSearchProp) {
-  const typeIn = document.querySelector('#typeInput') as HTMLSelectElement; // Ensure type casting
-  const [searchQuery, setSearchQuery] = useState("");
+function FeedSearch({ onSearch, searchQuery, searched }: FeedSearchProps) {
+  const [selectedType, setSelectedType] = useState("username");
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
-  // Function to send the search object to API
-  const sendObj = async (e: any) => {
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    prop.setSearched((prev: any) => !prev);
-    let searchT: searchType = {
-      type: typeIn.value, // Get the value of the datalist input
-      value: searchQuery,
+    const searchT: searchType = {
+      type: selectedType,
+      value: localSearchQuery,
     };
     await sendTypeFilter(searchT);
+    onSearch(localSearchQuery, true);
   };
 
-  // Handle search input change
-  const handleChange = (e: any) => {
-    const value = e.target?.value;
-    setSearchQuery(value);
-    prop.onChange(value);
-  };
-
-  // Function to clear the search
-  const clearSearch = () => {
-    setSearchQuery("");                  // Reset search query state
-    prop.onChange("");                   // Reset the parent search handler
-    prop.setSearched(false);             // Reset the searched flag
-
-    if (typeIn) {
-      typeIn.selectedIndex = -1;                // Reset the datalist input value
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearchQuery(value);
+    if (!value) {
+      onSearch("", false);
+    } else {
+      onSearch(value, searched);
     }
   };
 
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedType(e.target.value);
+  };
+
+  const clearSearch = () => {
+    setLocalSearchQuery("");
+    setSelectedType("username");
+    onSearch("", false);
+  };
+
   return (
-    <>
-      <label htmlFor="search-form">Search the Feed: </label>
-      <form id="search-form">
-        <select id = "typeInput">
-            <option value = "username">username</option>
-            <option value = "tags">tags</option>
-            <option value = "text">text</option>
-        </select>
-        <input
-          type="search"
-          id="feed-search"
-          value={searchQuery}          // Bind input value to searchQuery state
-          onChange={handleChange}      // Update searchQuery state on input change
-        />
-        <button type="submit" onClick={sendObj}>Search</button>
-        {/* Clear button */}
-        <button type="button" onClick={clearSearch}>Clear</button>
-      </form>
-    </>
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="typeInput">Search the Feed: </label>
+      <select
+        id="typeInput"
+        value={selectedType}
+        onChange={handleTypeChange}
+      >
+        <option value="usernames">username</option>
+        <option value="tags">tags</option>
+        <option value="text">text</option>
+      </select>
+      <input
+        type="search"
+        id="feed-search"
+        value={localSearchQuery}
+        onChange={handleChange}
+        placeholder="Search..."
+      />
+      <button type="submit">Search</button>
+      <button type="button" onClick={clearSearch}>Clear</button>
+    </form>
   );
 }
 

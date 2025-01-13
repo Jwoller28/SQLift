@@ -1,38 +1,116 @@
-import { fireEvent, render, screen } from "@testing-library/react"
-import UserRegistration from "../Components/UserRegistration/UserRegistration";
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
+import UserRegistration from '../../../src/Components/UserRegistration/UserRegistration';
+/**
+ * @jest-environment jsdom
+ */
 
+// Mock the useNavigate hook
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
 
-test('Test to check if UserRegistration page is updating the state of all elements inputted', () =>{
+// Mock the fetch API
+global.fetch = jest.fn();
 
-    // Renders the UserRegistration page to be tested
-    render(<UserRegistration/>);
+describe('UserRegistration', () => {
+  beforeEach(() => {
+    (fetch as jest.Mock).mockClear();
+  });
 
-    // Getting the input boxes for the page and inserting values into them.
-    const inputUser = screen.getByLabelText(/username/i);
-    fireEvent.change(inputUser, {target: {value: "user1"}});
+  it('renders correctly and handles registration', async () => {
+    const mockNavigate = jest.fn();
+    (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
 
-    const inputPass = screen.getByLabelText(/password/i);
-    fireEvent.change(inputPass, {target: {value: "pass"}});
+    (fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ id: 1 }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        text: jest.fn().mockResolvedValue('mock-token'),
+      });
 
-    const inputEmail = screen.getByLabelText(/email/i);
-    fireEvent.change(inputEmail, {target: {value: "asdf@revature.com"}});
+    render(
+      <MemoryRouter>
+        <UserRegistration />
+      </MemoryRouter>
+    );
 
-    const inputFirstName = screen.getByLabelText(/first name/i);
-    fireEvent.change(inputFirstName, {target: {value: "John"}});
+    // Simulate user input
+    fireEvent.change(screen.getByLabelText('Username:'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByLabelText('Password:'), { target: { value: 'password' } });
+    fireEvent.change(screen.getByLabelText('Email:'), { target: { value: 'testuser@example.com' } });
+    fireEvent.change(screen.getByLabelText('First Name:'), { target: { value: 'John' } });
+    fireEvent.change(screen.getByLabelText('Last Name:'), { target: { value: 'Doe' } });
+    fireEvent.change(screen.getByLabelText('Photo URL:'), { target: { value: 'http://example.com/photo.jpg' } });
 
-    const inputLastName = screen.getByLabelText(/last name/i);
-    fireEvent.change(inputLastName, {target: {value: "Doe"}});
+    // Simulate form submission
+    fireEvent.click(screen.getByText('Submit'));
 
-    const inputPhotoUrl = screen.getByLabelText(/photo url/i);
-    fireEvent.change(inputPhotoUrl, {target: {value: "test.img"}});
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith('http://localhost:8080/register', expect.any(Object));
+      expect(fetch).toHaveBeenCalledWith('http://localhost:8080/login', expect.any(Object));
+      expect(mockNavigate).toHaveBeenCalledWith('/goals');
+    });
 
-    // Checking to see if after the fired event change, that the text value has been updated for each field.
-    expect(inputUser).toHaveValue("user1");
-    expect(inputPass).toHaveValue("pass");
-    expect(inputEmail).toHaveValue("asdf@revature.com");
-    expect(inputFirstName).toHaveValue("John");
-    expect(inputLastName).toHaveValue("Doe");
-    expect(inputPhotoUrl).toHaveValue("test.img")
+    expect(localStorage.getItem('token')).toBe(JSON.stringify('mock-token'));
+    expect(localStorage.getItem('id')).toBe(JSON.stringify(1));
+  });
 
+  it('displays error message on registration failure', async () => {
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 400,
+    });
 
-})
+    render(
+      <MemoryRouter>
+        <UserRegistration />
+      </MemoryRouter>
+    );
+
+    // Simulate user input
+    fireEvent.change(screen.getByLabelText('Username:'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByLabelText('Password:'), { target: { value: 'password' } });
+
+    // Simulate form submission
+    fireEvent.click(screen.getByText('Submit'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Error Registering User! Error Code: 400')).toBeInTheDocument();
+    });
+  });
+
+  it('displays error message on login failure after registration', async () => {
+    (fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: jest.fn().mockResolvedValue({ id: 1 }),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+      });
+
+    render(
+      <MemoryRouter>
+        <UserRegistration />
+      </MemoryRouter>
+    );
+
+    // Simulate user input
+    fireEvent.change(screen.getByLabelText('Username:'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByLabelText('Password:'), { target: { value: 'password' } });
+
+    // Simulate form submission
+    fireEvent.click(screen.getByText('Submit'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to Log user in after registering with error code: 401')).toBeInTheDocument();
+    });
+  });
+});

@@ -14,13 +14,13 @@ jest.mock('react-router-dom', () => {
   });
 
 
-jest.mock('../Components/GroupContext/GroupContext', () => ({
+jest.mock('../../src/Components/GroupContext/GroupContext', () => ({
   useGroups: jest.fn(),
 }));
 
 describe('GroupPage', () => {
-  const mockNavigate = useNavigate as jest.Mock;
-  const mockUseGroups = useGroups as jest.Mock;
+  const mockNavigate = useNavigate as jest.Mock<any>;
+  const mockUseGroups = useGroups as jest.Mock<any>;
 
   beforeEach(() => {
     mockNavigate.mockReset();

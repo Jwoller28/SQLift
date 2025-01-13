@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../UserContext/UserContext';
+import { AuthContext } from '../../../src/Components/UserContext/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 function LoginLandingPage() {

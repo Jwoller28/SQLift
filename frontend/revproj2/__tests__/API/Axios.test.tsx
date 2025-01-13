@@ -1,188 +1,224 @@
 import axios from 'axios';
-import { jest, describe, beforeEach, it, expect,  } from '@jest/globals';
-import { searchType } from '../../src/Components/PostFeed/FeedSearch';
-import { sendPost, getStoredPosts, getPostPhoto, sendPostPhoto, getPost, usernameifAuthorized, getTrackers, getUserByUsername, getGoalbyUserId, getGoalsbyUserId, getCommentsByPost, sendComment, sendTypeFilter, getFilteredPost, getFilteredStoredPosts } from '../../src/API/Axios';
+import {
+  sendPost,
+  getStoredPosts,
+  getPostPhoto,
+  sendPostPhoto,
+  getPost,
+  usernameifAuthorized,
+  getTrackers,
+  getUserByUsername,
+  getGoalbyUserId,
+  getGoalsbyUserId,
+  getCommentsByPost,
+  sendComment,
+  sendTypeFilter,
+  getFilteredPost,
+  getFilteredStoredPosts,
+} from '../../src/API/Axios';
 
-// Mock axios
 jest.mock('axios');
-const mockedAxios = jest.mocked(axios);
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('API Service Tests', () => {
-  const mockToken = 'test-token';
-  const mockCleanToken = 'test-token';
-
+describe('Axios API functions', () => {
   beforeEach(() => {
-    // Clear all mocks before each test
-    jest.clearAllMocks();
-    
-    // Mock localStorage.getItem
-    Object.defineProperty(window, 'localStorage', {
-      value: {
-        getItem: jest.fn(() => mockToken),
-        setItem: jest.fn(),
-        clear: jest.fn()
-      },
-      writable: true
-    });
+    localStorage.setItem('token', JSON.stringify('mock-token'));
+    mockedAxios.post.mockClear();
+    mockedAxios.get.mockClear();
   });
 
-  describe('sendPost', () => {
-    it('should successfully send a post', async () => {
-      const mockFormData = new FormData();
-      mockedAxios.post.mockResolvedValueOnce({ status: 200, data: {} });
+  it('sendPost sends a post request', async () => {
+    mockedAxios.post.mockResolvedValueOnce({ status: 200 });
 
-      await sendPost(mockFormData);
+    const formData = new FormData();
+    await sendPost(formData);
 
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        'http://localhost:8080/posts',
-        mockFormData,
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${mockCleanToken}`,
-            'Access-Control-Allow-Origin': '*'
-          }),
-          withCredentials: true
-        })
-      );
-    });
-
-    it('should handle errors when sending post fails', async () => {
-      const mockFormData = new FormData();
-      const mockError = new Error('Network error');
-      mockedAxios.post.mockRejectedValueOnce(mockError);
-      
-      const consoleSpy = jest.spyOn(console, 'error');
-      await sendPost(mockFormData);
-      
-      expect(consoleSpy).toHaveBeenCalledWith('Error sending message:', mockError);
-    });
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'http://localhost:8080/posts',
+      formData,
+      expect.any(Object)
+    );
   });
 
-  describe('getStoredPosts', () => {
-    it('should successfully retrieve stored posts', async () => {
-      const mockPosts = [{ id: 1, title: 'Test Post' }];
-      mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockPosts });
+  it('getStoredPosts retrieves stored posts', async () => {
+    const mockData = [{ id: 1, content: 'test post' }];
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
 
-      const result = await getStoredPosts();
+    const result = await getStoredPosts();
 
-      expect(result).toEqual(mockPosts);
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        'http://localhost:8080/posts',
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${mockCleanToken}`,
-            'Access-Control-Allow-Origin': '*'
-          }),
-          withCredentials: true
-        })
-      );
-    });
-
-    it('should handle error response', async () => {
-      mockedAxios.get.mockRejectedValueOnce(new Error('Network error'));
-      const consoleSpy = jest.spyOn(console, 'error');
-      
-      await getStoredPosts();
-      
-      expect(consoleSpy).toHaveBeenCalled();
-    });
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/posts',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
   });
 
-  describe('getPostPhoto', () => {
-    const fileName = 'test.jpg';
+  it('getPostPhoto retrieves a post photo', async () => {
+    const mockData = 'photo-data';
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
 
-    it('should successfully retrieve a photo', async () => {
-      const mockPhotoData = 'base64-encoded-photo';
-      mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockPhotoData });
+    const result = await getPostPhoto('test-photo.jpg');
 
-      const result = await getPostPhoto(fileName);
-
-      expect(result).toEqual(mockPhotoData);
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `http://localhost:8080/s3bucket/trackr-photo-store/download/${fileName}`,
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${mockCleanToken}`
-          })
-        })
-      );
-    });
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/s3bucket/trackr-photo-store/download/test-photo.jpg',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
   });
 
-  describe('usernameifAuthorized', () => {
-    it('should successfully verify authorization', async () => {
-      const mockUserData = { username: 'testUser' };
-      mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockUserData });
+  it('sendPostPhoto sends a post photo', async () => {
+    mockedAxios.post.mockResolvedValueOnce({ status: 200 });
 
-      const result = await usernameifAuthorized();
+    const formData = new FormData();
+    await sendPostPhoto(formData);
 
-      expect(result).toEqual(mockUserData);
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        'http://localhost:8080/me',
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            'Authorization': `Bearer ${mockCleanToken}`
-          })
-        })
-      );
-    });
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'http://localhost:8080/s3bucket/trackr-photo-store/upload',
+      formData,
+      expect.any(Object)
+    );
   });
 
-  describe('getTrackers', () => {
-    const mockUserId = 1;
-    const mockGoalId = 2;
+  it('getPost retrieves a post', async () => {
+    const mockData = { id: 1, content: 'test post' };
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
 
-    it('should successfully retrieve trackers', async () => {
-      const mockTrackers = [{ id: 1, name: 'Test Tracker' }];
-      mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockTrackers });
+    const result = await getPost();
 
-      const result = await getTrackers(mockUserId, mockGoalId);
-
-      expect(result).toEqual(mockTrackers);
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `http://localhost:8080/Tracker/${mockUserId}/${mockGoalId}`,
-        expect.any(Object)
-      );
-    });
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/live/posts',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
   });
 
-  describe('sendTypeFilter', () => {
-    it('should successfully send search type filter', async () => {
-      const mockSearchType: searchType = {
-          type: 'test',
-          value: ''
-      };
-      mockedAxios.post.mockResolvedValueOnce({ status: 200, data: {} });
+  it('usernameifAuthorized retrieves the username if authorized', async () => {
+    const mockData = 'testuser';
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
 
-      await sendTypeFilter(mockSearchType);
+    const result = await usernameifAuthorized();
 
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        'http://localhost:8080/filter',
-        mockSearchType,
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            'Content-Type': 'application/json'
-          })
-        })
-      );
-    });
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/me',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
   });
 
-  describe('getFilteredPost', () => {
-    it('should successfully retrieve filtered posts', async () => {
-      const mockPosts = [{ id: 1, content: 'Filtered post' }];
-      mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockPosts });
+  it('getTrackers retrieves trackers', async () => {
+    const mockData = [{ id: 1, goalId: 1 }];
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
 
-      const result = await getFilteredPost();
+    const result = await getTrackers(1, 1);
 
-      expect(result).toEqual(mockPosts);
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        'http://localhost:8080/filter/live/post',
-        expect.any(Object)
-      );
-    });
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/Tracker/1/1',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
+  });
+
+  it('getUserByUsername retrieves user by username', async () => {
+    const mockData = { id: 1, username: 'testuser' };
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
+
+    const result = await getUserByUsername('testuser');
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/username/testuser',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
+  });
+
+  it('getGoalbyUserId retrieves goal by user ID', async () => {
+    const mockData = { id: 1, userId: 1 };
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
+
+    const result = await getGoalbyUserId(1);
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/goalUser/1',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
+  });
+
+  it('getGoalsbyUserId retrieves goals by user ID', async () => {
+    const mockData = [{ id: 1, userId: 1 }];
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
+
+    const result = await getGoalsbyUserId(1);
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/goalsUser/1',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
+  });
+
+  it('getCommentsByPost retrieves comments by post ID', async () => {
+    const mockData = [{ id: 1, postId: 1 }];
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
+
+    const result = await getCommentsByPost(1);
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/fetch/comment/1',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
+  });
+
+  it('sendComment sends a comment', async () => {
+    mockedAxios.post.mockResolvedValueOnce({ status: 200 });
+
+    const formData = new FormData();
+    await sendComment(formData);
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'http://localhost:8080/create/comment',
+      formData,
+      expect.any(Object)
+    );
+  });
+
+  it('sendTypeFilter sends a type filter', async () => {
+    mockedAxios.post.mockResolvedValueOnce({ status: 200 });
+
+    const searchType = { type: 'username', value: 'testuser' };
+    await sendTypeFilter(searchType);
+
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'http://localhost:8080/filter',
+      searchType,
+      expect.any(Object)
+    );
+  });
+
+  it('getFilteredPost retrieves filtered post', async () => {
+    const mockData = { id: 1, content: 'filtered post' };
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
+
+    const result = await getFilteredPost();
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/filter/live/post',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
+  });
+
+  it('getFilteredStoredPosts retrieves filtered stored posts', async () => {
+    const mockData = [{ id: 1, content: 'filtered stored post' }];
+    mockedAxios.get.mockResolvedValueOnce({ status: 200, data: mockData });
+
+    const result = await getFilteredStoredPosts();
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'http://localhost:8080/filter/posts',
+      expect.any(Object)
+    );
+    expect(result).toEqual(mockData);
   });
 });

@@ -39,7 +39,7 @@ export function EventsProvider({ children }: { children: React.ReactNode }) {
 
       console.log(`Fetching events for userId: ${userId}`);
 
-      const res = await fetch(`http://localhost:8080/personal-events/${userId}`, {
+      const res : any = await fetch(`http://localhost:8080/personal-events/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
