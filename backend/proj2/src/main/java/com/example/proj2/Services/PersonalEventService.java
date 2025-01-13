@@ -1,7 +1,7 @@
 package com.example.proj2.Services;
 
 import com.example.proj2.entity.PersonalEvent;
-import com.example.proj2.repository.PersonalEventRepository;
+import com.example.proj2.repositories.PersonalEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

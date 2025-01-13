@@ -62,7 +62,7 @@ public class GoalService {
     public int UpdatedGoalAllById(Integer goalID,Goal goal) {
         logger.info("Finding existing Goal with data: " + goal);
 
-        Optional<Goal> existingGoalOptional = goalRepository.findByAppUserId(goalID);
+        Optional<Goal> existingGoalOptional = goalRepository.findMostRecent(goalID);
 
         if (existingGoalOptional.isPresent()) {
             Goal existingGoal = existingGoalOptional.get();

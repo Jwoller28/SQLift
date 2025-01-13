@@ -22,6 +22,7 @@ import com.example.proj2.Services.UserService;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
+// @CrossOrigin(origins = "18.221.145.66")
 @RestController
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
@@ -75,6 +76,7 @@ public class AuthenticationController {
 
     }
     @CrossOrigin(origins = "http://localhost:3000")
+    // @CrossOrigin(origins = "18.221.145.66")
     @GetMapping("/me")
     public ResponseEntity<String> getAuthenticatedUserFromContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
