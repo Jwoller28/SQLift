@@ -1,4 +1,4 @@
-package com.example.proj2.Controller;
+package com.example.proj2.Controllers;
 
 import com.example.proj2.Services.AWSService;
 import com.example.proj2.Enum.FileType;

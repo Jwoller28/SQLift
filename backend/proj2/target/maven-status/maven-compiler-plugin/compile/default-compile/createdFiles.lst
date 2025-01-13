@@ -1,12 +1,12 @@
 com\example\proj2\entity\PersonalEvent.class
 com\example\proj2\entity\Goal.class
-com\example\proj2\repository\PersonalEventRepository.class
 com\example\proj2\Serializer\PostSerializer.class
 com\example\proj2\Configs\WebConfig.class
 com\example\proj2\Dto\RegisterUserDto.class
 com\example\proj2\Controllers\PersonalEventController.class
 com\example\proj2\Services\GoalService.class
 com\example\proj2\Services\PersonalEventService.class
+com\example\proj2\repositories\PersonalEventRepository.class
 com\example\proj2\repositories\TrackerRepository.class
 com\example\proj2\Serializer\PostDeserializer.class
 com\example\proj2\Services\AuthenticationService.class
