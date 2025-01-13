@@ -26,7 +26,7 @@ function UserManagement() {
     function handleSubmit(event: FormEvent){
         event.preventDefault();
         const fetchData = async () => {
-            const response = await fetch('http://18.221.145.66:8080/login', {
+            const response = await fetch('http://localhost:8080/login', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username, password})

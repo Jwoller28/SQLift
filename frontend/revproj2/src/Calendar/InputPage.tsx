@@ -70,7 +70,7 @@ function InputPage() {
 
     const fetchMe = async () => {
       try {
-        const meRes = await fetch('http://18.221.145.66:8080/me', {
+        const meRes = await fetch('http://localhost:8080/me', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${userToken}`,
@@ -99,7 +99,7 @@ function InputPage() {
 
     const fetchUsername = async () => {
       try {
-        const userRes = await fetch(`http://18.221.145.66:8080/username/${userName}`, {
+        const userRes = await fetch(`http://localhost:8080/username/${userName}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         });
         if (!userRes.ok) {
@@ -123,7 +123,7 @@ function InputPage() {
 
     const fetchGoal = async () => {
       try {
-        const goalRes = await fetch(`http://18.221.145.66:8080/goalUser/${userId}`, {
+        const goalRes = await fetch(`http://localhost:8080/goalUser/${userId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         });
         if (!goalRes.ok) {
@@ -258,7 +258,7 @@ function InputPage() {
     };
 
     try {
-      const response = await fetch('http://18.221.145.66:8080/Tracker', {
+      const response = await fetch('http://localhost:8080/Tracker', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
