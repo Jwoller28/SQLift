@@ -1,6 +1,12 @@
 {
     "compilerOptions": {
       "target": "es5",
+      "types": [
+        "node",
+        "jest",
+        "react",
+        "react-dom"
+      ],
       "lib": [
         "dom",
         "dom.iterable",
@@ -22,5 +28,5 @@
     },
     "include": [
       "src"
-    ]
+, "__tests__/Components/SetUserGoals/SetUserGoals.test.tsx"    ]
   }
