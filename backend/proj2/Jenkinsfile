@@ -1,0 +1,45 @@
+pipeline{
+    agent any
+    tools{
+        maven "3.9.9"
+    }
+    stages{
+        stage('Compile and Clean'){
+            steps{
+                sh 'mvn clean compile'
+            }
+        }
+        stage('deploy'){
+            steps{
+                sh 'mvn package'
+            }
+        }
+        stage('Build Docker Image'){
+            steps{
+                echo 'Building Image'
+                sh 'ls'
+                sh 'docker build -t brets1488/jenkins_docker_revp2:${BUILD_NUMBER} .'
+            }
+        }
+        stage('Docker Login'){
+            steps{
+                echo 'Logging into Docker'
+                withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]){
+                    sh "docker login -u brets1488 -p ${Dockerpwd}"
+                }
+            }
+        }
+        stage('Push Docker Image'){
+            steps{
+                echo 'Pushing Image'
+                sh 'docker push brets1488/jenkins_docker_revp2:${BUILD_NUMBER}'
+            }
+        }
+        stage('Archiving'){
+            steps{
+                echo 'Archiving'
+                archiveArtifacts '**/target/*.jar'
+            }
+        }
+    }
+}
