@@ -13,12 +13,16 @@ pipeline{
         }
         stage('deploy'){
             steps{
-                sh 'mvn package'
+                dir('backend/proj2'){
+                    sh 'mvn package'
+                }
             }
         }
         stage('Build Docker Image'){
             steps{
                 echo 'Building Image'
+                sh 'ls'
+                sh 'cd backend'
                 sh 'ls'
                 sh 'docker build -t brets1488/jenkins_docker_revp2:${BUILD_NUMBER} .'
             }
