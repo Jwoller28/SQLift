@@ -3,8 +3,8 @@ package com.example.proj2.Integration;
 import com.example.proj2.entity.AppUser;
 import com.example.proj2.repositories.AppUserRepository;
 import jakarta.transaction.Transactional;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class AppUserTest {
     @Autowired
     private AppUserRepository appUserRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Clean up the database before each test
         appUserRepository.deleteAll();
@@ -84,7 +84,7 @@ public class AppUserTest {
         assertFalse(retrievedUser.isPresent()); // No user should be found
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         // Clean up the database after each test
         appUserRepository.deleteAll();

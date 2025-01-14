@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import '@testing-library/jest-dom'
-import SetUserGoals from "../Components/SetUserGoals/SetUserGoals";
+import SetUserGoals from "../../../src/Components/SetUserGoals/SetUserGoals";
 
 test('This test will check if the nutrition forms behavior is acting accordingly when data is submitted', () => {
 

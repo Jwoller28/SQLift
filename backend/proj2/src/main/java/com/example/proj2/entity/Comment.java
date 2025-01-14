@@ -72,6 +72,10 @@ public void setSuperComment(Comment superComment) {
 	this.superComment = superComment;
 }
 
+public void setId(int id) {
+	this.commentId = id;
+}
+
 @CreationTimestamp
 @Column(updatable = false, name = "created_at")
 private Date timestamp;
