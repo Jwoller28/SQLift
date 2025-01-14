@@ -1,7 +1,7 @@
 package com.example.proj2.services;
 
 import com.example.proj2.entity.PersonalEvent;
-import com.example.proj2.repository.PersonalEventRepository;
+import com.example.proj2.repositories.PersonalEventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

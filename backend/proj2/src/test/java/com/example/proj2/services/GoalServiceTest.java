@@ -49,12 +49,12 @@ public class GoalServiceTest {
         Goal goal = new Goal();
         goal.setId(1L);
 
-        when(goalRepository.findByAppUserId(1)).thenReturn(Optional.of(goal));
+        when(goalRepository.findMostRecent(1)).thenReturn(Optional.of(goal));
 
         Goal result = goalService.getUsersGoal(1);
 
         assertEquals(goal, result);
-        verify(goalRepository, times(1)).findByAppUserId(1);
+        verify(goalRepository, times(1)).findMostRecent(1);
     }
 
     @Test
@@ -98,12 +98,12 @@ public class GoalServiceTest {
         updatedGoal.setNutrition(new Nutrition());
         updatedGoal.setExercise(new Exercise());
 
-        when(goalRepository.findByAppUserId(1)).thenReturn(Optional.of(existingGoal));
+        when(goalRepository.findMostRecent(1)).thenReturn(Optional.of(existingGoal));
 
         int result = goalService.UpdatedGoalAllById(1, updatedGoal);
 
         assertEquals(1, result);
-        verify(goalRepository, times(1)).findByAppUserId(1);
+        verify(goalRepository, times(1)).findMostRecent(1);
         verify(goalRepository, times(1)).save(existingGoal);
     }
 
