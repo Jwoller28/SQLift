@@ -99,6 +99,12 @@ function CommentList(prop: CommentListProp) {
           ) : comments.length > 0 ? (
             <ul style={{ listStyleType: "none", padding: 0 }}>
               {comments.map((comment, index) => (
+<<<<<<< HEAD
+                <li key={index}> {/* Use unique comment ID as the key */} 
+                  <h5>{comment.user.username}</h5> {/* Replace with actual comment data */}
+		              <p> {comment.timestamp} </p>
+		              <p>{comment.text}</p>
+=======
                 <li
                   key={index}
                   style={{
@@ -130,6 +136,7 @@ function CommentList(prop: CommentListProp) {
                     {formatTimeAgo(comment.timestamp)}
                   </p>
                   <p>{comment.text}</p>
+>>>>>>> origin/main
                 </li>
               ))}
             </ul>

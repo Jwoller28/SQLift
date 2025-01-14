@@ -1,44 +1,28 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import {jest, describe, beforeEach, expect, test } from '@jest/globals'
+import { jest, describe, beforeEach, expect, test } from '@jest/globals';
 import CreateEventPage from '../../src/Calendar/CreateEventPage';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGroups } from '../../src/Components/GroupContext/GroupContext';
 import { useEvents } from '../../src/Components/EventsContext/EventsContext';
 
+// Mocking react-router-dom
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  useNavigate: () => mockNavigate,
+  useParams: jest.fn(),
+}));
 
-jest.mock('react-router-dom', () => {
-    const actualRouterDom = jest.requireActual('react-router-dom');
-    return {
-      actualRouterDom,
-      useNavigate: jest.fn(),
-      useParams: jest.fn(),
-    };
-  });
-  
-  test('should mock useNavigate and useParams', () => {
-    const mockNavigate = useNavigate as jest.Mock;
-    const mockParams = useParams as jest.Mock;
-  
-    mockNavigate.mockImplementation(() => jest.fn());
-    mockParams.mockReturnValue({ id: '1' });
-  
-    render(<CreateEventPage />);
-  
-    // Test your component behavior that uses `useNavigate` or `useParams`
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockParams).toEqual({ id: '1' });
-  });
-jest.mock('../Components/GroupContext/GroupContext', () => ({
+// Mocking custom hooks
+jest.mock('../../src/Components/GroupContext/GroupContext', () => ({
   useGroups: jest.fn(),
 }));
 
-jest.mock('../Components/EventsContext/EventsContext', () => ({
+jest.mock('../../src/Components/EventsContext/EventsContext', () => ({
   useEvents: jest.fn(),
 }));
 
 describe('CreateEventPage', () => {
-  const mockNavigate = useNavigate as jest.Mock;
   const mockUseParams = useParams as jest.Mock;
   const mockUseGroups = useGroups as jest.Mock;
   const mockUseEvents = useEvents as jest.Mock;
@@ -46,6 +30,7 @@ describe('CreateEventPage', () => {
   beforeEach(() => {
     mockNavigate.mockReset();
     mockUseParams.mockReturnValue({ dayId: '2025-01-08' });
+
     mockUseGroups.mockReturnValue({
       myGroups: [1, 2],
       groups: [
@@ -54,6 +39,7 @@ describe('CreateEventPage', () => {
       ],
       createGroupEvent: jest.fn(),
     });
+
     mockUseEvents.mockReturnValue({
       addEvent: jest.fn(),
     });
@@ -75,7 +61,7 @@ describe('CreateEventPage', () => {
     fireEvent.change(screen.getByLabelText(/Title:/i), { target: { value: 'Test Title' } });
     fireEvent.change(screen.getByLabelText(/Description:/i), { target: { value: 'Test Description' } });
 
-    fireEvent.click(screen.getByText(/Create Event/i));
+    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
 
     await waitFor(() => {
       expect(mockAddEvent).toHaveBeenCalledWith('2025-01-08', 'Test Title', 'Test Description');
@@ -92,7 +78,7 @@ describe('CreateEventPage', () => {
     fireEvent.change(screen.getByLabelText(/Title:/i), { target: { value: 'Test Title' } });
     fireEvent.change(screen.getByLabelText(/Description:/i), { target: { value: 'Test Description' } });
 
-    fireEvent.click(screen.getByText(/Create Event/i));
+    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
 
     await waitFor(() => {
       expect(mockCreateGroupEvent).toHaveBeenCalledWith(1, '2025-01-08', 'Test Title', 'Test Description');

@@ -1,5 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import UserLogin from "../Components/UserLogin/UserLogin";
+import UserLogin from "../../../src/Components/UserLogin/UserLogin";
+import React from "react";
+import { MemoryRouter } from "react-router-dom";
+/**
+ * @jest-environment jsdom
+ */
 
 
 test('Renders the user login page and tests if the username and password state gets updated after they are entered', () =>{
@@ -11,7 +16,9 @@ test('Renders the user login page and tests if the username and password state g
     const mockSetPassword = jest.fn();
 
     // Rendering UserLogin page with the correct props needed to function
-    render(<UserLogin username="" setUsername={mockSetUsername} password="" setPassword={mockSetPassword} handleSubmit={mockSubmit} handleRegister={mockRegister}/>);
+    render(<MemoryRouter>
+            <UserLogin username="" setUsername={mockSetUsername} password="" setPassword={mockSetPassword} handleSubmit={mockSubmit} handleRegister={mockRegister}/>
+        </MemoryRouter>);
 
     // Getting the input textbox for username and triggering a text event change
     const inputUser = screen.getByPlaceholderText(/enter username/i);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 function UserProfile() {
   const navigate = useNavigate();
   const [token, setToken] = useState('');

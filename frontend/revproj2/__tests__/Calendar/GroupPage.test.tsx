@@ -14,13 +14,13 @@ jest.mock('react-router-dom', () => {
   });
 
 
-jest.mock('../Components/GroupContext/GroupContext', () => ({
+jest.mock('../../src/Components/GroupContext/GroupContext', () => ({
   useGroups: jest.fn(),
 }));
 
 describe('GroupPage', () => {
-  const mockNavigate = useNavigate as jest.Mock;
-  const mockUseGroups = useGroups as jest.Mock;
+  const mockNavigate = useNavigate as jest.Mock<any>;
+  const mockUseGroups = useGroups as jest.Mock<any>;
 
   beforeEach(() => {
     mockNavigate.mockReset();
@@ -30,12 +30,13 @@ describe('GroupPage', () => {
         { id: 2, name: 'Group 2' },
       ],
       myGroups: [1],
-      createGroup: jest.fn(),
+      createGroup: jest.fn(), // Ensure createGroup is mocked correctly
       joinGroup: jest.fn(),
       leaveGroup: jest.fn(),
       fetchGroups: jest.fn(),
     });
   });
+  
 
   test('renders group page', () => {
     render(<GroupPage />);
@@ -45,16 +46,23 @@ describe('GroupPage', () => {
   });
 
   test('creates a group', async () => {
-    const mockCreateGroup = (mockUseGroups() as ReturnType<typeof useGroups>).createGroup;
+    const { createGroup } = mockUseGroups();  // Get the mocked createGroup directly here
     render(<GroupPage />);
-
+  
+    // Change the input value to simulate user input
     fireEvent.change(screen.getByLabelText(/Create Group:/i), { target: { value: 'New Group' } });
-    fireEvent.click(screen.getByText(/Create/i));
-
+  
+    // Find the form and simulate form submission (submit the form, not just the button click)
+    const form = screen.getByRole('form')  // Get the form element
+    fireEvent.submit(form);  // Simulate submitting the form
+  
+    // Wait for the mock function to be called with the expected argument
     await waitFor(() => {
-      expect(mockCreateGroup).toHaveBeenCalledWith('New Group');
+      expect(createGroup).toHaveBeenCalledWith('New Group');
     });
   });
+  
+  
 
   test('searches for groups', () => {
     render(<GroupPage />);

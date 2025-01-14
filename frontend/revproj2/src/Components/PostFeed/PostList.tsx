@@ -5,34 +5,28 @@ import FeedSearch from './FeedSearch';
 import CommentList from './Comments/CommentList';
 
 function PostList() {
-  const [posts, setPosts] = useState<any[]>([]); // Ensure this is always an array
-  const [postIds, setPostIds] = useState<number[]>([]); // Track post IDs in state
+  const [posts, setPosts] = useState<any[]>([]);
+  const [postIds, setPostIds] = useState<number[]>([]);
   const location = useLocation();
   const [click, setClick] = useState<{ [key: number]: boolean }>({});
-  const [change, onChange] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [searched, setSearched] = useState(false);
-
+  
   // Polling for new posts
   useEffect(() => {
-    let interval: any;
-
+    let interval: NodeJS.Timeout | undefined;
+    
     if (location.pathname === '/feed') {
       const poll = async () => {
         try {
-          let newPost;
-          if (searched === false && change === "") {
+          let newPost: any;
+          // Only poll for new posts when not in search mode
+          if (!searched && !searchQuery) {
             newPost = await getPost();
-          } else {
-            newPost = await getFilteredPost();
-          }
-
-          if (!newPost) {
-            throw new Error('No new post');
-          } else {
-            if (!postIds.includes(newPost.post_id)) {
-              console.log('New Post: ' + newPost);
-              setPostIds((prevPostIds) => [...prevPostIds, newPost.post_id]);
-              setPosts((prevPosts) => [newPost, ...prevPosts]);
+            
+            if (newPost && !postIds.includes(newPost.post_id)) {
+              setPostIds(prev => [...prev, newPost.post_id]);
+              setPosts(prev => [newPost, ...prev]);
             }
           }
         } catch (error) {
@@ -42,39 +36,48 @@ function PostList() {
 
       poll();
       interval = setInterval(poll, 5000);
-
-      return () => clearInterval(interval);
     }
 
-    return () => clearInterval(interval);
-  }, [location.pathname, change, searched, postIds]);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [location.pathname, searched, searchQuery, postIds]);
 
-  // Fetching posts from the database (initial and filtered)
+  // Fetch posts based on search state
   useEffect(() => {
-    const getDB = async () => {
-      let postList;
-      if (searched === false && change === "") {
-        postList = await getStoredPosts();
-      } else {
-        postList = await getFilteredStoredPosts();
+    const fetchPosts = async () => {
+      try {
+        let postList;
+        if (!searched && !searchQuery) {
+          postList = await getStoredPosts();
+        } else if (searched) {
+          postList = await getFilteredStoredPosts();
+        }
+        setPosts(postList || []);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
       }
-      console.log('Get Stored Posts: ', postList);
-      setPosts(postList || []); // Ensure it's always an array
     };
 
+<<<<<<< HEAD
+    fetchPosts();
+  }, [searched, searchQuery]);
+=======
     getDB();
   }, [searched]);
+>>>>>>> origin/main
 
-  // Handling comment toggling
-  function handleClick(postId: number) {
-    setClick((prev) => ({ ...prev, [postId]: !prev[postId] }));
-  }
+  const handleClick = (postId: number) => {
+    setClick(prev => ({ ...prev, [postId]: !prev[postId] }));
+  };
 
-  // Function to format the tags with # before each word and spaces in between
+  const handleSearch = (query: string, isSearched: boolean) => {
+    setSearchQuery(query);
+    setSearched(isSearched);
+  };
+
   const formatTags = (tags: string[]) => {
-    return tags
-      .map(tag => `#${tag}`)  // Add # before each tag
-      .join(' ');             // Join tags with spaces
+    return tags.map(tag => `#${tag}`).join(' ');
   };
 
   const formatTimeAgo = (dateString: string) => {
@@ -99,6 +102,17 @@ function PostList() {
   };
   
   return (
+<<<<<<< HEAD
+    <div>
+      <h3>We will get there Together!</h3>
+      <FeedSearch 
+        onSearch={handleSearch}
+        searchQuery={searchQuery}
+        searched={searched}
+      />
+      <div>
+        {searched && posts.length === 0 && <p>No Posts Match this Criteria</p>}
+=======
     <div
       style={{
         background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
@@ -157,10 +171,20 @@ function PostList() {
             No Posts Match this Criteria
           </p>
         )}
+>>>>>>> origin/main
         {posts.length === 0 ? (
           <p>Loading posts...</p>
         ) : (
           posts.map((post) => (
+<<<<<<< HEAD
+            <div key={post.postId}>
+              <h5>Goal ID: {post.goal.id}</h5>
+              <a>User ID: {post.user.id}</a>
+              <p>Username: {post.user.username}</p>
+              <p>Message Text: {post.messageText}</p>
+              <p>Date: {post.creation}</p>
+              {post.tags?.length > 0 && (
+=======
             <div
               key={post.postId}
               style={{
@@ -188,6 +212,7 @@ function PostList() {
               <p>{post.messageText}</p>
               <p><em>Posted {formatTimeAgo(post.creation)}</em></p>
               {post.tags && post.tags.length > 0 && (
+>>>>>>> origin/main
                 <p>Tags: {formatTags(post.tags)}</p>
               )}
               <hr
@@ -214,7 +239,19 @@ function PostList() {
               <br/>
               <br/>
               {click[post.postId] && <CommentList post={post} />}
+<<<<<<< HEAD
+              {post.photo && (
+                <img 
+                  loading="lazy" 
+                  src={post.photo} 
+                  width="200" 
+                  height="auto" 
+                  alt=""
+                />
+              )}
+=======
               
+>>>>>>> origin/main
             </div>
           ))
         )}

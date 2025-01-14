@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 C:\Users\jwoll\Desktop\code\revTraining\2126-Java-Full-Stack-PEP\projects\project_2\revProj2\backend\proj2\src\test\java\com\example\proj2\controllers\authTest.java
 C:\Users\jwoll\Desktop\code\revTraining\2126-Java-Full-Stack-PEP\projects\project_2\revProj2\backend\proj2\src\test\java\com\example\proj2\controllers\CommentControllerTest.java
 C:\Users\jwoll\Desktop\code\revTraining\2126-Java-Full-Stack-PEP\projects\project_2\revProj2\backend\proj2\src\test\java\com\example\proj2\controllers\GoalTest.java
@@ -16,6 +18,7 @@ C:\Users\jwoll\Desktop\code\revTraining\2126-Java-Full-Stack-PEP\projects\projec
 C:\Users\jwoll\Desktop\code\revTraining\2126-Java-Full-Stack-PEP\projects\project_2\revProj2\backend\proj2\src\test\java\com\example\proj2\services\CommentServiceTest.java
 C:\Users\jwoll\Desktop\code\revTraining\2126-Java-Full-Stack-PEP\projects\project_2\revProj2\backend\proj2\src\test\java\com\example\proj2\services\GoalServiceTest.java
 C:\Users\jwoll\Desktop\code\revTraining\2126-Java-Full-Stack-PEP\projects\project_2\revProj2\backend\proj2\src\test\java\com\example\proj2\services\UserServiceTest.java
+>>>>>>> origin/main
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\controllers\authTest.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\controllers\CommentControllerTest.java
 C:\Users\htham\Documents\Revature\InfoSysTraining\project_2_trackr\backend\proj2\src\test\java\com\example\proj2\controllers\GoalTest.java
