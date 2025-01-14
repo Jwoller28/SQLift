@@ -27,11 +27,14 @@ interface IGoal {
   id: number;
   sleep: number; // Maps directly to the "sleep" column
   water: number; // Maps directly to the "water" column
-  weight?: number; // Maps directly to the "weight" column
-  burnedCalories?: number; // Maps to "calories_burned"
-  exerciseDuration?: number; // Maps to "duration"
-  caloriesConsumed?: number; // Maps to "kal"
-  volume?: number; // Maps to "volume"
+  weight: number; // Maps directly to the "weight" column
+  burnedCalories: number; // Maps to "calories_burned"
+  exerciseDuration: number; // Maps to "duration"
+  caloriesConsumed: number; // Maps to "kal"
+  volume: number; // Maps to "volume"
+  carbs: number;
+  fat: number,
+  protein: number,
 }
 
 
@@ -54,6 +57,12 @@ function ProgressPage() {
   const [totalNutritionCalories, setTotalNutritionCalories] = useState(0);
   const [totalWeight, setWeight] = useState(0);
   const [totalVolume, setVolume] = useState(0);
+  const [avgProtein, setProtein] = useState(0);
+  const [avgCarbs, setCarbs] = useState(0);
+  const [avgFat, setFat] = useState(0);
+  
+
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -73,7 +82,7 @@ function ProgressPage() {
     if (!token) return;
     const fetchMe = async () => {
       try {
-        const res = await fetch('http://localhost:8080/me', {
+        const res = await fetch('http://3.142.210.41:8081/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`GET /me failed: ${res.status}`);
@@ -90,7 +99,7 @@ function ProgressPage() {
     if (!username || !token) return;
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/username/${username}`, {
+        const res = await fetch(`http://3.142.210.41:8081/username/${username}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`GET /username/${username} failed: ${res.status}`);
@@ -107,7 +116,7 @@ function ProgressPage() {
     if (!userId || !token) return;
     const fetchGoal = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/goalUser/${userId}`, {
+        const res = await fetch(`http://3.142.210.41:8081/goalUser/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`GET /goalUser/${userId} failed: ${res.status}`);
@@ -124,6 +133,9 @@ function ProgressPage() {
           exerciseDuration: goalObj.exercise.duration || 0, 
           caloriesConsumed: goalObj.nutrition.kal || 0,
           volume: goalObj.exercise.volume || 0, 
+          carbs: goalObj.nutrition.carb || 0,
+          fat: goalObj.nutrition.fat || 0,
+          protein: goalObj.nutrition.protein || 0,
         });
       } catch (err: any) {
         setErrorMessage(`Error fetching goal: ${err.message}`);
@@ -143,7 +155,7 @@ function ProgressPage() {
     if (!userId || !goal || !token) return;
     const fetchTrackers = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/Tracker/${userId}/${goal.id}`, {
+        const res = await fetch(`http://3.142.210.41:8081/Tracker/${userId}/${goal.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`GET /Tracker/${userId}/${goal.id} failed: ${res.status}`);
@@ -168,31 +180,61 @@ function ProgressPage() {
       }) || null;
     setDayTracker(foundTracker);
 
-    let sumSleep = 0;
-    let sumWater = 0;
-    let sumExerciseCalories = 0;
-    let sumExerciseDuration = 0;
-    let sumNutritionCalories = 0;
-    let sumWeight = 0;
-    let sumVolume = 0;
+    let sumSleep = 0; // for average
+    let sumWater = 0; // for total
+    let sumExerciseCalories = 0; // for average
+    let sumExerciseDuration = 0; // for average
+    let sumNutritionCalories = 0; // for average
+    let sumWeight = 0; // for total
+    let maxVolume = 0; // for maximum volume
+    let numT = 0; // counter for average calculations
+    let sumCarbs = 0; // average
+    let sumFat = 0; // average
+    let sumProtein = 0; // average
 
     allTrackers.forEach((t) => {
-      sumSleep += t.sleep || 0;
-      sumWater += t.water || 0;
-      sumWeight += t.nutrition?.weight || 0;
+      // Summing values for averages
+      sumSleep += t.sleep || 0; 
       sumExerciseCalories += t.exercise?.caloriesBurned || 0;
       sumExerciseDuration += t.exercise?.duration || 0;
       sumNutritionCalories += t.nutrition?.kal || 0;
-      sumVolume += t.exercise?.volume || 0;
+      sumCarbs += t.nutrition?.carb || 0;
+      sumProtein += t.nutrition?.protein || 0;
+      sumFat += t.nutrition?.fat || 0;
+
+      // Summing values for totals
+      sumWater += t.water || 0;
+      sumWeight += t.nutrition?.weight || 0;
+
+      // Tracking the maximum volume
+      if (t.exercise?.volume && t.exercise.volume > maxVolume) {
+        maxVolume = t.exercise.volume;
+      }
+
+      // Counting the number of trackers
+      numT++;
     });
 
-    setTotalSleep(sumSleep);
+    // Calculating averages
+    const avgSleep = numT > 0 ? sumSleep / numT : 0;
+    const avgExerciseCalories = numT > 0 ? sumExerciseCalories / numT : 0;
+    const avgExerciseDuration = numT > 0 ? sumExerciseDuration / numT : 0;
+    const avgNutritionCalories = numT > 0 ? sumNutritionCalories / numT : 0;
+    const avgCarbs = numT > 0 ? sumCarbs / numT : 0;
+    const avgFat = numT > 0 ? sumFat / numT : 0;
+    const avgProtein = numT > 0 ? sumProtein / numT : 0;
+
+    setTotalSleep(avgSleep);
     setTotalWater(sumWater);
-    setTotalExerciseCalories(sumExerciseCalories);
-    setTotalExerciseDuration(sumExerciseDuration);
-    setTotalNutritionCalories(sumNutritionCalories);
+    setTotalExerciseCalories(avgExerciseCalories);
+    setTotalExerciseDuration(avgExerciseDuration);
+    setTotalNutritionCalories(avgNutritionCalories);
     setWeight(sumWeight);
-    setVolume(sumVolume);
+    setVolume(maxVolume);
+    setCarbs(avgCarbs);
+    setFat(avgFat);
+    setProtein(avgProtein);
+
   }, [allTrackers, dayId]);
 
   const goBack = () => {
@@ -203,7 +245,7 @@ function ProgressPage() {
     <div
       style={{
         padding: '0px',
-        background: 'linear-gradient(to bottom, #3370ff, #ADD8E6)',
+        background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
         color: '#fff',
         minHeight: '100vh',
         display: 'flex',
@@ -231,7 +273,7 @@ function ProgressPage() {
 
       <div
         style={{
-          backgroundColor: 'black',
+          background: 'linear-gradient(to bottom, #2F2F2F , #1A1A1A )',
           padding: '20px',
           borderRadius: '10px',
           width: '80%',
@@ -286,39 +328,54 @@ function ProgressPage() {
         <h3 style={{ color: '#fff', marginTop: '10px' }}>Total Progress So Far</h3>
         {goal ? (
           <>
-            {totalSleep > 0 && (
-              <p>
-                <strong>Hours Slept:</strong> {totalSleep}/{goal.sleep} total hours
-              </p>
-            )}
-            {totalWater > 0 && (
-              <p>
-                <strong>Water Drank:</strong> {totalWater}/{goal.water} total oz
-              </p>
-            )}
-            {totalExerciseCalories > 0 && (
-              <p>
-                <strong>Calories Burned:</strong> {totalExerciseCalories}/{goal.burnedCalories} total kal burned
-              </p>
-            )}
-            {totalExerciseDuration > 0 && (
-              <p>
-                <strong>Exercise Duration:</strong> {totalExerciseDuration}/{goal.exerciseDuration} total minutes
-              </p>
-            )}
-            {totalNutritionCalories > 0 && (
+            {(totalNutritionCalories > 0 || goal.caloriesConsumed > 0) && (
               <p>
                 <strong>Calories Consumed:</strong> {totalNutritionCalories}/{goal.caloriesConsumed} total kal consumed
               </p>
             )}
-            {totalWeight > 0 && (
+            {(avgCarbs > 0 || goal.carbs > 0) && (
+              <p>
+                <strong>Carbs:</strong> {avgCarbs}/{goal.carbs} g
+              </p>
+            )}
+            {(avgFat > 0 || goal.fat > 0) && (
+              <p>
+                <strong>Fat:</strong> {avgFat}/{goal.fat} g
+              </p>
+            )}
+            {(avgProtein > 0 || goal.protein > 0) && (
+              <p>
+                <strong>Protein:</strong> {avgProtein}/{goal.protein} g
+              </p>
+            )}
+            {(totalWeight > 0 || goal.weight > 0) && (
               <p>
                 <strong>Weight:</strong> {totalWeight}/{goal.weight} lbs lost
               </p>
             )}
-            {totalVolume > 0 && (
+            {(totalExerciseCalories > 0 || goal.burnedCalories > 0) && (
               <p>
-                <strong>Volume:</strong> {totalVolume}/{goal.volume} lbs
+                <strong>Calories Burned:</strong> {totalExerciseCalories}/{goal.burnedCalories} total kal burned
+              </p>
+            )}
+            {(totalVolume > 0 || goal.volume > 0) && (
+              <p>
+                <strong>Max Volume:</strong> {totalVolume}/{goal.volume} lbs
+              </p>
+            )}
+            {(totalExerciseDuration > 0 || goal.exerciseDuration > 0) && (
+              <p>
+                <strong>Exercise Duration:</strong> {totalExerciseDuration}/{goal.exerciseDuration} total minutes
+              </p>
+            )}
+            {(totalWater > 0 || goal.water > 0) && (
+              <p>
+                <strong>Water Drank:</strong> {totalWater}/{goal.water} total oz
+              </p>
+            )}
+            {(totalSleep > 0 || goal.sleep > 0) && (
+              <p>
+                <strong>Hours Slept:</strong> {totalSleep}/{goal.sleep} total hours
               </p>
             )}
           </>

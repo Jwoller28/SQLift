@@ -51,7 +51,7 @@ function CalendarPage() {
     if (!token) return;
     const fetchMe = async () => {
       try {
-        const res = await fetch('http://localhost:8080/me', {
+        const res = await fetch('http://3.142.210.41:8081/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -70,7 +70,7 @@ function CalendarPage() {
     if (!username || !token) return;
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/username/${username}`, {
+        const res = await fetch(`http://3.142.210.41:8081/username/${username}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -90,7 +90,7 @@ function CalendarPage() {
     if (!userId || !token) return;
     const fetchGoal = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/goalUser/${userId}`, {
+        const res = await fetch(`http://3.142.210.41:8081/goalUser/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -115,7 +115,7 @@ function CalendarPage() {
   }, [userId, token]);
 
   useEffect(() => {
-    if(goalCheck == true){
+    if(goalCheck === true){
       const today = new Date();
       const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       const checkEnd = goalDate && todayFormatted ? new Date(todayFormatted) >= new Date(goalDate) : false; 
@@ -263,13 +263,11 @@ function CalendarPage() {
         padding: '0px',
         background: 'linear-gradient(135deg, #ff6bcb, #504dff)', // background
         color: '#000000',
-        minHeight: '110vh',
+        minHeight: '100vh',
         display: 'flex',
-        // justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
         margin: 0,
-        
       }}
     >
       <h1

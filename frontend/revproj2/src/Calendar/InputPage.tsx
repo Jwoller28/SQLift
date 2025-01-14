@@ -70,7 +70,7 @@ function InputPage() {
 
     const fetchMe = async () => {
       try {
-        const meRes = await fetch('http://localhost:8080/me', {
+        const meRes = await fetch('http://3.142.210.41:8081/me', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${userToken}`,
@@ -99,7 +99,7 @@ function InputPage() {
 
     const fetchUsername = async () => {
       try {
-        const userRes = await fetch(`http://localhost:8080/username/${userName}`, {
+        const userRes = await fetch(`http://3.142.210.41:8081/username/${userName}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         });
         if (!userRes.ok) {
@@ -123,7 +123,7 @@ function InputPage() {
 
     const fetchGoal = async () => {
       try {
-        const goalRes = await fetch(`http://localhost:8080/goalUser/${userId}`, {
+        const goalRes = await fetch(`http://3.142.210.41:8081/goalUser/${userId}`, {
           headers: { Authorization: `Bearer ${userToken}` },
         });
         if (!goalRes.ok) {
@@ -258,7 +258,7 @@ function InputPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:8080/Tracker', {
+      const response = await fetch('http://3.142.210.41:8081/Tracker', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -360,6 +360,78 @@ function InputPage() {
     Input Progress for {dayId}
   </h2>
 </div>
+
+
+<h3 style={{ color: '#fff', marginTop: '10px' }}>Nutrition</h3>
+        {/* Foods + API */}
+        <div style={{ marginBottom: '10px' }}>
+          <button
+            type="button"
+            onClick={addFood}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2282ff',
+              color: '#000',
+              border: 'none',
+              cursor: 'pointer',
+              marginRight: '10px',
+              borderRadius: '4px',
+            }}
+          >
+            Add Food
+          </button>
+          <button
+            type="button"
+            onClick={handleFetchNutrition}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2282ff',
+              color: '#000',
+              border: 'none',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
+          >
+            Fetch Nutrition from API
+          </button>
+        </div>
+
+        {foods.map((food, index) => (
+          <div key={index} style={{ marginBottom: '5px' }}>
+            <input
+              type="text"
+              value={food.name}
+              onChange={(e) => updateFood(index, e.target.value)}
+              placeholder="e.g. mac and cheese"
+              style={{ width: '250px' }}
+            />
+          </div>
+        ))}
+
+        {/* Show the totals from the API calls */}
+        <p style={{ marginTop: '10px' }}>
+          <strong>Food totals (from API):</strong>
+          <br />
+          Calories: {nutritionTotals.calories} kcal
+          <br />
+          Carbs: {nutritionTotals.carbs} g
+          <br />
+          Fat: {nutritionTotals.fat} g
+          <br />
+          Protein: {nutritionTotals.protein} g
+        </p>
+
+        <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>
+            Weight Lost (lbs):
+            <input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
 
 
 
@@ -486,76 +558,7 @@ function InputPage() {
           </label>
         </div>
 
-        <h3 style={{ color: '#fff', marginTop: '10px' }}>Nutrition</h3>
-        <div style={{ marginBottom: '10px' }}>
-          <label style={{ marginRight: '10px' }}>
-            Weight (lbs):
-            <input
-              type="number"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              style={{ marginLeft: '10px' }}
-            />
-          </label>
-        </div>
-
-        {/* Foods + API */}
-        <div style={{ marginBottom: '10px' }}>
-          <button
-            type="button"
-            onClick={addFood}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#2282ff',
-              color: '#000',
-              border: 'none',
-              cursor: 'pointer',
-              marginRight: '10px',
-              borderRadius: '4px',
-            }}
-          >
-            Add Food
-          </button>
-          <button
-            type="button"
-            onClick={handleFetchNutrition}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#2282ff',
-              color: '#000',
-              border: 'none',
-              cursor: 'pointer',
-              borderRadius: '4px',
-            }}
-          >
-            Fetch Nutrition from API
-          </button>
-        </div>
-
-        {foods.map((food, index) => (
-          <div key={index} style={{ marginBottom: '5px' }}>
-            <input
-              type="text"
-              value={food.name}
-              onChange={(e) => updateFood(index, e.target.value)}
-              placeholder="e.g. mac and cheese"
-              style={{ width: '250px' }}
-            />
-          </div>
-        ))}
-
-        {/* Show the totals from the API calls */}
-        <p style={{ marginTop: '10px' }}>
-          <strong>Food totals (from API):</strong>
-          <br />
-          Calories: {nutritionTotals.calories} kcal
-          <br />
-          Carbs: {nutritionTotals.carbs} g
-          <br />
-          Fat: {nutritionTotals.fat} g
-          <br />
-          Protein: {nutritionTotals.protein} g
-        </p>
+        
 
         <div style={{ marginTop: '20px' }}>
           <button
