@@ -1,4 +1,4 @@
-/**package com.example.proj2.services;
+// package com.example.proj2.services;
 
 // import com.example.proj2.exceptions.InvalidCredentialsException;
 // import com.example.proj2.models.User;
@@ -14,9 +14,8 @@
 //  */
 
 // class AuthServiceTest {
-  /*
-    private AuthService authService;
-    private UserRepository userRepository = Mockito.mock(UserRepository.class);
+//     private AuthService authService;
+//     private UserRepository userRepository = Mockito.mock(UserRepository.class);
 
 //     @BeforeEach
 //     void setUp() {
@@ -58,12 +57,12 @@
 
 //         Mockito.when(userRepository.findByUsername("testUser")).thenReturn(existingUser);
 
-        // Now your service might check if the raw password matches the hashed password
-        // If it doesn't match, it should throw an exception or return an error
-        assertThrows(InvalidCredentialsException.class, () -> {
-            authService.loginUser("testUser", "wrongPass");
-        });
-    }
+//         Now your service might check if the raw password matches the hashed password
+//         If it doesn't match, it should throw an exception or return an error
+//         assertThrows(InvalidCredentialsException.class, () -> {
+//             authService.loginUser("testUser", "wrongPass");
+//         });
+//     }
 
 
-}*/
+// }
