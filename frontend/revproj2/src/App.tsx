@@ -73,10 +73,10 @@ function App() {
                   <NavBar/><DayView />
                 </RouteGuard>} />
 
-                <Route path="/Week" element={
+                {/* <Route path="/Week" element={
                 <RouteGuard>
                   <NavBar/><WeekView />
-                </RouteGuard>} />
+                </RouteGuard>} /> */}
 
               <Route path="/input/:dayId" element={
                 <RouteGuard>

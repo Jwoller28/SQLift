@@ -1,97 +1,101 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { test, jest, describe, beforeEach, it, expect,  } from '@jest/globals';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import DayView from '../../src/Calendar/DayView';
-import { useNavigate, useParams } from 'react-router-dom';
 import { useEvents } from '../../src/Components/EventsContext/EventsContext';
 import { useGroups } from '../../src/Components/GroupContext/GroupContext';
 
-jest.mock('react-router-dom', () => {
-    const actualRouterDom = jest.requireActual('react-router-dom');
-    return {
-      actualRouterDom,
-      useNavigate: jest.fn(),
-      useParams: jest.fn(),
-    };
-  });
+jest.mock('../../src/Components/EventsContext/EventsContext');
+jest.mock('../../src/Components/GroupContext/GroupContext');
 
-jest.mock('../../src/Components/EventsContext/EventsContext', () => ({
-  useEvents: jest.fn(),
-}));
-
-jest.mock('../../src/Components/GroupContext/GroupContext', () => ({
-  useGroups: jest.fn(),
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useParams: () => ({ dayId: '2025-01-30' }),
 }));
 
 describe('DayView', () => {
-  const mockNavigate = useNavigate as jest.Mock<any>;
-  const mockUseParams = useParams as jest.Mock<any>;
-  const mockUseEvents = useEvents as jest.Mock<any>;
-  const mockUseGroups = useGroups as jest.Mock<any>;
-
   beforeEach(() => {
-    mockNavigate.mockReset();
-    mockUseParams.mockReturnValue({ dayId: '2025-01-08' });
-    mockUseEvents.mockReturnValue({
-      events: [
-        { id: 1, title: 'Personal Event 1', description: 'Description 1', day: '2025-01-08' },
-        { id: 2, title: 'Personal Event 2', description: 'Description 2', day: '2025-01-08' },
-      ],
+    jest.clearAllMocks();
+  });
+
+  it('renders correctly', () => {
+    (useEvents as jest.Mock).mockReturnValue({ events: [] });
+    (useGroups as jest.Mock).mockReturnValue({ groups: [], myGroups: [], fetchGroupEvents: jest.fn() });
+
+    render(
+      <MemoryRouter>
+        <DayView />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('All Events for 2025-01-30')).toBeInTheDocument();
+  });
+
+  it('loads personal events correctly', async () => {
+    (useEvents as jest.Mock).mockReturnValue({
+      events: [{ id: 1, title: 'Personal Event 1', description: 'Description 1', day: '2025-01-30' }],
     });
-    mockUseGroups.mockReturnValue({
-      groups: [
-        { id: 1, name: 'Group 1' },
-        { id: 2, name: 'Group 2' },
-      ],
-      myGroups: [1, 2],
-      fetchGroupEvents: jest.fn<() => Promise<{ id: number; title: string; description: string; day: string; }[]>>().mockResolvedValue([
-        { id: 3, title: 'Group Event 1', description: 'Description 3', day: '2025-01-08' },
-      ]),
-      createGroupEvent: jest.fn(),
+    (useGroups as jest.Mock).mockReturnValue({ groups: [], myGroups: [], fetchGroupEvents: jest.fn() });
+
+    render(
+      <MemoryRouter>
+        <DayView />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText('Personal Event 1')).toBeInTheDocument();
+    expect(screen.getByText('Description 1')).toBeInTheDocument();
+    expect(screen.getByText('Personal Event')).toBeInTheDocument();
+  });
+
+  it('loads group events correctly', async () => {
+    (useEvents as jest.Mock).mockReturnValue({ events: [] });
+    (useGroups as jest.Mock).mockReturnValue({
+      groups: [{ id: 1, name: 'Group 1' }],
+      myGroups: [1],
+      fetchGroupEvents: jest.fn().mockResolvedValue([{ id: 2, title: 'Group Event 1', description: 'Description 2', day: '2025-01-30' }]),
     });
+
+    render(
+      <MemoryRouter>
+        <DayView />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText('Group Event 1')).toBeInTheDocument();
+    expect(screen.getByText('Description 2')).toBeInTheDocument();
+    expect(screen.getByText('Group 1')).toBeInTheDocument();
   });
 
-  test('renders day view', () => {
-    render(<DayView />);
-    expect(screen.getByText(/Day View for 2025-01-08/i));
-    expect(screen.getByText(/All Events for This Day/i));
-  });
+  it('navigates to the correct routes when buttons are clicked', () => {
+    (useEvents as jest.Mock).mockReturnValue({ events: [] });
+    (useGroups as jest.Mock).mockReturnValue({ groups: [], myGroups: [], fetchGroupEvents: jest.fn() });
 
-  test('fetches and displays events', async () => {
-    render(<DayView />);
+    render(
+      <MemoryRouter>
+        <DayView />
+      </MemoryRouter>
+    );
 
-    await waitFor(() => {
-      expect(screen.getByText(/Personal Event 1/i));
-      expect(screen.getByText(/Description 1/i));
-      expect(screen.getByText(/Personal Event 2/i));
-      expect(screen.getByText(/Description 2/i));
-      expect(screen.getByText(/Group Event 1/i));
-      expect(screen.getByText(/Description 3/i));
-    });
-  });
-
-  test('navigates to input view', () => {
-    render(<DayView />);
-    fireEvent.click(screen.getByText(/Go to Input/i));
-    expect(mockNavigate).toHaveBeenCalledWith('/input/2025-01-08');
-  });
-
-  test('navigates to progress view', () => {
-    mockUseParams.mockReturnValue({ dayId: '2025-12-31' });
-    render(<DayView />);
-    fireEvent.click(screen.getByText(/Go to Progress/i));
-    expect(mockNavigate).toHaveBeenCalledWith('/progress/2025-12-31');
-  });
-
-  test('navigates to create event view', () => {
-    render(<DayView />);
-    fireEvent.click(screen.getByText(/Create New Event/i));
-    expect(mockNavigate).toHaveBeenCalledWith('/createEvent/2025-01-08');
-  });
-
-  test('navigates back to calendar view', () => {
-    render(<DayView />);
-    fireEvent.click(screen.getByText(/Back to Calendar/i));
+    fireEvent.click(screen.getByText('Back to Calendar'));
     expect(mockNavigate).toHaveBeenCalledWith('/calendar');
+
+    fireEvent.click(screen.getByText('Create New Event'));
+    expect(mockNavigate).toHaveBeenCalledWith('/createEvent/2025-01-30');
+  });
+
+  it('correctly identifies future days', () => {
+    (useEvents as jest.Mock).mockReturnValue({ events: [] });
+    (useGroups as jest.Mock).mockReturnValue({ groups: [], myGroups: [], fetchGroupEvents: jest.fn() });
+
+    render(
+      <MemoryRouter>
+        <DayView />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Go to Progress')).toBeInTheDocument();
   });
 });

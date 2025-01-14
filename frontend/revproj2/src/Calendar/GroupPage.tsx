@@ -31,7 +31,7 @@ function GroupPage() {
   return (
     <div style={{ padding: '20px' }}>
       <h2>Groups</h2>
-      <form onSubmit={handleCreateGroup} style={{ marginBottom: '20px' }}>
+      <form role = "form" onSubmit={handleCreateGroup} style={{ marginBottom: '20px' }}>
         <label style={{ marginRight: '10px' }}>
           Create Group:
           <input 

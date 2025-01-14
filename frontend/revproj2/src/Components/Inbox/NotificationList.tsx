@@ -1,4 +1,4 @@
-import {useEffect, useState, MouseEventHandler} from 'react';
+import React, {useEffect, useState, MouseEventHandler} from 'react';
 import {getGoalsbyUserId, usernameifAuthorized, getUserByUsername} from '../../API/Axios';
 import {useNavigate} from 'react-router-dom';
 import {Exercise, Nutrition, Goal} from './Inbox';

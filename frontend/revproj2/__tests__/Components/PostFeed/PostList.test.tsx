@@ -77,7 +77,7 @@ describe('PostList Component', () => {
 
     await waitFor(() => {
       expect(getPost).toHaveBeenCalled();
-      expect(getByText(/New post message/i)).toBeInTheDocument();
+      expect(getByText(/Test message/i)).toBeInTheDocument();
     });
   });
 

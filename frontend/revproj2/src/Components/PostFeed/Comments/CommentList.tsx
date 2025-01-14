@@ -84,8 +84,8 @@ function CommentList(prop: CommentListProp) {
               {comments.map((comment, index) => (
                 <li key={index}> {/* Use unique comment ID as the key */} 
                   <h5>{comment.user.username}</h5> {/* Replace with actual comment data */}
-		  <p> {comment.timestamp} </p>
-		  <p>{comment.text}</p>
+		              <p> {comment.timestamp} </p>
+		              <p>{comment.text}</p>
                 </li>
               ))}
             </ul>

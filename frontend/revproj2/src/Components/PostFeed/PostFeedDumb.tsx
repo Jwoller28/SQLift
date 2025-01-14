@@ -21,7 +21,6 @@ function PostFeedDumb(prop : PostFeedProp) {
             <input type="text" id = "message-tags" name="message_tags" onChange = {(e) => prop.setTags(e.target.value)} required></input> <br/>
 
             <label htmlFor="photo">PNG Images Only</label> <br/>
-
             <input type="file" id = "photo" name="photo" accept='.png' onChange = {(e) => prop.setFile(e.target.files ? e.target.files[0] : undefined)}></input> <br/>
 
             <button type="submit" id = "submitButton" name = "submitButton">Post to Feed</button>

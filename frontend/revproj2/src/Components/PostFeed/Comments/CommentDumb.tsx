@@ -13,7 +13,7 @@ function CommentDumb(prop : CommentDumbProp)
 		<div>
 			<form id = "commentForm" encType = "multipart/form-data" onSubmit = {prop.onSubmit} ref = {prop.formRef}>
 			<label htmlFor="message">Write your thoughts:</label><br/>
-			<input type="text" name = "message" onChange = {(e) => prop.setMessage(e.target.value)}></input>
+			<input type="text" id="message" name = "message" onChange = {(e) => prop.setMessage(e.target.value)}></input>
 			<button type = "submit" id = "commentButton"> Send </button>
 			</form>
 		</div>

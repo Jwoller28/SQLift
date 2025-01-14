@@ -6,15 +6,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useGroups } from '../../src/Components/GroupContext/GroupContext';
 import { useEvents } from '../../src/Components/EventsContext/EventsContext';
 
-jest.mock('react-router-dom', () => {
-  const actualRouterDom = jest.requireActual('react-router-dom');
-  return {
-    ...actualRouterDom,
-    useNavigate: jest.fn(),
-    useParams: jest.fn(),
-  };
-});
+// Mocking react-router-dom
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  useNavigate: () => mockNavigate,
+  useParams: jest.fn(),
+}));
 
+// Mocking custom hooks
 jest.mock('../../src/Components/GroupContext/GroupContext', () => ({
   useGroups: jest.fn(),
 }));
@@ -24,7 +23,6 @@ jest.mock('../../src/Components/EventsContext/EventsContext', () => ({
 }));
 
 describe('CreateEventPage', () => {
-  const mockNavigate = useNavigate as jest.Mock;
   const mockUseParams = useParams as jest.Mock;
   const mockUseGroups = useGroups as jest.Mock;
   const mockUseEvents = useEvents as jest.Mock;
@@ -32,7 +30,7 @@ describe('CreateEventPage', () => {
   beforeEach(() => {
     mockNavigate.mockReset();
     mockUseParams.mockReturnValue({ dayId: '2025-01-08' });
-    
+
     mockUseGroups.mockReturnValue({
       myGroups: [1, 2],
       groups: [
@@ -56,14 +54,14 @@ describe('CreateEventPage', () => {
   });
 
   test('submits form for personal event', async () => {
-    const mockAddEvent = mockUseEvents.mockReturnValue({ addEvent: jest.fn() }).addEvent;
+    const mockAddEvent = (mockUseEvents() as { addEvent: jest.Mock }).addEvent;
     render(<CreateEventPage />);
 
     fireEvent.change(screen.getByLabelText(/Assign To:/i), { target: { value: 'personal' } });
     fireEvent.change(screen.getByLabelText(/Title:/i), { target: { value: 'Test Title' } });
     fireEvent.change(screen.getByLabelText(/Description:/i), { target: { value: 'Test Description' } });
 
-    fireEvent.click(screen.getByText(/Create Event/i));
+    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
 
     await waitFor(() => {
       expect(mockAddEvent).toHaveBeenCalledWith('2025-01-08', 'Test Title', 'Test Description');
@@ -73,17 +71,14 @@ describe('CreateEventPage', () => {
   });
 
   test('submits form for group event', async () => {
-    const mockCreateGroupEvent = mockUseGroups.mockReturnValue({
-      createGroupEvent: jest.fn(),
-    }).createGroupEvent;
-    
+    const mockCreateGroupEvent = (mockUseGroups() as { createGroupEvent: jest.Mock }).createGroupEvent;
     render(<CreateEventPage />);
 
     fireEvent.change(screen.getByLabelText(/Assign To:/i), { target: { value: '1' } });
     fireEvent.change(screen.getByLabelText(/Title:/i), { target: { value: 'Test Title' } });
     fireEvent.change(screen.getByLabelText(/Description:/i), { target: { value: 'Test Description' } });
 
-    fireEvent.click(screen.getByText(/Create Event/i));
+    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
 
     await waitFor(() => {
       expect(mockCreateGroupEvent).toHaveBeenCalledWith(1, '2025-01-08', 'Test Title', 'Test Description');

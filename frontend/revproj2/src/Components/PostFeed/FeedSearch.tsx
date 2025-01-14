@@ -51,7 +51,7 @@ function FeedSearch({ onSearch, searchQuery, searched }: FeedSearchProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form role = "form" onSubmit={handleSubmit}>
       <label htmlFor="typeInput">Search the Feed: </label>
       <select
         id="typeInput"

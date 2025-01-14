@@ -1,5 +1,4 @@
-import React from 'react'
-import {useEffect, useState, useContext, useCallback  } from 'react'
+import React, {useEffect, useState, useContext, useCallback  } from 'react'
 import {AuthContext} from '../UserContext/UserContext'
 import NotificationList from './NotificationList'
 import NotiViewerNew from './NotiViewerNew'
