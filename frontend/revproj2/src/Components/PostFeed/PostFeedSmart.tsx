@@ -64,8 +64,8 @@ function PostFeedSmart(prop : PostFeedProp) {
     return (
        
         <>
-             <div>
-            <PostFeedDumb formRef = {formRef} setFile = {setFile} setMessage = {setMessage} setTags = {setTags} onSubmit = {handleSubmit}></PostFeedDumb> 
+            <div>
+                <PostFeedDumb formRef = {formRef} setFile = {setFile} setMessage = {setMessage} setTags = {setTags} onSubmit = {handleSubmit}></PostFeedDumb> 
             </div>
 
  	</>

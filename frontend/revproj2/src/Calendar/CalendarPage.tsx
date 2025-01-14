@@ -115,7 +115,7 @@ function CalendarPage() {
   }, [userId, token]);
 
   useEffect(() => {
-    if(goalCheck == true){
+    if(goalCheck === true){
       const today = new Date();
       const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       const checkEnd = goalDate && todayFormatted ? new Date(todayFormatted) >= new Date(goalDate) : false; 
@@ -263,13 +263,11 @@ function CalendarPage() {
         padding: '0px',
         background: 'linear-gradient(135deg, #ff6bcb, #504dff)', // background
         color: '#000000',
-        minHeight: '110vh',
+        minHeight: '100vh',
         display: 'flex',
-        // justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
         margin: 0,
-        
       }}
     >
       <h1

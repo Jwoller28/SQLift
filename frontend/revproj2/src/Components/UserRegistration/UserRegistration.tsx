@@ -1,103 +1,237 @@
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function UserRegistration() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [first_name, setFirstName] = useState('');
+  const [last_name, setLastName] = useState('');
+  const [photo_url, setPhotoUrl] = useState('');
+  const [token, setToken] = useState('');
+  const [id, setId] = useState(0);
+  const navigate = useNavigate();
 
-    const[username, setUsername] = useState("");
-    const[password, setPassword] = useState("");
-    const[email, setEmail] = useState("");
-    const[first_name, setFirstName] = useState("");
-    const[last_name, setLastName] = useState("");
-    const[photo_url, setPhotoUrl] = useState(""); 
-    const[token, setToken] = useState("");
-    const[id, setId] = useState(0);
-    const navigate = useNavigate();
+  useEffect(() => {
+    // Stores registered user's token in browser
+    localStorage.setItem('token', JSON.stringify(token));
+  }, [token]);
 
-    useEffect(() => {   // Stores registered user's token in browser
-        localStorage.setItem('token', JSON.stringify(token))
-    }, [token])
+  useEffect(() => {
+    localStorage.setItem('id', JSON.stringify(id));
+  }, [id]);
 
-    useEffect(() => {
-        localStorage.setItem('id', JSON.stringify(id));
-    }, [id])
+  const registerSubmit = async (event: FormEvent) => {
+    event.preventDefault();
 
-    // Function that runs when submit button is clicked
-    function registerSubmit(event: FormEvent){
+    const response = await fetch('http://localhost:8080/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, email, first_name, last_name, photo_url }),
+    });
 
-        event.preventDefault();
-        const regUser = async () =>{    // Connects to backend to register user
-            const response = await fetch('http://3.142.210.41:8081/register', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username, password, email, first_name, last_name, photo_url})
-            });
-
-            if(!response.ok){
-                alert(`Error Registering User! Error Code: ${response.status}`)
-            }
-            else{   // If registering user is successful, go to login function
-                const data = await response.json();
-                console.log('Here is the data variable which holds what is returned from backend: ', data);
-                setId(data.id);
-                loginUserAfterRegister();
-            }
-        }
-       regUser();
-
+    if (!response.ok) {
+      alert(`Error Registering User! Error Code: ${response.status}`);
+    } else {
+      const data = await response.json();
+      setId(data.id);
+      loginUserAfterRegister();
     }
+  };
 
-    // Function to log user in and get their JWT token
-    function loginUserAfterRegister(){
-        const loginUser = async () => {
-            const loginRegUser = await fetch('http://3.142.210.41:8081/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username, password})
-            });
+  const loginUserAfterRegister = async () => {
+    const response = await fetch('http://localhost:8080/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
 
-            if(!loginRegUser.ok){
-                alert(`Failed to Log user in after registering with error code: ${loginRegUser.status}`);
-            }
-            else{   // On successful login, update token state and go to goals page
-                const tokReturned = await loginRegUser.text();
-                console.log("Here is registered users login token: ", tokReturned);
-                setToken(tokReturned);
-                navigate('/goals');
-            }
-        }
-        loginUser();
+    if (!response.ok) {
+      alert(`Failed to Log user in after registering with error code: ${response.status}`);
+    } else {
+      const token = await response.text();
+      setToken(token);
+      navigate('/goals');
     }
+  };
+
   return (
-    <>
+    <div
+      style={{
+        background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 10%',
+      }}
+    >
+      {/* Logo Section */}
+      <div
+        style={{
+          width: '70%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div
+          style={{
+            backgroundImage: `url('logo/logo-transparent-png.png')`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            width: '1000px',
+            height: '1000px',
+            transform: 'translate(-50px, -50px)',
+          }}
+        ></div>
+      </div>
+
+      {/* Registration Form Section */}
+      <div
+        style={{
+          backgroundColor: '#000',
+          padding: '30px',
+          borderRadius: '10px',
+          color: '#fff',
+          width: '40%',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          fontSize: '150%',
+          fontFamily: 'Georgia',
+        }}
+      >
         <form onSubmit={registerSubmit}>
-        <label>Username:
-            <input type='text' value={username} onChange={(e:any) => setUsername(e.target.value)} required/>
-        </label><br/>
+          <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '175%' }}>Register</h2>
 
-        <label>Password:
-            <input type='password' value={password} onChange={(e:any) => setPassword(e.target.value)} required/>
-        </label><br/>
+          <label style={{ display: 'block', marginBottom: '10px' }}>
+            Username:
+            <input
+              type="text"
+              placeholder="Enter Username"
+              value={username}
+              onChange={(e: any) => setUsername(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '10px',
+                marginTop: '5px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </label>
 
-        <label>Email:
-            <input type='text' value={email} onChange={(e:any) => setEmail(e.target.value)}/>
-        </label><br/>
+          <label style={{ display: 'block', marginBottom: '10px' }}>
+            Password:
+            <input
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e: any) => setPassword(e.target.value)}
+              required
+              style={{
+                width: '100%',
+                padding: '10px',
+                marginTop: '5px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </label>
 
-        <label>First Name:
-            <input type='text' value={first_name} onChange={(e:any) => setFirstName(e.target.value)}/>
-        </label><br/>
+          <label style={{ display: 'block', marginBottom: '10px' }}>
+            First Name:
+            <input
+              type="text"
+              placeholder="Enter First Name"
+              value={first_name}
+              onChange={(e: any) => setFirstName(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px',
+                marginTop: '5px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </label>
 
-        <label>Last Name:
-            <input type='text' value={last_name} onChange={(e:any) => setLastName(e.target.value)}/>
-        </label><br/>
+          <label style={{ display: 'block', marginBottom: '10px' }}>
+            Last Name:
+            <input
+              type="text"
+              placeholder="Enter Last Name"
+              value={last_name}
+              onChange={(e: any) => setLastName(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px',
+                marginTop: '5px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </label>
 
-        <label>Photo URL:
-            <input type='text' value={photo_url} onChange={(e:any) => setPhotoUrl(e.target.value)}/>
-        </label><br/>
+          <label style={{ display: 'block', marginBottom: '20px' }}>
+            Email:
+            <input
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e: any) => setEmail(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px',
+                marginTop: '5px',
+                borderRadius: '5px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </label>
 
-        <button type='submit'>Submit</button>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: '10px',
+            }}
+          >
+            <button
+              type="submit"
+              style={{
+                flex: '1',
+                padding: '10px',
+                backgroundColor: '#504dff',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}
+            >
+              Submit
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              type="button"
+              style={{
+                flex: '1',
+                padding: '10px',
+                backgroundColor: '#ff6bcb',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+              }}
+            >
+              Back to Login
+            </button>
+          </div>
         </form>
-    </>
-  )
+      </div>
+    </div>
+  );
 }
 
-export default UserRegistration
+export default UserRegistration;

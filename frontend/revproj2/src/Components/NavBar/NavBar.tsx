@@ -24,9 +24,6 @@ function NavBar() {
                                 <a className="nav-link" href="/inbox">Inbox</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="/resetGoals">Goals</a>
-                            </li>
-                            <li className="nav-item">
                                 <a className="nav-link" href="/groups">Groups</a>
                             </li>
                             <li className="nav-item">

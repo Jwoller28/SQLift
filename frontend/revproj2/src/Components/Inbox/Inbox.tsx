@@ -41,40 +41,95 @@ export interface Tracker {
 	goal_id : number;
 	goal : Goal;
 }
+
+
 function Inbox() {
- 	const [div, setDiv] = useState<number>(0);
+	const [div, setDiv] = useState<number>(0);
 	const [clicked, setClicked] = useState(false);
 	const [userId, setUserId] = useState(0);
-	
-	useEffect( () => {	
+
+	useEffect(() => {
 		usernameifAuthorized().then((username) => {
-			getUserByUsername(username).then((data)=>{
+			getUserByUsername(username).then((data) => {
 				let user = data;
-				console.log(user)
 				setUserId(user.id);
-				})
-		})
-	}, [])
-	
-	const handleClick2 = (event : any) => {
-		let clickedGoal = event.target.getAttribute('a-key');
-		console.log(clickedGoal);
-		setDiv((prev) => (prev != clickedGoal ? clickedGoal : prev));
-		console.log(div);
-		setClicked((prev) => !prev);
+			});
+		});
+	}, []);
+
+	const handleClick2 = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		const target = event.target as HTMLDivElement;
+		const clickedGoal = parseInt(target.getAttribute("a-key") || "0", 10);
+
+		if (!isNaN(clickedGoal)) {
+			setDiv(clickedGoal);
+			setClicked(true); // Always set clicked to true when a goal is selected
+		}
 	};
-		
-	
-  return (
-    <>
-        <div>
-		<NotificationList handleClick = {handleClick2} />
-	</div>
-	<div>
-		<NotiViewerNew userId = {userId} goalId = {div} clicked = {clicked} />
-	</div>
-    </>
-  )
+
+	return (
+		<div
+			style={{
+				display: "grid",
+				gridTemplateColumns: "1fr 2fr 1fr",
+				gridGap: "20px",
+				padding: "20px",
+				background: "linear-gradient(135deg, #ff6bcb, #504dff)",
+				minHeight: "100vh",
+			}}
+		>
+			{/* Notification List */}
+			<div
+				style={{
+					background: "linear-gradient(to bottom, #2F2F2F , #1A1A1A )",
+					color: "#000",
+					padding: "20px",
+					borderRadius: "10px",
+					boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+					overflowY: "auto",
+				}}
+			>
+				<h3 style={{ textAlign: "center", marginBottom: "15px", color: "#0099FF" }}>
+					Your Goals
+				</h3>
+				<NotificationList handleClick={handleClick2} />
+			</div>
+
+			{/* Notification Viewer (Analytics) */}
+			<div
+				style={{
+					background: "linear-gradient(to bottom, #2F2F2F , #1A1A1A )",
+					color: "#000",
+					padding: "20px",
+					borderRadius: "10px",
+					boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+					overflowY: "auto",
+				}}
+			>
+				<h3 style={{ textAlign: "center", marginBottom: "15px", color: "#C613D0" }}>
+					Analytics
+				</h3>
+				<NotiViewerNew userId={userId} goalId={div} clicked={clicked} />
+			</div>
+
+			{/* Message Box */}
+			<div
+				style={{
+					background: "linear-gradient(to bottom, #2F2F2F , #1A1A1A )",
+					color: "#fff",
+					padding: "20px",
+					borderRadius: "10px",
+					boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+					overflowY: "auto",
+				}}
+			>
+				<h3 style={{ textAlign: "center", marginBottom: "15px", color: "#4CAF50" }}>
+					Message Box
+				</h3>
+				<PostFeedSmart goalId={div} userId={userId} />
+			</div>
+		</div>
+	);
 }
 
-export default Inbox
+export default Inbox;

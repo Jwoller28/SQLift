@@ -152,146 +152,273 @@ function SetUserGoals() {
   }
 
   return (
-    <>
-      {/* NEW: If there's an error, display it at the top */}
-      {errorMessage && (
-        <div
-          style={{
-            backgroundColor: '#ff4444',
-            color: '#fff',
-            padding: '10px 20px',
-            borderRadius: '4px',
-            marginBottom: '10px',
-            maxWidth: '600px',
-            textAlign: 'center',
-          }}
-        >
-          {errorMessage}
-        </div>
-      )}
-
-      <form onSubmit={handleGoalSubmit} style={{ padding: '20px' }}>
-        <h1>Nutrition</h1>
+    <form
+      onSubmit={handleGoalSubmit}
+      style={{
+        background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
+        minHeight: '100vh',
+        padding: '40px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        color: '#fff',
+        fontFamily: 'Georgia',
+      }}
+    >
+      <h1 style={{ fontSize: '400%' }}>Set Your New Goal!</h1>
+  
+      
+      {/* Nutrition Section */}
+      <div
+        style={{
+          backgroundColor: '#000',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          width: '40%',
+          marginBottom: '20px',
+        }}
+      >
+        <h2>Nutrition</h2>
         <label>
-          Calories
+          Daily Calories Consumed in kal
           <input
             type="number"
             value={kal}
             onChange={(e) => setCalories(Number(e.target.value))}
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
           />
-        </label>
+        </label> 
         <br />
-
         <label>
-          Carbs
+          Daily Carbs in grams
           <input
             type="number"
             value={carb}
             onChange={(e) => setCarbs(Number(e.target.value))}
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
           />
-        </label>
+        </label> 
         <br />
-
         <label>
-          Fat
+        Daily Fat in grams
           <input
             type="number"
             value={fat}
             onChange={(e) => setFat(Number(e.target.value))}
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
           />
-        </label>
+        </label> 
         <br />
-
         <label>
-          Protein
+        Daily Protein in grams
           <input
             type="number"
             value={protein}
             onChange={(e) => setProtein(Number(e.target.value))}
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
           />
-        </label>
+        </label> 
         <br />
-
         <label>
-          Current Weight
+          Goal Weight Loss Amount in lbs
           <input
             type="number"
             value={userWeight}
             onChange={(e) => setUserWeight(Number(e.target.value))}
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
           />
-        </label>
-        <br />
-
-        <h1>Exercise</h1>
+        </label> 
+      </div>
+  
+      {/* Exercise Section */}
+      <div
+        style={{
+          backgroundColor: '#000',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          width: '40%',
+          marginBottom: '20px',
+        }}
+      >
+        <h2>Exercise</h2>
         <label>
           Calories To Burn For Goal
           <input
             type="number"
             value={caloriesBurned}
             onChange={(e) => setCaloriesBurned(Number(e.target.value))}
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
           />
         </label>
         <br />
-
         <label>
-          Volume
+          Goal Volume Amount
           <input
             type="number"
             value={volume}
             onChange={(e) => setVolume(Number(e.target.value))}
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
           />
         </label>
         <br />
-
         <label>
-          Workout Duration
+          Average Workout Duration
           <input
             type="number"
             value={duration}
             onChange={(e) => setDuration(Number(e.target.value))}
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
           />
         </label>
-        <br />
-
-        <h1>Water Intake</h1>
+      </div>
+  
+      {/* Water Intake Section */}
+      <div
+        style={{
+          backgroundColor: '#000',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          width: '40%',
+          marginBottom: '20px',
+        }}
+      >
+        <h2>Water</h2>
         <label>
           Daily Water Intake in oz.
           <input
             type="number"
             value={water}
             onChange={(e) => setWater(Number(e.target.value))}
-            required/>
+            required
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
+          />
         </label>
-        <br />
-
-        <h1>Sleep</h1>
+      </div>
+  
+      {/* Sleep Section */}
+      <div
+        style={{
+          backgroundColor: '#000',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          width: '40%',
+          marginBottom: '20px',
+        }}
+      >
+        <h2>Sleep</h2>
         <label>
-          Number of Hours of Sleep
+          Average Number of Hours of Sleep
           <input
             type="number"
             value={sleep}
             onChange={(e) => setSleep(Number(e.target.value))}
-            required/>
+            required
+            style={{
+              width: '100%',
+              marginBottom: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
+          />
         </label>
-        <br />
-
+      </div>
+      
+  
+      {/* Goal End Date Section */}
+      <div
+        style={{
+          backgroundColor: '#000',
+          padding: '20px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          width: '40%',
+          textAlign: 'center',
+        }}
+      >
         <h2>Goal End Date</h2>
         <label>
-          Pick a date:
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            required />
+            required
+            style={{
+              width: '80%',
+              marginTop: '10px',
+              padding: '5px',
+              borderRadius: '5px',
+            }}
+          />
         </label>
-        <br />
-
-        <button type="submit" style={{ marginTop: '20px' }}>
-          Submit Goals
+        <button
+          type="submit"
+          style={{
+            marginTop: '20px',
+            backgroundColor: '#504dff',
+            color: '#fff',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          Submit New Goal
         </button>
-      </form>
-    </>
+      </div>
+    </form>
   );
+  
+  
+  
 }
 
 export default SetUserGoals;
