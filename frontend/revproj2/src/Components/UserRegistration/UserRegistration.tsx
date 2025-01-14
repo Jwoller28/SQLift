@@ -26,7 +26,7 @@ function UserRegistration() {
 
         event.preventDefault();
         const regUser = async () =>{    // Connects to backend to register user
-            const response = await fetch('http://localhost:8080/register', {
+            const response = await fetch('http://3.142.210.41:8081/register', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username, password, email, first_name, last_name, photo_url})
@@ -49,7 +49,7 @@ function UserRegistration() {
     // Function to log user in and get their JWT token
     function loginUserAfterRegister(){
         const loginUser = async () => {
-            const loginRegUser = await fetch('http://localhost:8080/login', {
+            const loginRegUser = await fetch('http://3.142.210.41:8081/login', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username, password})

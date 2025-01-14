@@ -60,7 +60,7 @@ function InputPage() {
     const fetchMe = async () => {
       try {
         // 1) GET /me to get username
-        const meRes = await fetch("http://localhost:8080/me", {
+        const meRes = await fetch("http://3.142.210.41:8081/me", {
           headers: {
               'Content-Type': 'application/json',
               'Authorization' : `Bearer ${userToken}`,
@@ -93,7 +93,7 @@ function InputPage() {
 
   const fetchUsername = async () => {
       // 2) GET /username/{username} to get user object (including id)
-      const userRes = await fetch(`http://localhost:8080/username/${userName}`, {
+      const userRes = await fetch(`http://3.142.210.41:8081/username/${userName}`, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       if (!userRes.ok) {
@@ -105,7 +105,7 @@ function InputPage() {
 
     const fetchGoal = async () => {
       // 3) GET /goalUser/{userId} to get the user’s goal object (including goalId)
-      const goalRes = await fetch(`http://localhost:8080/goalUser/${userId}`, {
+      const goalRes = await fetch(`http://3.142.210.41:8081/goalUser/${userId}`, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       if (!goalRes.ok) {
@@ -240,7 +240,7 @@ function InputPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:8080/Tracker', {
+      const response = await fetch('http://3.142.210.41:8081/Tracker', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
