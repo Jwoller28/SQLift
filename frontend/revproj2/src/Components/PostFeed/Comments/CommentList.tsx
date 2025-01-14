@@ -14,78 +14,122 @@ function CommentList(prop: CommentListProp) {
   const [error, setError] = useState<string | null>(null); // Error state
   const formRef: MutableRefObject<HTMLFormElement | null> = useRef(null);
 
-  // Fetch comments when post or click changes
   useEffect(() => {
     if (!prop.post) return; // Check if post object is available
     setLoadingPost(true); // Set loading state when starting to fetch post
     const fetchComments = async () => {
-      setLoading(true); // Set loading state for comments
-      setError(null); // Reset error state before trying to fetch comments
+      setLoading(true);
+      setError(null);
       try {
         const prevComments = await getCommentsByPost(prop.post.postId);
         setComments(prevComments as any[]);
       } catch (err) {
-        setError('Failed to load comments');
-        console.error('Error fetching comments:', err);
+        setError("Failed to load comments");
+        console.error("Error fetching comments:", err);
       } finally {
-        setLoading(false); // Turn off loading once comments are fetched
-        setLoadingPost(false); // Turn off loading once post is fetched
+        setLoading(false);
+        setLoadingPost(false);
       }
     };
     fetchComments();
-  }, [prop.post.postId]);  // Added post.id as dependency to refetch on post change
+  }, [prop.post.postId]);
 
-  // Handle new comment submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim()) return; // Avoid sending empty messages
+    if (!message.trim()) return;
 
     if (!prop.post) {
-      setError('Post or user data is not available');
+      setError("Post or user data is not available");
       return;
     }
 
-    console.log("Post data:", prop.post);
-    console.log("User ID:", prop.post?.user?.id);
-    console.log("Post ID:", prop.post?.postId);
-
-
     let formData = new FormData();
-    formData.append('user_id', prop.post.user.id.toString());
-    formData.append('post_id', prop.post.postId.toString());
-    formData.append('message_text', message);
+    const userid = localStorage.getItem('id') || 0;
+    formData.append("user_id", userid.toString());
+    formData.append("post_id", prop.post.postId.toString());
+    formData.append("message_text", message);
 
     try {
       await sendComment(formData);
-      // Optionally, refetch comments after sending a comment
       const prevComments = await getCommentsByPost(prop.post.postId);
       setComments(prevComments as any[]);
     } catch (err) {
       console.error("Error sending comment:", err);
-      setError('Failed to submit comment');
+      setError("Failed to submit comment");
     } finally {
-      formRef.current?.reset(); // Reset the form after submitting
+      formRef.current?.reset();
     }
   };
 
+  const formatTimeAgo = (timestamp: string) => {
+    const now = new Date();
+    const commentTime = new Date(timestamp);
+    const difference = now.getTime() - commentTime.getTime();
+
+    const seconds = Math.floor(difference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days} day${days > 1 ? "s" : ""} ago`;
+    if (hours > 0) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    if (minutes > 0) return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    return `${seconds} second${seconds > 1 ? "s" : ""} ago`;
+  };
+
+  const renderComments = (comments: any[]) => (     <ul>      {comments.map((comment) => (        
+  <li key={comment.commentId}>
+    <h5>{comment.user.username}</h5>
+    <p>{comment.timestamp}</p>
+    <p>{comment.text}</p>
+    <button onClick={() => handleSubmit(comment.commentId)}>Reply</button>          
+    {comment.subComments && renderComments(comment.subComments)}        
+    </li> ))} </ul> );
+
   return (
     <>
-      {/* Show loading state while the post is being loaded */}
       {loadingPost && <p>Loading post...</p>}
 
       {!loadingPost && (
         <>
           {loading ? (
-            <p>Loading comments...</p> // Show loading while comments are being fetched
+            <p>Loading comments...</p>
           ) : error ? (
-            <p style={{ color: 'red' }}>{error}</p> // Show error if there is one
-          ) : comments ? (
-            <ul>
+            <p style={{ color: "red" }}>{error}</p>
+          ) : comments.length > 0 ? (
+            <ul style={{ listStyleType: "none", padding: 0 }}>
               {comments.map((comment, index) => (
-                <li key={index}> {/* Use unique comment ID as the key */} 
-                  <h5>{comment.user.username}</h5> {/* Replace with actual comment data */}
-		  <p> {comment.timestamp} </p>
-		  <p>{comment.text}</p>
+                <li
+                  key={index}
+                  style={{
+                    backgroundColor: "#2F2F2F",
+                    color: "#fff",
+                    padding: "10px",
+                    borderRadius: "8px",
+                    marginBottom: "10px",
+                    textAlign: "center",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontWeight: "bold",
+                      marginBottom: "5px",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {comment.user.username}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "#aaa",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    {formatTimeAgo(comment.timestamp)}
+                  </p>
+                  <p>{comment.text}</p>
                 </li>
               ))}
             </ul>
@@ -96,7 +140,11 @@ function CommentList(prop: CommentListProp) {
       )}
 
       {!loadingPost && !loading && (
-        <CommentDumb formRef={formRef} setMessage={setMessage} onSubmit={handleSubmit} />
+        <CommentDumb
+          formRef={formRef}
+          setMessage={setMessage}
+          onSubmit={handleSubmit}
+        />
       )}
     </>
   );

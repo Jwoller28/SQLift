@@ -119,15 +119,15 @@ function DayView() {
           key={evt.id}
           style={{
             marginBottom: '10px',
-            fontSize: 18,
+            fontSize: 30,
             marginTop: '10px',
             padding: '15px 85px',
             border: '1px solid #444',
-            borderRadius: '4px',
-            backgroundColor: '#504dff',
+            borderRadius: '50px',
+            background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
           }}
         >
-          <strong>{evt.title}</strong>
+          <strong style={{fontSize: 50,}}>{evt.title}</strong>
           <p>{evt.description}</p>
           <strong style={{ fontStyle: 'italic' }}>{evt.groupName}</strong> {/* Display group or personal */}
         </div>

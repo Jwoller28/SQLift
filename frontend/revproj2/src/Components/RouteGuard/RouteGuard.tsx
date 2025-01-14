@@ -17,7 +17,7 @@ if(!isAuthenticated)
 else
 {
 	
-	return <>{children} : </>;
+	return <>{children}</>;
 }
 }
 

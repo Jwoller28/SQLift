@@ -11,7 +11,6 @@ import InputPage from './Calendar/InputPage';
 import CalendarPage from './Calendar/CalendarPage';
 import GroupPage from './Calendar/GroupPage';
 import DayView from './Calendar/DayView';
-import WeekView from './Calendar/WeekView';
 import CreateEventPage from './Calendar/CreateEventPage';
 import SetUserGoals from './Components/SetUserGoals/SetUserGoals';
 import PostList from './Components/PostFeed/PostList';
@@ -72,11 +71,6 @@ function App() {
                 <Route path="/day/:dayId" element={
                 <RouteGuard>
                   <NavBar/><DayView />
-                </RouteGuard>} />
-
-                <Route path="/Week" element={
-                <RouteGuard>
-                  <NavBar/><WeekView />
                 </RouteGuard>} />
 
               <Route path="/input/:dayId" element={

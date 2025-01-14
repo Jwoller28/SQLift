@@ -362,6 +362,78 @@ function InputPage() {
 </div>
 
 
+<h3 style={{ color: '#fff', marginTop: '10px' }}>Nutrition</h3>
+        {/* Foods + API */}
+        <div style={{ marginBottom: '10px' }}>
+          <button
+            type="button"
+            onClick={addFood}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2282ff',
+              color: '#000',
+              border: 'none',
+              cursor: 'pointer',
+              marginRight: '10px',
+              borderRadius: '4px',
+            }}
+          >
+            Add Food
+          </button>
+          <button
+            type="button"
+            onClick={handleFetchNutrition}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2282ff',
+              color: '#000',
+              border: 'none',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
+          >
+            Fetch Nutrition from API
+          </button>
+        </div>
+
+        {foods.map((food, index) => (
+          <div key={index} style={{ marginBottom: '5px' }}>
+            <input
+              type="text"
+              value={food.name}
+              onChange={(e) => updateFood(index, e.target.value)}
+              placeholder="e.g. mac and cheese"
+              style={{ width: '250px' }}
+            />
+          </div>
+        ))}
+
+        {/* Show the totals from the API calls */}
+        <p style={{ marginTop: '10px' }}>
+          <strong>Food totals (from API):</strong>
+          <br />
+          Calories: {nutritionTotals.calories} kcal
+          <br />
+          Carbs: {nutritionTotals.carbs} g
+          <br />
+          Fat: {nutritionTotals.fat} g
+          <br />
+          Protein: {nutritionTotals.protein} g
+        </p>
+
+        <div style={{ marginBottom: '10px' }}>
+          <label style={{ marginRight: '10px' }}>
+            Weight Lost (lbs):
+            <input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
+
+
 
         <h3 style={{ color: '#fff', marginTop: '10px' }}>Exercise</h3>
         <div style={{ marginBottom: '10px' }}>
@@ -486,76 +558,7 @@ function InputPage() {
           </label>
         </div>
 
-        <h3 style={{ color: '#fff', marginTop: '10px' }}>Nutrition</h3>
-        <div style={{ marginBottom: '10px' }}>
-          <label style={{ marginRight: '10px' }}>
-            Weight (lbs):
-            <input
-              type="number"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              style={{ marginLeft: '10px' }}
-            />
-          </label>
-        </div>
-
-        {/* Foods + API */}
-        <div style={{ marginBottom: '10px' }}>
-          <button
-            type="button"
-            onClick={addFood}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#2282ff',
-              color: '#000',
-              border: 'none',
-              cursor: 'pointer',
-              marginRight: '10px',
-              borderRadius: '4px',
-            }}
-          >
-            Add Food
-          </button>
-          <button
-            type="button"
-            onClick={handleFetchNutrition}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#2282ff',
-              color: '#000',
-              border: 'none',
-              cursor: 'pointer',
-              borderRadius: '4px',
-            }}
-          >
-            Fetch Nutrition from API
-          </button>
-        </div>
-
-        {foods.map((food, index) => (
-          <div key={index} style={{ marginBottom: '5px' }}>
-            <input
-              type="text"
-              value={food.name}
-              onChange={(e) => updateFood(index, e.target.value)}
-              placeholder="e.g. mac and cheese"
-              style={{ width: '250px' }}
-            />
-          </div>
-        ))}
-
-        {/* Show the totals from the API calls */}
-        <p style={{ marginTop: '10px' }}>
-          <strong>Food totals (from API):</strong>
-          <br />
-          Calories: {nutritionTotals.calories} kcal
-          <br />
-          Carbs: {nutritionTotals.carbs} g
-          <br />
-          Fat: {nutritionTotals.fat} g
-          <br />
-          Protein: {nutritionTotals.protein} g
-        </p>
+        
 
         <div style={{ marginTop: '20px' }}>
           <button
