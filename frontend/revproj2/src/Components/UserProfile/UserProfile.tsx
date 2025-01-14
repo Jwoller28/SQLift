@@ -39,7 +39,7 @@ function UserProfile() {
     const getUserInfo = async () => {
       try {
         const userInfoResponse = await fetch(
-          `http://localhost:8080/username/${username}`,
+          `http://3.142.210.41:8081/username/${username}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

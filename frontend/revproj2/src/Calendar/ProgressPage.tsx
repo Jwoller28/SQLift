@@ -82,7 +82,7 @@ function ProgressPage() {
     if (!token) return;
     const fetchMe = async () => {
       try {
-        const res = await fetch('http://localhost:8080/me', {
+        const res = await fetch('http://3.142.210.41:8081/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`GET /me failed: ${res.status}`);
@@ -99,7 +99,7 @@ function ProgressPage() {
     if (!username || !token) return;
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/username/${username}`, {
+        const res = await fetch(`http://3.142.210.41:8081/username/${username}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`GET /username/${username} failed: ${res.status}`);
@@ -116,7 +116,7 @@ function ProgressPage() {
     if (!userId || !token) return;
     const fetchGoal = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/goalUser/${userId}`, {
+        const res = await fetch(`http://3.142.210.41:8081/goalUser/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`GET /goalUser/${userId} failed: ${res.status}`);
@@ -155,7 +155,7 @@ function ProgressPage() {
     if (!userId || !goal || !token) return;
     const fetchTrackers = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/Tracker/${userId}/${goal.id}`, {
+        const res = await fetch(`http://3.142.210.41:8081/Tracker/${userId}/${goal.id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`GET /Tracker/${userId}/${goal.id} failed: ${res.status}`);
