@@ -40,39 +40,39 @@
 // 	}
 // }
 
-package com.example.proj2.Configs;
+// package com.example.proj2.Configs;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+// import com.amazonaws.auth.AWSCredentials;
+// import com.amazonaws.auth.AWSStaticCredentialsProvider;
+// import com.amazonaws.auth.BasicAWSCredentials;
+// import com.amazonaws.regions.Regions;
+// import com.amazonaws.services.s3.AmazonS3;
+// import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+// import org.springframework.beans.factory.annotation.Value;
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
 
-@Configuration
-public class AWSConfig {
+// @Configuration
+// public class AWSConfig {
 
-	@Value("${aws.access.keyId}")
-	private String accessKey;
+// 	@Value("${aws.access.keyId}")
+// 	private String accessKey;
 
-	@Value("${aws.access.secret}")
-	private String accessSecret;
+// 	@Value("${aws.access.secret}")
+// 	private String accessSecret;
 
-	private String region = "us-east-2";
+// 	private String region = "us-east-2";
 
-	@Bean
-	public AmazonS3 s3Client() {
-		AWSCredentials credentials = new BasicAWSCredentials(accessKey, accessSecret);
+// 	@Bean
+// 	public AmazonS3 s3Client() {
+// 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, accessSecret);
 
-		return AmazonS3ClientBuilder.standard()
-			.withCredentials(new AWSStaticCredentialsProvider(credentials))
-			.withRegion(region)
-			.build();
+// 		return AmazonS3ClientBuilder.standard()
+// 			.withCredentials(new AWSStaticCredentialsProvider(credentials))
+// 			.withRegion(region)
+// 			.build();
 
-	}
-}
+// 	}
+// }
 

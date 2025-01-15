@@ -28,56 +28,6 @@ function GroupPage() {
   }
 
   return (
-<<<<<<< HEAD
-    <div style={{ padding: '20px' }}>
-      <h2>Groups</h2>
-      <form role = "form" onSubmit={handleCreateGroup} style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '10px' }}>
-          Create Group:
-          <input 
-            style={{ marginLeft: '5px' }}
-            value={newGroupName}
-            onChange={(e) => setNewGroupName(e.target.value)}
-          />
-        </label>
-        <button type="submit">Create</button>
-      </form>
-
-      {/* SEARCH BAR */}
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '10px' }}>
-          Search:
-          <input 
-            style={{ marginLeft: '5px' }}
-            value={searchTerm} 
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </label>
-      </div>
-
-      {/* RENDER GROUPS */}
-      {filteredGroups.length === 0 ? (
-        <p>No groups found.</p>
-      ) : (
-        filteredGroups.map((g) => (
-          <div key={g.id} style={{ 
-            marginBottom: '10px', 
-            border: '1px solid #ccc', 
-            padding: '10px',
-          }}>
-            <strong>{g.name}</strong>
-            <div>
-              {isUserInGroup(g) ? (
-                <button onClick={() => leaveGroup(g.id)}>
-                  Leave
-                </button>
-              ) : (
-                <button onClick={() => joinGroup(g.id)}>
-                  Join
-                </button>
-              )}
-            </div>
-=======
     <div style={{
       padding: '20px',
       background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
@@ -127,7 +77,6 @@ function GroupPage() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </label>
->>>>>>> origin/main
           </div>
         </div>
   

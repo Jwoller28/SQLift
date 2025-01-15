@@ -43,7 +43,7 @@ public class PostControllerTest {
 
         doNothing().when(postService).sendPost(any(Post.class));
 
-        ResponseEntity<String> response = postController.sendPost(null, 1L, 1, "Test message", "tag1,tag2", "testuser");
+        ResponseEntity<String> response = postController.sendPost(1L, 1, "Test message", "tag1,tag2", "testuser");
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals("File uploaded successfully", response.getBody());

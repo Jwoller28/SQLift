@@ -32,7 +32,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.example.proj2.entity.Post;
 import com.example.proj2.Services.PostService;
-import com.example.proj2.Services.AWSService;
+// import com.example.proj2.Services.AWSService;
 import com.example.proj2.Configs.JwtUtil;
 import java.util.List;
 import java.util.Arrays;
@@ -57,8 +57,8 @@ public class PostController {
     @Autowired
     final static Logger logger = LoggerFactory.getLogger(PostController.class);
     
-    @Autowired
-    private AWSService awsService;
+    // @Autowired
+    // private AWSService awsService;
 
     @Autowired
     private PostService postService;
@@ -75,8 +75,8 @@ public class PostController {
     }
 
     @PostMapping(value = "posts")
-    // Turn the Request Param into Request Body with object that has these fields
-    public ResponseEntity<String> sendPost(@RequestPart("photo") MultipartFile photo, @RequestParam("goal_id") long goalId,
+    // Turn the Request Param into Request Body with object that has these fields @RequestPart("photo") MultipartFile photo, 
+    public ResponseEntity<String> sendPost(@RequestParam("goal_id") long goalId,
     @RequestParam("user_id") int userId,
     @RequestParam("message_text") String messageText, @RequestParam("message_tags") String messageTags, @RequestParam("username") String username)
     {
@@ -84,10 +84,10 @@ public class PostController {
     {
     logger.info("Arrives at Controller");
     
-    String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
-    String contentType = photo.getContentType();
-    long fileSize = photo.getSize();
-    InputStream inputStream = photo.getInputStream();
+    // String fileName = StringUtils.cleanPath(photo.getOriginalFilename());
+    // String contentType = photo.getContentType();
+    // long fileSize = photo.getSize();
+    // InputStream inputStream = photo.getInputStream();
    
     Post post = new Post();
 
@@ -101,8 +101,8 @@ public class PostController {
     logger.info("Post Text: " + messageText);
     post.setMessageText(messageText);
     
-    post.setPhoto(fileName);
-    awsService.uploadFile("trackr-photo-store",fileName, fileSize, contentType, inputStream);
+    // post.setPhoto(fileName);
+    // awsService.uploadFile("trackr-photo-store",fileName, fileSize, contentType, inputStream);
     List<String> tags = Arrays.asList(messageTags.split(","));
     post.setTags(tags);
 

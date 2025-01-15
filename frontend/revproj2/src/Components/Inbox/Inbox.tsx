@@ -61,6 +61,7 @@ function Inbox() {
 		const clickedGoal = parseInt(target.getAttribute("a-key") || "0", 10);
 
 		if (!isNaN(clickedGoal)) {
+			console.log(clickedGoal);
 			setDiv(clickedGoal);
 			setClicked(true); // Always set clicked to true when a goal is selected
 		}

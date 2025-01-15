@@ -64,19 +64,6 @@ function PostFeedDumb(prop: PostFeedProp) {
           />
         </div>
 
-<<<<<<< HEAD
-            <label htmlFor="message_text">Message</label> <br/>
-            <input type="text" id = "message-text" name="message_text" onChange = {(e) => prop.setMessage(e.target.value)} required></input> <br/>
-
-            <label htmlFor="message_tags">Tags</label> <br/>
-            <input type="text" id = "message-tags" name="message_tags" onChange = {(e) => prop.setTags(e.target.value)} required></input> <br/>
-
-            <label htmlFor="photo">PNG Images Only</label> <br/>
-            <input type="file" id = "photo" name="photo" accept='.png' onChange = {(e) => prop.setFile(e.target.files ? e.target.files[0] : undefined)}></input> <br/>
-
-            <button type="submit" id = "submitButton" name = "submitButton">Post to Feed</button>
-            </form>
-=======
         {/* Tags Input */}
         <div>
           <label
@@ -122,6 +109,7 @@ function PostFeedDumb(prop: PostFeedProp) {
             type="file"
             name="photo"
             accept=".png"
+            required
             onChange={(e) => prop.setFile(e.target.files ? e.target.files[0] : undefined)}
             style={{
               fontSize: '1rem',
@@ -153,7 +141,6 @@ function PostFeedDumb(prop: PostFeedProp) {
           Post to Feed
         </button>
       </form>
->>>>>>> origin/main
     </div>
   );
 }

@@ -26,7 +26,7 @@ function UserManagement() {
     function handleSubmit(event: FormEvent){
         event.preventDefault();
         const fetchData = async () => {
-            const response = await fetch('http://3.142.210.41:8081/login', {
+            const response = await fetch('http://localhost:8080/login', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username, password})
@@ -46,7 +46,7 @@ function UserManagement() {
         }
 
         // const fetchToken = async () =>{
-            // const responseT = await fetch('http://3.142.210.41:8081/me', {
+            // const responseT = await fetch('http://localhost:8080/me', {
             //     headers: {
             //         'Content-Type': 'application/json',
             //         'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczNTMzMTUyMywiZXhwIjoxNzM1MzM1MTIzfQ.jgGCf7aekWFgo_0qKjmnvhLhs8iz8DaN0FmMfq-PBtc',
@@ -66,7 +66,7 @@ function UserManagement() {
             //     console.error('The Fetch failed: ', error);
             // });
 
-        //     const responseValidToken = await fetch("http://3.142.210.41:8081/me", {
+        //     const responseValidToken = await fetch("http://localhost:8080/me", {
         //         headers: {
         //             'Content-Type': 'application/json',
         //             'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczNTM0OTAzMywiZXhwIjoxNzM1MzUyNjMzfQ.pnO3E0MHA58s1GIt4m4N38VhTOAl68uV-uN37tkunsY',

@@ -19,7 +19,7 @@ function PostFeedSmart(prop : PostFeedProp) {
     const handleSubmit = async (e : any) => {
         e.preventDefault();
         let formData = new FormData();
-	console.log(prop.goalId);
+	    console.log("Here is goal Id: ", prop.goalId);
         formData.append('goal_id', prop.goalId.toString());
         formData.append('user_id', prop.userId.toString());
         formData.append('message_text', message);

@@ -17,7 +17,6 @@ com\example\proj2\Dto\LoginUserDto.class
 com\example\proj2\Dto\TrackerDto.class
 com\example\proj2\entity\Group.class
 com\example\proj2\entity\Comment.class
-com\example\proj2\Services\AWSService.class
 com\example\proj2\repositories\AppUserRepository.class
 com\example\proj2\Configs\LoggingConfig.class
 com\example\proj2\repositories\GoalRepository.class

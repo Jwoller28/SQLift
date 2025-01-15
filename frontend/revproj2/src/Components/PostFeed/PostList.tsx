@@ -59,13 +59,8 @@ function PostList() {
       }
     };
 
-<<<<<<< HEAD
     fetchPosts();
-  }, [searched, searchQuery]);
-=======
-    getDB();
   }, [searched]);
->>>>>>> origin/main
 
   const handleClick = (postId: number) => {
     setClick(prev => ({ ...prev, [postId]: !prev[postId] }));
@@ -100,19 +95,14 @@ function PostList() {
     if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
     return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
   };
+
+  function photoURl(photo_name : string): string {
+    let url = `https://trackr-photo-store.s3.us-east-2.amazonaws.com/${photo_name}`;
+    console.log(url);
+    return url;
+}
   
   return (
-<<<<<<< HEAD
-    <div>
-      <h3>We will get there Together!</h3>
-      <FeedSearch 
-        onSearch={handleSearch}
-        searchQuery={searchQuery}
-        searched={searched}
-      />
-      <div>
-        {searched && posts.length === 0 && <p>No Posts Match this Criteria</p>}
-=======
     <div
       style={{
         background: 'linear-gradient(135deg, #ff6bcb, #504dff)',
@@ -148,7 +138,7 @@ function PostList() {
           alignItems: 'center',
         }}
       >
-        <FeedSearch onChange={onChange} setSearched={setSearched} />
+        <FeedSearch onSearch={handleSearch} searchQuery={searchQuery} searched={searched} />
       </div>
   
       <div
@@ -171,20 +161,10 @@ function PostList() {
             No Posts Match this Criteria
           </p>
         )}
->>>>>>> origin/main
         {posts.length === 0 ? (
           <p>Loading posts...</p>
         ) : (
           posts.map((post) => (
-<<<<<<< HEAD
-            <div key={post.postId}>
-              <h5>Goal ID: {post.goal.id}</h5>
-              <a>User ID: {post.user.id}</a>
-              <p>Username: {post.user.username}</p>
-              <p>Message Text: {post.messageText}</p>
-              <p>Date: {post.creation}</p>
-              {post.tags?.length > 0 && (
-=======
             <div
               key={post.postId}
               style={{
@@ -198,7 +178,7 @@ function PostList() {
             >
               <img
                 loading="lazy"
-                src={post.photo}
+                src={photoURl(post.photo)}
                 alt="Post image"
                 style={{
                   marginTop: '10px',
@@ -212,7 +192,6 @@ function PostList() {
               <p>{post.messageText}</p>
               <p><em>Posted {formatTimeAgo(post.creation)}</em></p>
               {post.tags && post.tags.length > 0 && (
->>>>>>> origin/main
                 <p>Tags: {formatTags(post.tags)}</p>
               )}
               <hr
@@ -239,19 +218,7 @@ function PostList() {
               <br/>
               <br/>
               {click[post.postId] && <CommentList post={post} />}
-<<<<<<< HEAD
-              {post.photo && (
-                <img 
-                  loading="lazy" 
-                  src={post.photo} 
-                  width="200" 
-                  height="auto" 
-                  alt=""
-                />
-              )}
-=======
               
->>>>>>> origin/main
             </div>
           ))
         )}

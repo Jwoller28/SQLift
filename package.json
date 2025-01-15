@@ -1,5 +1,9 @@
 {
   "dependencies": {
     "@types/node-fetch": "^2.6.12"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^21.1.7",
+    "test": "^3.3.0"
   }
 }
