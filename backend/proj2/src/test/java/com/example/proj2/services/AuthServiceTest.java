@@ -1,4 +1,4 @@
-/**package com.example.proj2.services;
+// package com.example.proj2.services;
 
 // import com.example.proj2.exceptions.InvalidCredentialsException;
 // import com.example.proj2.models.User;
@@ -9,14 +9,14 @@
 
 // import static org.junit.jupiter.api.Assertions.*;
 
-// /**
-//  * Unit tests for the login logic, e.g., verifying username/password
-//  */
+// // /**
+// //  * Unit tests for the login logic, e.g., verifying username/password
+// //  */
 
 // class AuthServiceTest {
-  /*
-    private AuthService authService;
-    private UserRepository userRepository = Mockito.mock(UserRepository.class);
+  
+//     private AuthService authService;
+//     private UserRepository userRepository = Mockito.mock(UserRepository.class);
 
 //     @BeforeEach
 //     void setUp() {
@@ -26,7 +26,8 @@
 //     @Test
 //     void loginUser_Success() {
 //         // Mock a user in DB with a certain username, password
-//         User existingUser = new User();
+//         User existingUser = new User(); 
+
 //         existingUser.setUsername("testUser");
 //         existingUser.setPassword("password");
 
@@ -58,12 +59,12 @@
 
 //         Mockito.when(userRepository.findByUsername("testUser")).thenReturn(existingUser);
 
-        // Now your service might check if the raw password matches the hashed password
-        // If it doesn't match, it should throw an exception or return an error
-        assertThrows(InvalidCredentialsException.class, () -> {
-            authService.loginUser("testUser", "wrongPass");
-        });
-    }
+//         // Now your service might check if the raw password matches the hashed password
+//         // If it doesn't match, it should throw an exception or return an error
+//         assertThrows(InvalidCredentialsException.class, () -> {
+//             authService.loginUser("testUser", "wrongPass");
+//         });
+//     }
 
 
-}*/
+// }

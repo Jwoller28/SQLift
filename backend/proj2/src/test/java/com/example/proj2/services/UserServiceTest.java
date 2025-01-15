@@ -1,141 +1,141 @@
-// package com.example.proj2.services;
+package com.example.proj2.services;
 
-// import com.example.proj2.entity.AppUser;
-// import com.example.proj2.repositories.AppUserRepository;
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.MockitoAnnotations;
-// import org.springframework.security.core.Authentication;
-// import com.example.proj2.Services.UserService;
+import com.example.proj2.entity.AppUser;
+import com.example.proj2.repositories.AppUserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.Authentication;
+import com.example.proj2.Services.UserService;
 
-// import java.util.Optional;
+import java.util.Optional;
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.junit.jupiter.api.Assertions.assertThrows;
-// import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
-// public class UserServiceTest {
-// //
-//     @InjectMocks
-//     private UserService userService;
+public class UserServiceTest {
 
-//     @Mock
-//     private AppUserRepository appUserRepository;
+    @InjectMocks
+    private UserService userService;
 
-//     @Mock
-//     private Authentication authentication;
+    @Mock
+    private AppUserRepository appUserRepository;
 
-//     @BeforeEach
-//     public void setUp() {
-//         MockitoAnnotations.openMocks(this);
-//     }
+    @Mock
+    private Authentication authentication;
 
-//     @Test
-//     public void testGetUserByID() throws Exception {
-//         AppUser user = new AppUser();
-//         user.setId(1);
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-//         when(appUserRepository.findById(1)).thenReturn(Optional.of(user));
+    @Test
+    public void testGetUserByID() throws Exception {
+        AppUser user = new AppUser();
+        user.setId(1);
 
-//         AppUser result = userService.getUserByID(1);
+        when(appUserRepository.findById(1)).thenReturn(Optional.of(user));
 
-//         assertEquals(user, result);
-//         verify(appUserRepository, times(1)).findById(1);
-//     }
+        AppUser result = userService.getUserByID(1);
 
-//     @Test
-//     public void testGetUserByID_UserNotFound() {
-//         when(appUserRepository.findById(1)).thenReturn(Optional.empty());
+        assertEquals(user, result);
+        verify(appUserRepository, times(1)).findById(1);
+    }
 
-//         assertThrows(Exception.class, () -> {
-//             userService.getUserByID(1);
-//         });
+    @Test
+    public void testGetUserByID_UserNotFound() {
+        when(appUserRepository.findById(1)).thenReturn(Optional.empty());
 
-//         verify(appUserRepository, times(1)).findById(1);
-//     }
+        assertThrows(Exception.class, () -> {
+            userService.getUserByID(1);
+        });
 
-//     @Test
-//     public void testGetUserByUsername() throws Exception {
-//         AppUser user = new AppUser();
-//         user.setUsername("testuser");
+        verify(appUserRepository, times(1)).findById(1);
+    }
 
-//         when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+    @Test
+    public void testGetUserByUsername() throws Exception {
+        AppUser user = new AppUser();
+        user.setUsername("testuser");
 
-//         AppUser result = userService.getUserByUsername("testuser");
+        when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
 
-//         assertEquals(user, result);
-//         verify(appUserRepository, times(1)).findByUsername("testuser");
-//     }
+        AppUser result = userService.getUserByUsername("testuser");
 
-//     @Test
-//     public void testGetUserByUsername_UserNotFound() {
-//         when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+        assertEquals(user, result);
+        verify(appUserRepository, times(1)).findByUsername("testuser");
+    }
 
-//         assertThrows(Exception.class, () -> {
-//             userService.getUserByUsername("testuser");
-//         });
+    @Test
+    public void testGetUserByUsername_UserNotFound() {
+        when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.empty());
 
-//         verify(appUserRepository, times(1)).findByUsername("testuser");
-//     }
+        assertThrows(Exception.class, () -> {
+            userService.getUserByUsername("testuser");
+        });
 
-//     @Test
-//     public void testGetUserFromAuthentication() {
-//         AppUser user = new AppUser();
-//         user.setUsername("testuser");
+        verify(appUserRepository, times(1)).findByUsername("testuser");
+    }
 
-//         when(authentication.getName()).thenReturn("testuser");
-//         when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
+    @Test
+    public void testGetUserFromAuthentication() {
+        AppUser user = new AppUser();
+        user.setUsername("testuser");
 
-//         AppUser result = userService.getUserFromAuthentication(authentication);
+        when(authentication.getName()).thenReturn("testuser");
+        when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
 
-//         assertEquals(user, result);
-//         verify(appUserRepository, times(1)).findByUsername("testuser");
-//     }
+        AppUser result = userService.getUserFromAuthentication(authentication);
 
-//     @Test
-//     public void testGetUserFromAuthentication_UserNotFound() {
-//         when(authentication.getName()).thenReturn("testuser");
-//         when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.empty());
+        assertEquals(user, result);
+        verify(appUserRepository, times(1)).findByUsername("testuser");
+    }
 
-//         assertThrows(RuntimeException.class, () -> {
-//             userService.getUserFromAuthentication(authentication);
-//         });
+    @Test
+    public void testGetUserFromAuthentication_UserNotFound() {
+        when(authentication.getName()).thenReturn("testuser");
+        when(appUserRepository.findByUsername("testuser")).thenReturn(Optional.empty());
 
-//         verify(appUserRepository, times(1)).findByUsername("testuser");
-//     }
+        assertThrows(RuntimeException.class, () -> {
+            userService.getUserFromAuthentication(authentication);
+        });
 
-//     @Test
-//     public void testUpdateUser() {
-//         AppUser existingUser = new AppUser();
-//         existingUser.setId(1);
-//         existingUser.setFirst_name("Old First Name");
+        verify(appUserRepository, times(1)).findByUsername("testuser");
+    }
 
-//         AppUser updatedUser = new AppUser();
-//         updatedUser.setFirst_name("New First Name");
+    @Test
+    public void testUpdateUser() {
+        AppUser existingUser = new AppUser();
+        existingUser.setId(1);
+        existingUser.setFirst_name("Old First Name");
 
-//         when(appUserRepository.findById(1)).thenReturn(Optional.of(existingUser));
+        AppUser updatedUser = new AppUser();
+        updatedUser.setFirst_name("New First Name");
 
-//         int result = userService.updateUser(1, updatedUser);
+        when(appUserRepository.findById(1)).thenReturn(Optional.of(existingUser));
 
-//         assertEquals(1, result);
-//         assertEquals("New First Name", existingUser.getFirst_name());
-//         verify(appUserRepository, times(1)).findById(1);
-//         verify(appUserRepository, times(1)).save(existingUser);
-//     }
+        int result = userService.updateUser(1, updatedUser);
 
-//     @Test
-//     public void testUpdateUser_UserNotFound() {
-//         AppUser updatedUser = new AppUser();
-//         updatedUser.setFirst_name("New First Name");
+        assertEquals(1, result);
+        assertEquals("New First Name", existingUser.getFirst_name());
+        verify(appUserRepository, times(1)).findById(1);
+        verify(appUserRepository, times(1)).save(existingUser);
+    }
 
-//         when(appUserRepository.findById(1)).thenReturn(Optional.empty());
+    @Test
+    public void testUpdateUser_UserNotFound() {
+        AppUser updatedUser = new AppUser();
+        updatedUser.setFirst_name("New First Name");
 
-//         int result = userService.updateUser(1, updatedUser);
+        when(appUserRepository.findById(1)).thenReturn(Optional.empty());
 
-//         assertEquals(0, result);
-//         verify(appUserRepository, times(1)).findById(1);
-//         verify(appUserRepository, times(0)).save(any(AppUser.class));
-//     }
-// }
+        int result = userService.updateUser(1, updatedUser);
+
+        assertEquals(0, result);
+        verify(appUserRepository, times(1)).findById(1);
+        verify(appUserRepository, times(0)).save(any(AppUser.class));
+    }
+}
