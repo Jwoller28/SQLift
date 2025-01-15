@@ -378,7 +378,7 @@ function ResetGoals() {
         >
           <h2>Exercise</h2>
           <label>
-          Calories To Burn For Goal
+            Calories to Burn Daily 
             <input
               type="number"
               value={caloriesBurned}
