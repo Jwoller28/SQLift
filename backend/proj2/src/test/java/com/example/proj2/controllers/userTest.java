@@ -77,4 +77,3 @@ class UserTest {
         assertNull(response.getBody());
     }
 }
-

@@ -1,4 +1,5 @@
 // package com.example.proj2.services;
+// package com.example.proj2.services;
 
 // import com.example.proj2.exceptions.InvalidCredentialsException;
 // import com.example.proj2.models.User;
@@ -9,9 +10,9 @@
 
 // import static org.junit.jupiter.api.Assertions.*;
 
-// /**
-//  * Unit tests for the login logic, e.g., verifying username/password
-//  */
+// // /**
+// //  * Unit tests for the login logic, e.g., verifying username/password
+// //  */
 
 // class AuthServiceTest {
 //     private AuthService authService;
@@ -25,7 +26,8 @@
 //     @Test
 //     void loginUser_Success() {
 //         // Mock a user in DB with a certain username, password
-//         User existingUser = new User();
+//         User existingUser = new User(); 
+
 //         existingUser.setUsername("testUser");
 //         existingUser.setPassword("password");
 
@@ -65,4 +67,5 @@
 //     }
 
 
+// }
 // }

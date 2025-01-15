@@ -17,7 +17,6 @@ function CreateEventPage() {
     e.preventDefault();
 
     if (!dayId || !title.trim() || !description.trim() || selectedGroupId === null) {
-      alert('Please fill in all fields and select a group or personal.');
       return;
     }
 
@@ -25,11 +24,9 @@ function CreateEventPage() {
       if (selectedGroupId === -1) {
         // Personal event logic
         await addEvent(dayId, title, description); // Calls the personal event logic
-        alert('Personal event created successfully!');
       } else {
         // Group event logic
         await createGroupEvent(selectedGroupId, dayId, title, description);
-        alert('Group event created successfully!');
       }
       navigate(`/day/${dayId}`);
     } catch (err) {

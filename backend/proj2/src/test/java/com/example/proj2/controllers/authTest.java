@@ -132,4 +132,3 @@ class AuthTest {
         assertNull(response.getBody());
     }
 }
-

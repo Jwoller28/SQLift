@@ -92,34 +92,7 @@ function PostFeedDumb(prop: PostFeedProp) {
           />
         </div>
 
-        {/* File Upload */}
-        <div>
-          <label
-            htmlFor="photo"
-            style={{
-              display: 'block',
-              marginBottom: '5px',
-              fontWeight: 'bold',
-              color: '#333',
-            }}
-          >
-            PNG Images Only
-          </label>
-          <input
-            type="file"
-            name="photo"
-            accept=".png"
-            required
-            onChange={(e) => prop.setFile(e.target.files ? e.target.files[0] : undefined)}
-            style={{
-              fontSize: '1rem',
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              padding: '5px',
-            }}
-          />
-        </div>
-
+        
         {/* Submit Button */}
         <button
           type="submit"

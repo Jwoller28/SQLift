@@ -176,18 +176,6 @@ function PostList() {
                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
               }}
             >
-              <img
-                loading="lazy"
-                src={photoURl(post.photo)}
-                alt="Post image"
-                style={{
-                  marginTop: '10px',
-                  width: '200px',
-                  height: 'auto',
-                  borderRadius: '5px',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                }}
-              /><br/>
               <p>By {post.user.username}</p>
               <p>{post.messageText}</p>
               <p><em>Posted {formatTimeAgo(post.creation)}</em></p>
