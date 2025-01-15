@@ -98,6 +98,35 @@ function PostList() {
     return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
   };
   
+
+function cleanBase64(base64: string | undefined): string {
+  if (!base64) {
+      console.error("Received an invalid base64 string:", base64);
+      return '';  // Return an empty string if base64 is undefined or null
+  }
+  return base64.replace(/[\r\n]/g, "").replace(/\s/g, "");
+}
+
+function binaryStringToImage(binaryData: string | undefined): string {
+  if (!binaryData) {
+      console.error("No binary data provided:", binaryData);
+      return '';  // Return a default or placeholder image if data is missing
+  }
+  
+  const cleanData = cleanBase64(binaryData); // Clean base64 string
+  const binaryString = atob(cleanData); // Decoding the base64 binary string
+  const byteArray = new Uint8Array(binaryString.length);
+  // Convert the binary string to a byte array
+  for (let i = 0; i < binaryString.length; i++) {
+      byteArray[i] = binaryString.charCodeAt(i);
+  }
+  // Create a Blob from the byte array and use Object URL
+  const blob = new Blob([byteArray], { type: 'image/png' }); // Update MIME type if needed
+  const url = URL.createObjectURL(blob);
+  return url;
+}
+
+
   return (
     <div
       style={{
@@ -172,6 +201,18 @@ function PostList() {
                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
               }}
             >
+              <img
+                loading="lazy"
+                src={binaryStringToImage(post.photo)}
+                alt="Post image"
+                style={{
+                  marginTop: '10px',
+                  width: '200px',
+                  height: 'auto',
+                  borderRadius: '5px',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                }}
+              /><br/>
               <p>By {post.user.username}</p>
               <p>{post.messageText}</p>
               <p><em>Posted {formatTimeAgo(post.creation)}</em></p>

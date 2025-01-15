@@ -78,7 +78,7 @@ public class PostController {
     // Turn the Request Param into Request Body with object that has these fields
     public ResponseEntity<String> sendPost(@RequestParam("goal_id") long goalId,
     @RequestParam("user_id") int userId,
-    @RequestParam("message_text") String messageText, @RequestParam("message_tags") String messageTags, @RequestParam("username") String username)
+    @RequestParam("message_text") String messageText, @RequestParam("message_tags") String messageTags, @RequestParam("username") String username, @RequestPart("photo") MultipartFile photo) throws IOException
     {
     try
     {
@@ -101,8 +101,18 @@ public class PostController {
     logger.info("Post Text: " + messageText);
     post.setMessageText(messageText);
     
+    try {
+        byte[] photoBytes = photo.getBytes();
+        System.out.println(photoBytes);
+        post.setPhoto(photoBytes);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    
     //post.setPhoto(fileName);
     //awsService.uploadFile("trackr-photo-store",fileName, fileSize, contentType, inputStream);
+
+
     List<String> tags = Arrays.asList(messageTags.split(","));
     post.setTags(tags);
 

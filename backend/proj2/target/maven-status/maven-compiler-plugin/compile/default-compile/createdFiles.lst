@@ -25,6 +25,7 @@ com\example\proj2\Services\MyUserDetailsService.class
 com\example\proj2\Configs\KafkaTopicConfig.class
 com\example\proj2\Configs\KafkaConsumerConfig.class
 com\example\proj2\Controllers\TrackerController.class
+com\example\proj2\Configs\AWSConfig.class
 com\example\proj2\entity\Tracker.class
 com\example\proj2\Services\UserService.class
 com\example\proj2\entity\type\Nutrition.class
@@ -38,6 +39,7 @@ com\example\proj2\Controllers\SearchController.class
 com\example\proj2\entity\GroupEvent.class
 com\example\proj2\Response\LoginResponse.class
 com\example\proj2\Services\PostService.class
+com\example\proj2\Controllers\AWSController.class
 com\example\proj2\entity\Post.class
 com\example\proj2\Services\GroupService.class
 com\example\proj2\repositories\GroupEventRepository.class

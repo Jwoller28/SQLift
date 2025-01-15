@@ -46,7 +46,7 @@ function SetUserGoals() {
     const userValidToken = async () => {
       if (!token) return;
       try {
-        const responseValidToken = await fetch('http://localhost:8080/me', {
+        const responseValidToken = await fetch('http://localhost:8081/me', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ function SetUserGoals() {
 
     const getUserId = async () => {
       try {
-        const userIdResponse = await fetch(`http://localhost:8080/username/${username}`, {
+        const userIdResponse = await fetch(`http://localhost:8081/username/${username}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -130,7 +130,7 @@ function SetUserGoals() {
     };
 
     try {
-      const goalResponse = await fetch('http://localhost:8080/goal', {
+      const goalResponse = await fetch('http://localhost:8081/goal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

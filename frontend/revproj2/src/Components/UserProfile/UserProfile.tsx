@@ -18,7 +18,7 @@ function UserProfile() {
 
   useEffect(() => {
     const checkToken = async () => {
-      const tokenResponse = await fetch('http://localhost:8080/me', {
+      const tokenResponse = await fetch('http://localhost:8081/me', {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ function UserProfile() {
     const getUserInfo = async () => {
       try {
         const userInfoResponse = await fetch(
-          `http://localhost:8080/username/${username}`,
+          `http://localhost:8081/username/${username}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ function UserProfile() {
   function updateProfile() {
     const editUserProfile = async () => {
       const editProfileResponse = await fetch(
-        `http://localhost:8080/user/${userId}`,
+        `http://localhost:8081/user/${userId}`,
         {
           method: 'PATCH',
           headers: {

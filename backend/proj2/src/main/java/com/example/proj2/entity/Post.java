@@ -44,8 +44,10 @@ public class Post {
     @Column(name = "message_text")
     private String message_text;
 
-    @Column(name = "filename")
-    private String photo;
+    @Lob  // Indicates this is a large object (binary or text)
+    @Column(name = "img_data")  // Use BYTEA for PostgreSQL
+    @Basic(fetch = FetchType.LAZY)  // Lazy loading for large objects
+    private byte[] photo;
 
     @ElementCollection
     @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
@@ -90,12 +92,13 @@ public class Post {
 
 
 
-    public Post(Goal goal, AppUser appUser, String message_text, String photo) {
-        this.goal=goal;
+    public Post(Goal goal, AppUser appUser, String message_text, byte[] photo) {
+        this.goal = goal;
         this.message_text = message_text;
         this.appUser = appUser;
         this.photo = photo;
-    } 
+    }
+
 	
     public void setId(long id)
     {
@@ -125,12 +128,11 @@ public class Post {
         this.appUser = appUser;
     }
 
-    public String getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
-
-    public void setPhoto(String photo) {
+    public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
-     
+
 }
