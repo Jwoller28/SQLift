@@ -45,7 +45,7 @@ function UserLogin({
       >
         <div
           style={{
-            backgroundImage: `url('logo/logo-transparent-png.png')`,
+            backgroundImage: `url('https://2126-proj2-frontend.s3.us-east-2.amazonaws.com/Logo/logo-transparent-png.png')`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',

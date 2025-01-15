@@ -1,5 +1,4 @@
 package com.example.proj2.controllers;
-package com.example.proj2.controllers;
 
 import com.example.proj2.Controllers.GroupController;
 import com.example.proj2.Dto.CreateGroupDto;
@@ -12,43 +11,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
-import com.example.proj2.Controllers.GroupController;
-import com.example.proj2.Dto.CreateGroupDto;
-import com.example.proj2.Services.GroupService;
-import com.example.proj2.entity.Group;
-import com.example.proj2.entity.GroupEvent;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
+
 
 import java.util.*;
-import java.util.*;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+
 
 public class GroupControllerTest {
-public class GroupControllerTest {
 
-    @InjectMocks
-    private GroupController groupController;
+
     @InjectMocks
     private GroupController groupController;
 
     @Mock
     private GroupService groupService;
-    @Mock
-    private GroupService groupService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -59,32 +39,16 @@ public class GroupControllerTest {
         Group group1 = new Group();
         group1.setId(1);
         group1.setName("Group 1");
-    @Test
-    public void testGetAllGroups() {
-        Group group1 = new Group();
-        group1.setId(1);
-        group1.setName("Group 1");
 
-        Group group2 = new Group();
-        group2.setId(2);
-        group2.setName("Group 2");
         Group group2 = new Group();
         group2.setId(2);
         group2.setName("Group 2");
 
         List<Group> groups = Arrays.asList(group1, group2);
         when(groupService.getAllGroups()).thenReturn(groups);
-        List<Group> groups = Arrays.asList(group1, group2);
-        when(groupService.getAllGroups()).thenReturn(groups);
 
         ResponseEntity<?> response = groupController.getAllGroups(1);
-        ResponseEntity<?> response = groupController.getAllGroups(1);
 
-        assertEquals(200, response.getStatusCodeValue());
-        List<Map<String, Object>> responseBody = (List<Map<String, Object>>) response.getBody();
-        assertEquals(2, responseBody.size());
-        verify(groupService, times(1)).getAllGroups();
-    }
         assertEquals(200, response.getStatusCodeValue());
         List<Map<String, Object>> responseBody = (List<Map<String, Object>>) response.getBody();
         assertEquals(2, responseBody.size());
@@ -95,14 +59,7 @@ public class GroupControllerTest {
     public void testCreateNewGroup() {
         CreateGroupDto dto = new CreateGroupDto();
         dto.setName("New Group");
-    @Test
-    public void testCreateNewGroup() {
-        CreateGroupDto dto = new CreateGroupDto();
-        dto.setName("New Group");
 
-        Group group = new Group();
-        group.setId(1);
-        group.setName("New Group");
         Group group = new Group();
         group.setId(1);
         group.setName("New Group");
@@ -115,7 +72,6 @@ public class GroupControllerTest {
 
         assertEquals("New Group", response.getName());
         verify(groupService, times(1)).createGroup("New Group");
-    }
         assertEquals("New Group", response.getName());
         verify(groupService, times(1)).createGroup("New Group");
     }
