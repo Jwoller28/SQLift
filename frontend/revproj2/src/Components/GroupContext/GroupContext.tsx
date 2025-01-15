@@ -67,7 +67,7 @@ export function GroupProvider({ children }: { children: React.ReactNode }) {
       const token = localStorage.getItem('token') ? JSON.parse(String(localStorage.getItem('token'))) : null;
       const id = localStorage.getItem('id') ? JSON.parse(String(localStorage.getItem('id'))) : null;
   
-      const res = await fetch(`http://localhost:8081/groups?userId=${id}`, {
+      const res = await fetch(`http://18.116.10.154:8081/groups?userId=${id}`, {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -96,7 +96,7 @@ export function GroupProvider({ children }: { children: React.ReactNode }) {
   async function createGroup(name: string) {
     try {
       const token = localStorage.getItem('token') ? JSON.parse(String(localStorage.getItem('token'))) : null;
-      const res = await fetch('http://localhost:8081/groups', {
+      const res = await fetch('http://18.116.10.154:8081/groups', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -121,7 +121,7 @@ export function GroupProvider({ children }: { children: React.ReactNode }) {
     try {
       const token = localStorage.getItem('token') ? JSON.parse(String(localStorage.getItem('token'))) : null;
       const id = localStorage.getItem('id') ? JSON.parse(String(localStorage.getItem('id'))) : null;
-      const res = await fetch(`http://localhost:8081/groups/${groupId}/join?userId=${id}`, {
+      const res = await fetch(`http://18.116.10.154:8081/groups/${groupId}/join?userId=${id}`, {
 
         method: 'POST',
         headers: { 
@@ -146,7 +146,7 @@ export function GroupProvider({ children }: { children: React.ReactNode }) {
     try {
       const token = localStorage.getItem('token') ? JSON.parse(String(localStorage.getItem('token'))) : null;
       const id = localStorage.getItem('id') ? JSON.parse(String(localStorage.getItem('id'))) : null;
-      const res = await fetch(`http://localhost:8081/groups/${groupId}/leave?userId=${id}`, {
+      const res = await fetch(`http://18.116.10.154:8081/groups/${groupId}/leave?userId=${id}`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ export function GroupProvider({ children }: { children: React.ReactNode }) {
   async function fetchGroupEvents(groupId: number): Promise<GroupEvent[]> {
     try {
       const token = localStorage.getItem('token') ? JSON.parse(String(localStorage.getItem('token'))) : null;
-      const res = await fetch(`http://localhost:8081/groups/${groupId}/events`, {
+      const res = await fetch(`http://18.116.10.154:8081/groups/${groupId}/events`, {
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -225,8 +225,8 @@ export function GroupProvider({ children }: { children: React.ReactNode }) {
   
       // Log the endpoint and body for debugging
       const endpoint = isPersonalEvent
-        ? `http://localhost:8081/personal-events`
-        : `http://localhost:8081/groups/${groupId}/events`;
+        ? `http://18.116.10.154:8081/personal-events`
+        : `http://18.116.10.154:8081/groups/${groupId}/events`;
       console.log("Endpoint:", endpoint);
       console.log("Request Body:", body);
   

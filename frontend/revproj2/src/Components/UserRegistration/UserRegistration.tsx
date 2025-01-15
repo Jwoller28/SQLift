@@ -24,7 +24,7 @@ function UserRegistration() {
   const registerSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    const response = await fetch('http://localhost:8081/register', {
+    const response = await fetch('http://18.116.10.154:8081/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password, email, first_name, last_name, photo_url }),
@@ -40,7 +40,7 @@ function UserRegistration() {
   };
 
   const loginUserAfterRegister = async () => {
-    const response = await fetch('http://localhost:8081/login', {
+    const response = await fetch('http://18.116.10.154:8081/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),

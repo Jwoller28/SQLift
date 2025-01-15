@@ -11,7 +11,7 @@ export const sendPost = async (formData : FormData) => {
 
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = "http://localhost:8081/posts";
+        const url = "http://18.116.10.154:8081/posts";
 
         await axios.post(url, formData, {
             headers: { 
@@ -33,7 +33,7 @@ export const getStoredPosts = async () => {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-	const url = "http://localhost:8081/posts";
+	const url = "http://18.116.10.154:8081/posts";
 
 	let result = await axios.get(url, {
 	headers: {
@@ -65,7 +65,7 @@ export const getPostPhoto = async (fileName : string) => {
 
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = `http://localhost:8081/s3bucket/trackr-photo-store/download/${fileName}`;
+        const url = `http://18.116.10.154:8081/s3bucket/trackr-photo-store/download/${fileName}`;
 
         let result = await axios.get(url, {
             headers: { 
@@ -98,7 +98,7 @@ export const sendPostPhoto = async (photo : FormData) => {
 
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = "http://localhost:8081/s3bucket/trackr-photo-store/upload";
+        const url = "http://18.116.10.154:8081/s3bucket/trackr-photo-store/upload";
 
         await axios.post(url, photo, {
             headers: { 
@@ -121,7 +121,7 @@ export const getPost = async () => {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = "http://localhost:8081/live/posts";
+        const url = "http://18.116.10.154:8081/live/posts";
 
         let result = await axios.get(url, {
 		headers: {
@@ -151,7 +151,7 @@ export const usernameifAuthorized = async () => {
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
 	console.log(Token);
-	const url = "http://localhost:8081/me";
+	const url = "http://18.116.10.154:8081/me";
 
 	let result = await axios.get(url, {
 		headers: {
@@ -184,7 +184,7 @@ export const getTrackers = async (userId: number, goalId: number) => {
 	
 	 const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-	 const url =`http://localhost:8081/Tracker/${userId}/${goalId}`;
+	 const url =`http://18.116.10.154:8081/Tracker/${userId}/${goalId}`;
  
 	 let result = await axios.get(url, {
 		 headers: {
@@ -217,7 +217,7 @@ export const getUserByUsername = async (username : string) => {
 	try {
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-	const url1= `http://localhost:8081/username/${username}`;
+	const url1= `http://18.116.10.154:8081/username/${username}`;
 	
 	let result1 = await axios.get(url1, {
 		headers: {
@@ -247,7 +247,7 @@ export const getGoalbyUserId = async(userId : number) => {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-	const url2 = `http://localhost:8081/goalUser/${userId}`;
+	const url2 = `http://18.116.10.154:8081/goalUser/${userId}`;
 
 	let result2 =  await axios.get(url2, {
 		headers: {
@@ -279,7 +279,7 @@ export const getGoalsbyUserId = async(userId : number) => {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-	const url2 = `http://localhost:8081/goalsUser/${userId}`;
+	const url2 = `http://18.116.10.154:8081/goalsUser/${userId}`;
 
 	let result2 =  await axios.get(url2, {
 		headers: {
@@ -310,7 +310,7 @@ export const getCommentsByPost = async(postId : number) => {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-	const url = `http://localhost:8081/fetch/comment/${postId}`;
+	const url = `http://18.116.10.154:8081/fetch/comment/${postId}`;
 
 	let result =  await axios.get(url, {
 		headers: {
@@ -342,7 +342,7 @@ export const sendComment = async (comment : FormData) => {
 
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = "http://localhost:8081/create/comment";
+        const url = "http://18.116.10.154:8081/create/comment";
 		console.log(comment);
         await axios.post(url, comment, {
             headers: { 
@@ -366,7 +366,7 @@ export const sendTypeFilter = async (searchType : searchType) => {
 
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = "http://localhost:8081/filter";
+        const url = "http://18.116.10.154:8081/filter";
 
         await axios.post(url, searchType, {
             headers: { 
@@ -388,7 +388,7 @@ export const getFilteredPost = async () => {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-        const url = "http://localhost:8081/filter/live/post";
+        const url = "http://18.116.10.154:8081/filter/live/post";
 
         let result = await axios.get(url, {
 		headers: {
@@ -417,7 +417,7 @@ export const getFilteredStoredPosts = async () => {
 	
 	const Token = localStorage.getItem('token');
 	const cleanToken = Token?.replace(/"/g, "");
-	const url = "http://localhost:8081/filter/posts";
+	const url = "http://18.116.10.154:8081/filter/posts";
 
 	let result = await axios.get(url, {
 	headers: {

@@ -39,7 +39,7 @@ export function EventsProvider({ children }: { children: React.ReactNode }) {
 
       console.log(`Fetching events for userId: ${userId}`);
 
-      const res = await fetch(`http://localhost:8081/personal-events/${userId}`, {
+      const res = await fetch(`http://18.116.10.154:8081/personal-events/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export function EventsProvider({ children }: { children: React.ReactNode }) {
   
       console.log("Payload being sent:", payload);
   
-      const res = await fetch('http://localhost:8081/personal-events', {
+      const res = await fetch('http://18.116.10.154:8081/personal-events', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

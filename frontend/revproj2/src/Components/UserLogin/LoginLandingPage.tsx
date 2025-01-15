@@ -18,7 +18,7 @@ function LoginLandingPage() {
 
   useEffect(() => { // This useEffect checks our me endpoint in springboot to see if current user token is valid.
     const userValidToken = async () =>{
-      const responseValidToken = await fetch("http://localhost:8081/me", {
+      const responseValidToken = await fetch("http://18.116.10.154:8081/me", {
         headers: {
             'Content-Type': 'application/json',
             'Authorization' : `Bearer ${token}`,

@@ -78,7 +78,7 @@ function ResetGoals() {
     if (!token) return;
     const fetchMe = async () => {
       try {
-        const res = await fetch('http://localhost:8081/me', {
+        const res = await fetch('http://18.116.10.154:8081/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -101,7 +101,7 @@ function ResetGoals() {
     if (!username || !token) return;
     const fetchUser = async () => {
       try {
-        const res = await fetch(`http://localhost:8081/username/${username}`, {
+        const res = await fetch(`http://18.116.10.154:8081/username/${username}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -124,7 +124,7 @@ function ResetGoals() {
     if (!userId || !token) return;
     const fetchGoal = async () => {
       try {
-        const res = await fetch(`http://localhost:8081/goalUser/${userId}`, {
+        const res = await fetch(`http://18.116.10.154:8081/goalUser/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         // It's possible the user has no goal yet => 400 or similar
@@ -208,7 +208,7 @@ function ResetGoals() {
       };
 
       // PATCH /goal/{userId}
-      const patchRes = await fetch(`http://localhost:8081/goal/${userId}`, {
+      const patchRes = await fetch(`http://18.116.10.154:8081/goal/${userId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
