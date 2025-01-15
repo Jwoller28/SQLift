@@ -46,7 +46,7 @@ pipeline{
                 dir('backend/proj2'){
                     echo 'Logging into Docker'
                     withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]){
-                    sh "docker login -u brets1488 -p ${Dockerpwd}"
+                    sh "docker login -u hthamdani -p ${Dockerpwd}"
                     }
                 }
             }
