@@ -79,7 +79,6 @@ function UserProfile() {
       );
 
       if (editProfileResponse.ok) {
-        alert('Profile updated successfully!');
         setShowModal(false);
       } else {
         alert('Error updating profile.');
