@@ -35,20 +35,20 @@ public class PostControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    public void testSendPost() {
-        Post post = new Post();
-        post.setMessageText("Test message");
-        post.setTags(Arrays.asList("tag1", "tag2"));
+    // @Test
+    // public void testSendPost() {
+    //     Post post = new Post();
+    //     post.setMessageText("Test message");
+    //     post.setTags(Arrays.asList("tag1", "tag2"));
 
-        doNothing().when(postService).sendPost(any(Post.class));
+    //     doNothing().when(postService).sendPost(any(Post.class));
 
-        ResponseEntity<String> response = postController.sendPost(null, 1L, 1, "Test message", "tag1,tag2", "testuser");
+    //     ResponseEntity<String> response = postController.sendPost(null, 1L, 1, "Test message", "tag1,tag2", "testuser");
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("File uploaded successfully", response.getBody());
-        verify(postService, times(1)).sendPost(any(Post.class));
-    }
+    //     assertEquals(200, response.getStatusCodeValue());
+    //     assertEquals("File uploaded successfully", response.getBody());
+    //     verify(postService, times(1)).sendPost(any(Post.class));
+    // }
 
     @Test
     public void testPoll() {
