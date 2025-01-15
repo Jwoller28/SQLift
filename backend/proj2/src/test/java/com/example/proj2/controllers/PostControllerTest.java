@@ -1,3 +1,4 @@
+
 package com.example.proj2.controllers;
 
 import com.example.proj2.Controllers.PostController;
@@ -12,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
+import com.example.proj2.entity.Post;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,14 +40,28 @@ public class PostControllerTest {
     }
 
     @Test
-    public void testSendPost() {
+    public void testSendPost() throws Exception{
         Post post = new Post();
         post.setMessageText("Test message");
         post.setTags(Arrays.asList("tag1", "tag2"));
 
         doNothing().when(postService).sendPost(any(Post.class));
 
-        ResponseEntity<String> response = postController.sendPost(1L, 1, "Test message", "tag1,tag2", "testuser");
+        byte[] pngDummyData = new byte[]{
+            (byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, // PNG header signature
+            (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A, // PNG header continued
+            // You would normally have more data for the PNG file here...
+        };
+
+        // Create a MockMultipartFile with the PNG data
+        MultipartFile dummyPngFile = new MockMultipartFile(
+                "file",              // Field name
+                "dummyimage.png",    // Original file name
+                "image/png",         // Content type for PNG
+                pngDummyData         // File content (byte array)
+        );
+
+        ResponseEntity<String> response = postController.sendPost(1L, 1, "Test message", "tag1,tag2", "testuser", dummyPngFile);
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals("File uploaded successfully", response.getBody());
