@@ -3,6 +3,10 @@ pipeline{
     tools{
         maven "3.9.9"
     }
+    environment{
+        Aws_Access_Key = credentials('Aws_Access_Key')
+        Aws_Access_Secret = credentials('Aws_Access_Secret')
+    }
     stages{
         stage('Compile and Clean'){
             steps{
@@ -21,7 +25,9 @@ pipeline{
         stage('deploy'){
             steps{
                 dir('backend/proj2'){
-                    sh 'mvn package'
+                    script{
+                        sh """mvn package -Dspring.profiles.active=jenkins -Daws.access.keyId=${Aws_Access_Key} -Daws.access.secret=${Aws_Access_Secret}"""
+                    }
                 }
             }
         }
