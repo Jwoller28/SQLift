@@ -532,19 +532,6 @@ function InputPage() {
           </label>
         </div>
 
-        <h3 style={{ color: '#fff', marginTop: '10px' }}>Sleep</h3>
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ marginRight: '10px' }}>
-            Hours Slept:
-            <input
-              type="number"
-              value={hoursSlept}
-              onChange={(e) => setHoursSlept(e.target.value)}
-              style={{ marginLeft: '10px' }}
-            />
-          </label>
-        </div>
-
         <h3 style={{ color: '#fff', marginTop: '10px' }}>Water Intake</h3>
         <div style={{ marginBottom: '20px' }}>
           <label style={{ marginRight: '10px' }}>
@@ -558,7 +545,18 @@ function InputPage() {
           </label>
         </div>
 
-        
+        <h3 style={{ color: '#fff', marginTop: '10px' }}>Sleep</h3>
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ marginRight: '10px' }}>
+            Hours Slept:
+            <input
+              type="number"
+              value={hoursSlept}
+              onChange={(e) => setHoursSlept(e.target.value)}
+              style={{ marginLeft: '10px' }}
+            />
+          </label>
+        </div>
 
         <div style={{ marginTop: '20px' }}>
           <button
