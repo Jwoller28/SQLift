@@ -30,7 +30,7 @@ pipeline{
                 echo 'Building Image'
                 dir('backend/proj2'){
                     sh 'ls'
-                    sh 'docker build -t brets1488/jenkins_docker_revp2:${BUILD_NUMBER} .'
+                    sh 'docker build -t hthamdani/jenkins_docker_revp2:${BUILD_NUMBER} .'
                 }
                 
             }
@@ -40,7 +40,7 @@ pipeline{
                 dir('backend/proj2'){
                     echo 'Logging into Docker'
                     withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]){
-                    sh "docker login -u brets1488 -p ${Dockerpwd}"
+                    sh "docker login -u hthamdani -p ${Dockerpwd}"
                     }
                 }
             }
@@ -49,7 +49,7 @@ pipeline{
             steps{
                 dir('backend/proj2'){
                     echo 'Pushing Image'
-                    sh 'docker push brets1488/jenkins_docker_revp2:${BUILD_NUMBER}'
+                    sh 'docker push hthamdani/jenkins_docker_revp2:${BUILD_NUMBER}'
                 }
             }
         }
