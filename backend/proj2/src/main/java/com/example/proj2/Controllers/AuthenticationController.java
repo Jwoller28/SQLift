@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.example.proj2.Services.UserService;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://2126-proj2-frontend.s3-website.us-east-2.amazonaws.com")
 // @CrossOrigin(origins = "18.221.145.66")
 @RestController
 public class AuthenticationController {
@@ -75,7 +75,7 @@ public class AuthenticationController {
         }
 
     }
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "http://2126-proj2-frontend.s3-website.us-east-2.amazonaws.com")
     // @CrossOrigin(origins = "18.221.145.66")
     @GetMapping("/me")
     public ResponseEntity<String> getAuthenticatedUserFromContext() {
