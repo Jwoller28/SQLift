@@ -55,7 +55,7 @@ pipeline{
             steps{
                 dir('backend/proj2'){
                     echo 'Pushing Image'
-                    sh 'docker push brets1488/jenkins_docker_revp2:${BUILD_NUMBER}'
+                    sh 'docker push hthamdani/jenkins_docker_revp2:${BUILD_NUMBER}'
                 }
             }
         }
