@@ -106,7 +106,7 @@ public class SearchService {
         Predicate<Long, Post> filterPredicate = null;
 
         switch (searchTypeDTO.getType().toLowerCase()) {
-            case "usernames":
+            case "username":
                 filterPredicate = (key, value) -> value.getAppUser().getUsername().contains(searchTypeDTO.getValue());
                 break;
             case "text":

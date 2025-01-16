@@ -63,7 +63,7 @@ function PostList() {
     };
 
     getDB();
-  }, [searched]);
+  }, [searched, change]);
 
   // Handling comment toggling
   function handleClick(postId: number) {
