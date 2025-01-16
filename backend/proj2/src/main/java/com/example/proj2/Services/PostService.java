@@ -1,5 +1,6 @@
 package com.example.proj2.Services;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -7,19 +8,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.proj2.entity.Post;
 import com.example.proj2.repositories.PostRepository;
-
-import java.util.concurrent.TimeUnit;
-import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostService {
@@ -44,6 +41,7 @@ public class PostService {
             if(ex == null)
             {
                 System.out.println("Sent Post with offset " + result.getRecordMetadata().offset());
+                log.info("Post Data: " + result.getProducerRecord().value().toString());
             }
             else {
                 System.out.println("Fail: " + ex.getMessage());
@@ -72,7 +70,7 @@ public class PostService {
 	if(post != null)
 	{
 	log.info(post.toString());
-	Post postIn = postRepository.saveAndFlush(post); // Keep persisted Post
+	Post postIn = postRepository.save(post); // Keep persisted Post
         postQueue.offer(postIn); // Add posts to the queue
 	System.out.println(postQueue.size());
 	}
