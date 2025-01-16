@@ -3,6 +3,7 @@ package com.example.proj2.Services;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
+
 import com.example.proj2.entity.Post;
 import com.example.proj2.repositories.PostRepository;
+
 import java.util.concurrent.TimeUnit;
 import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostService {
@@ -61,6 +66,7 @@ public class PostService {
     // }
 
     // Kafka listener
+    @Transactional
     @KafkaListener(topics="processedPosts", containerFactory = "kafkaListenerContainerFactory", groupId = "app-users")
     public void listen(Post post) {
 	if(post != null)

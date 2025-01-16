@@ -1,8 +1,11 @@
 package com.example.proj2.entity;
 
 import com.example.proj2.entity.Goal;
+
 import jakarta.persistence.ManyToOne;
+
 import com.example.proj2.entity.Comment;
+
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.CollectionTable;
@@ -16,9 +19,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.persistence.JoinColumn;
+
 import java.util.List;
+
 import org.hibernate.annotations.CreationTimestamp;
+
 import java.util.Date;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name="post")
@@ -131,6 +139,8 @@ public class Post {
     public byte[] getPhoto() {
         return photo;
     }
+
+    @Transactional
     public void setPhoto(byte[] photo) {
         this.photo = photo;
     }

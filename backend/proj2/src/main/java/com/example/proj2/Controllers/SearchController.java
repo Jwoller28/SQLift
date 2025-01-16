@@ -37,8 +37,9 @@ public class SearchController {
     @PostMapping(value="/filter")
     public ResponseEntity<String> getFilterType(@RequestBody SearchTypeDTO searchTypeDTO)
     {
-	logger.info(searchTypeDTO.getType());
-	logger.info(searchTypeDTO.getValue());
+	logger.info("Type: " + searchTypeDTO.getType());
+	logger.info("Value: " + searchTypeDTO.getValue());
+    
         if(searchTypeDTO != null)
         {
             searchService.customFilterStream(searchTypeDTO);

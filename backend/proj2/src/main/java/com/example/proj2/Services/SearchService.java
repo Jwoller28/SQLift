@@ -72,16 +72,22 @@ public class SearchService {
             case "username":
                 if (searchValue != null) {
                     return postRepository.findPostsByUsernameContains(searchValue);
+                    log.info(searchValue);
+                    log.info(sTypeDTO.getType());
                 }
                 break;
             case "text":
                 if (searchValue != null) {
                     return postRepository.findPostsByTextContains(searchValue);
+                    log.info(searchValue);
+                    log.info(sTypeDTO.getType());
                 }
                 break;
             case "tags":
                 if (searchValue != null) {
                     return postRepository.findPostsByTagsContains(searchValue);
+                    log.info(searchValue);
+                    log.info(sTypeDTO.getType());
                 }
                 break;
             default:
@@ -108,12 +114,18 @@ public class SearchService {
         switch (searchTypeDTO.getType().toLowerCase()) {
             case "username":
                 filterPredicate = (key, value) -> value.getAppUser().getUsername().contains(searchTypeDTO.getValue());
+                log.info(searchTypeDTO.getValue());
+                log.info(sTypeDTO.getType());
                 break;
             case "text":
                 filterPredicate = (key, value) -> value.getMessageText().contains(searchTypeDTO.getValue());
+                log.info(searchTypeDTO.getValue());
+                log.info(sTypeDTO.getType());
                 break;
             case "tags":
                 filterPredicate = (key, value) -> value.getTags() != null && value.getTags().stream().anyMatch(tag -> tag.contains(searchTypeDTO.getValue()));
+                log.info(searchTypeDTO.getValue());
+                log.info(sTypeDTO.getType());
                 break;
             default:
                 log.error("Invalid search type: {}", searchTypeDTO.getType());
