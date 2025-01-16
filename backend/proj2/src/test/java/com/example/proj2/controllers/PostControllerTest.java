@@ -45,23 +45,7 @@ public class PostControllerTest {
         post.setMessageText("Test message");
         post.setTags(Arrays.asList("tag1", "tag2"));
 
-        doNothing().when(postService).sendPost(any(Post.class));
-
-        byte[] pngDummyData = new byte[]{
-            (byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47, // PNG header signature
-            (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A, // PNG header continued
-            // You would normally have more data for the PNG file here...
-        };
-
-        // Create a MockMultipartFile with the PNG data
-        MultipartFile dummyPngFile = new MockMultipartFile(
-                "file",              // Field name
-                "dummyimage.png",    // Original file name
-                "image/png",         // Content type for PNG
-                pngDummyData         // File content (byte array)
-        );
-
-        ResponseEntity<String> response = postController.sendPost(1L, 1, "Test message", "tag1,tag2", "testuser", dummyPngFile);
+        ResponseEntity<String> response = postController.sendPost(1L, 1, "Test message", "tag1,tag2", "testuser");
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals("File uploaded successfully", response.getBody());
