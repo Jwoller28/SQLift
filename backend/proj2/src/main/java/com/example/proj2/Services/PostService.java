@@ -40,7 +40,6 @@ public class PostService {
             if(ex == null)
             {
                 System.out.println("Sent Post with offset " + result.getRecordMetadata().offset());
-                log.info("Post Data: " + result.getProducerRecord().value().toString());
             }
             else {
                 System.out.println("Fail: " + ex.getMessage());

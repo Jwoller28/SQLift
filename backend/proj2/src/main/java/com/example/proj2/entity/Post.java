@@ -1,32 +1,22 @@
+
 package com.example.proj2.entity;
 
-import com.example.proj2.entity.Goal;
-
-import jakarta.persistence.ManyToOne;
-
-import com.example.proj2.entity.Comment;
-
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
-import jakarta.persistence.JoinColumn;
-
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.util.Date;
-
-import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name="post")
@@ -52,10 +42,8 @@ public class Post {
     @Column(name = "message_text")
     private String message_text;
 
-    @Lob  // Indicates this is a large object (binary or text)
-    @Column(name = "img_data")  // Use BYTEA for PostgreSQL
-    @Basic(fetch = FetchType.LAZY)  // Lazy loading for large objects
-    private byte[] photo;
+    @Column(name = "filename")
+    private String photo;
 
     @ElementCollection
     @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
@@ -100,13 +88,12 @@ public class Post {
 
 
 
-    public Post(Goal goal, AppUser appUser, String message_text, byte[] photo) {
-        this.goal = goal;
+    public Post(Goal goal, AppUser appUser, String message_text, String photo) {
+        this.goal=goal;
         this.message_text = message_text;
         this.appUser = appUser;
         this.photo = photo;
-    }
-
+    } 
 	
     public void setId(long id)
     {
@@ -136,13 +123,12 @@ public class Post {
         this.appUser = appUser;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    @Transactional
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
-
+     
 }
