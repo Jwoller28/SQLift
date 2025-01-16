@@ -71,23 +71,26 @@ public class SearchService {
         switch (sTypeDTO.getType().toLowerCase()) {
             case "username":
                 if (searchValue != null) {
-                    return postRepository.findPostsByUsernameContains(searchValue);
                     log.info(searchValue);
                     log.info(sTypeDTO.getType());
+                    return postRepository.findPostsByUsernameContains(searchValue);
+                    
                 }
                 break;
             case "text":
                 if (searchValue != null) {
-                    return postRepository.findPostsByTextContains(searchValue);
                     log.info(searchValue);
                     log.info(sTypeDTO.getType());
+                    return postRepository.findPostsByTextContains(searchValue);
+                    
                 }
                 break;
             case "tags":
                 if (searchValue != null) {
-                    return postRepository.findPostsByTagsContains(searchValue);
                     log.info(searchValue);
                     log.info(sTypeDTO.getType());
+                    return postRepository.findPostsByTagsContains(searchValue);
+                    
                 }
                 break;
             default:
