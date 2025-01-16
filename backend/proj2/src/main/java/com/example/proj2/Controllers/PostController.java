@@ -133,13 +133,14 @@ public class PostController {
 
     postService.sendPost(post);
 
-    
+    return ResponseEntity.ok().body(post.toString());
+
     }
     catch(Exception ex)
     {
 	   return ResponseEntity.badRequest().body(ex.getMessage());
     }
-    return ResponseEntity.ok().body(post);
+    
     }
 
     // @GetMapping("/api/posts")
