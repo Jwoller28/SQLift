@@ -13,7 +13,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.proj2.entity.Post;
 import com.example.proj2.repositories.PostRepository;
@@ -64,13 +63,12 @@ public class PostService {
     // }
 
     // Kafka listener
-    @Transactional
     @KafkaListener(topics="processedPosts", containerFactory = "kafkaListenerContainerFactory", groupId = "app-users")
     public void listen(Post post) {
 	if(post != null)
 	{
 	log.info(post.toString());
-	Post postIn = postRepository.save(post); // Keep persisted Post
+	Post postIn = postRepository.saveAndFlush(post); // Keep persisted Post
         postQueue.offer(postIn); // Add posts to the queue
 	System.out.println(postQueue.size());
 	}
